@@ -1,0 +1,3 @@
+[submodule "CORONA"]
+	path = CORONA
+	url = https://github.com/KrakenLeaf/CORONA
