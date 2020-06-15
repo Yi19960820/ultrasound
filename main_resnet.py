@@ -39,11 +39,11 @@ def to_var(x):
 """Settings"""
 """========================================================================="""
 #Name and choice of training set
-ProjectName='Res3dC_sim1'
+ProjectName='Res3dC_nocon'
 prefix='sim' #invivo,sim_pm,sim
 #Load model
 loadmodel=False
-mfile='Results/Res3dC_sim_train.pkl'
+mfile='Results/Res3dC_nocon_train.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
@@ -64,9 +64,9 @@ ValBatchSize   = 40
 num_epochs     = 10
 frame=10
 #directory of datasets
-d_invivo='../Data/Invivo/' 
-d_simpm='../../Ultrasound_805/data/Sim_PM/'
-d_sim='../Data/Sim/'
+d_invivo='/data/Invivo/' 
+d_simpm='/data/Sim_PM/'
+d_sim='/data/sim-data/'
 """========================================================================="""
 
 #Dataset, converter and player
@@ -79,7 +79,7 @@ for i in range(6):
     formlist.append(formshow)
 minloss=np.inf
 #Logs
-log=open('results/%s_%s_Res3dC_Log_Tr%s_epoch%s_lr%.2e.txt'\
+log=open('/results/%s_%s_Res3dC_Log_Tr%s_epoch%s_lr%.2e.txt'\
     %(ProjectName,prefix,TrainInstances,num_epochs,lr_list[0]),'a')
 
 print('Project Name: %s\n'%ProjectName)
@@ -216,7 +216,7 @@ for learning_rate in lr_list:
             log.write('saved at [epoch%d/%d]\n'\
                   %(epoch+1,num_epochs))
             torch.save(net.state_dict(), 
-                       "Results/%s_%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
+                       "/results/%s_%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
                        %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
             minloss=min(loss_val_mean,minloss)
 
@@ -230,7 +230,7 @@ for learning_rate in lr_list:
                    xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
                     tit=['xtr','ytr','ptr','xval','yval','pval'],
                     supt='Epoch{%d/%d}'%(epoch+1,num_epochs),ion=False)
-    plt.savefig('Results/%s_%s_Res3dC_Pred_Tr%s_epoch%s_lr%.2e.png'\
+    plt.savefig('/results/%s_%s_Res3dC_Pred_Tr%s_epoch%s_lr%.2e.png'\
                 %(ProjectName,prefix,TrainInstances,
                   num_epochs,learning_rate),ion=False)
 
@@ -245,12 +245,12 @@ for learning_rate in lr_list:
     plt.title("MSE")
     plt.legend()
     #Save png, pickle, data of MSE
-    plt.savefig('Results/%s_%s_Res3dC_LossPng_Tr%s_epoch%s_lr%.2e.png'\
+    plt.savefig('/results/%s_%s_Res3dC_LossPng_Tr%s_epoch%s_lr%.2e.png'\
                 %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
-    pickle.dump(fig,open("Results/%s_%s_Res3dC_LossFig_Tr%s_epoch%s_lr%.2e.fig.pickle"\
+    pickle.dump(fig,open("/results/%s_%s_Res3dC_LossFig_Tr%s_epoch%s_lr%.2e.fig.pickle"\
                          %(ProjectName,prefix,TrainInstances,
                            num_epochs,learning_rate),'wb'))
-    np.savez('Results/%s_%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
+    np.savez('/results/%s_%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
              %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
              lossmean_vec,lossmean_val_vec)
     
@@ -268,7 +268,7 @@ for learning_rate in lr_list:
             'ValBatchSize':ValBatchSize,
             'num_epochs':num_epochs,
             'frame':frame}
-    file=open('Results/%s_%s_Res3dC_Settings_Tr%s_epoch%s_lr%.2e.txt'\
+    file=open('/results/%s_%s_Res3dC_Settings_Tr%s_epoch%s_lr%.2e.txt'\
               %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),'w')
     file.write('Training Settings:\n\t')
     for k,v in params.items():
