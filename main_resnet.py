@@ -20,7 +20,7 @@ import sys
 # sys.path.append('../')
 import os
 
-from CORONA.Res3dC.DataSet_3dC import ImageDataset
+from DataSet import BigImageDataset
 from CORONA.network.ResNet3dC import ResNet3dC
 from CORONA.classes.Dataset import Converter
 from CORONA.classes.Player import Player
@@ -91,11 +91,11 @@ log.write('Loading phase...\n')
 log.write('----------------\n')
 shape_dset=(32,32,40)
 #training
-train_dataset=ImageDataset(round(TrainInstances),shape_dset,
+train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
                            train=0,data_dir=data_dir)
 train_loader=data.DataLoader(train_dataset,batch_size=BatchSize,shuffle=True)
 #validation
-val_dataset=ImageDataset(round(ValInstances),shape_dset,
+val_dataset=BigImageDataset(round(ValInstances),shape_dset,
                          train=1,data_dir=data_dir)
 val_loader=data.DataLoader(val_dataset,batch_size=ValBatchSize,shuffle=True)
 print('Finished loading.\n')
