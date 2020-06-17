@@ -3,14 +3,14 @@ import torch
 from scipy.io import loadmat
 import h5py
 import numpy as np
+import os
 
 class BigImageDataset(torch.utils.data.Dataset):
-    DATA_DIR='/data/sim-data/'
+    DATA_DIR='/data/toy/'
 
     def __init__(self, NumInstances, shape, train, transform=None, data_dir=None):
         data_dir = self.DATA_DIR if data_dir is None else data_dir
         self.shape=shape
-        self.fname = data_dir + 'sim0614.h5'
 
         # dummy image loader
         # images_L = torch.zeros(tuple([NumInstances])+self.shape)
@@ -19,8 +19,7 @@ class BigImageDataset(torch.utils.data.Dataset):
         
         #   --  TRAIN  --  RAT 1
         if train is 0:
-            hf = h5py.File(self.fname, 'r')
-            self.fnames = list(hf.keys())
+            self.fnames = os.listdir(data_dir)
             
             # for n in range(NumInstances):
             #     if np.mod(n, 600) == 0: print('loading train set %s' % (n))
@@ -29,7 +28,6 @@ class BigImageDataset(torch.utils.data.Dataset):
             #     images_L[n] = torch.from_numpy(L.reshape(self.shape))
             #     images_S[n] = torch.from_numpy(S.reshape(self.shape))
             #     images_D[n] = torch.from_numpy(D.reshape(self.shape))
-            hf.close()
         #   --  VALIDATION -- RAT 2, 100 frames 
         if train is 1:
             IndParam = 2400
@@ -82,11 +80,14 @@ class BigImageDataset(torch.utils.data.Dataset):
         # Do something here that will load the actual data from the list of datasets.
         # We want to use this lazy loading so we don't need 25 GB of RAM.
 
-        data_file = self.fnames[idx]
-        hf = h5py.File(self.fname, 'r')
-        data_arr = hf.get(data_file).value
-        L = data_arr[0]+1j*data_arr[1]
-        S = data_arr[2]+1j*data_arr[3]
+        # data_file = self.fnames[idx]
+        # hf = h5py.File(self.fname, 'r')
+        # data_arr = hf.get(data_file).value
+        # L = data_arr[0]+1j*data_arr[1]
+        # S = data_arr[2]+1j*data_arr[3]
+        data = np.load(self.fnames[idx])
+        L = data['td']
+        S = data['blood']
         D = L + S
 
         return L, S, D
