@@ -59,7 +59,7 @@ class BigImageDataset(torch.utils.data.Dataset):
         # data_arr = hf.get(data_file).value
         # L = data_arr[0]+1j*data_arr[1]
         # S = data_arr[2]+1j*data_arr[3]
-        data = np.load(self.fnames[idx])
+        data = np.load(os.path.join(self.DATA_DIR, self.fnames[idx]))
         L = data['td']
         S = data['blood']
         D = L + S
