@@ -60,8 +60,8 @@ class BigImageDataset(torch.utils.data.Dataset):
         # L = data_arr[0]+1j*data_arr[1]
         # S = data_arr[2]+1j*data_arr[3]
         data = np.load(os.path.join(self.DATA_DIR, self.fnames[idx]))
-        L = data['arr_1']
-        S = data['arr_0']
+        L = data['L']
+        S = data['S']
         D = L + S
         L, S, D = preprocess(L, S, D)
         L = torch.from_numpy(L.reshape(self.shape))
