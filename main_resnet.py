@@ -66,7 +66,7 @@ frame=10
 #directory of datasets
 d_invivo='/data/Invivo/' 
 d_simpm='/data/Sim_PM/'
-d_sim='/data/sim-data/'
+d_sim='/data/toy/'
 """========================================================================="""
 
 #Dataset, converter and player
