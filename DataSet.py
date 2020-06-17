@@ -11,7 +11,8 @@ class BigImageDataset(torch.utils.data.Dataset):
     def __init__(self, NumInstances, shape, train, transform=None, data_dir=None):
         data_dir = self.DATA_DIR if data_dir is None else data_dir
         self.shape=shape
-        self.fnames = os.listdir(data_dir).sort()
+        self.fnames = os.listdir(data_dir)
+        self.fnames.sort()
 
         # dummy image loader
         # images_L = torch.zeros(tuple([NumInstances])+self.shape)
