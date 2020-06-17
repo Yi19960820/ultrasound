@@ -73,7 +73,7 @@ d_sim='/data/toy/'
 data_dir={'invivo':d_invivo,'sim_pm':d_simpm,'sim':d_sim}[prefix]
 conter=Converter()
 player=Player()
-formshow={'pre':'concat','shape':(32,32,20)}
+formshow={'pre':'concat','shape':(78,78,101)}
 formlist=[]
 for i in range(6):
     formlist.append(formshow)
