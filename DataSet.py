@@ -24,8 +24,8 @@ class BigImageDataset(torch.utils.data.Dataset):
             self.fnames = self.fnames[:NumInstances]            
             for n in range(NumInstances):
                 if np.mod(n, 50) == 0: print('loading train set %s' % (n))
-                L = np.load(os.path.join(data_dir, self.fnames[n]))['L'][:,:,50]
-                S = np.load(os.path.join(data_dir, self.fnames[n]))['S'][:,:,50]
+                L = np.load(os.path.join(data_dir, self.fnames[n]))['L'][:,:,:50]
+                S = np.load(os.path.join(data_dir, self.fnames[n]))['S'][:,:,:50]
                 D = L + S
                 L,S,D=preprocess(L,S,D)
                 
