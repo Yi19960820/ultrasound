@@ -46,7 +46,7 @@ loadmodel=False
 mfile='Results/Res3dC_nocon_train.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
-gpu=True #if gpu=True, the ResNet will use more parameters
+gpu=False #if gpu=True, the ResNet will use more parameters
 #Whether to plot predictions during training and frequency
 plot=False
 plotT=1
