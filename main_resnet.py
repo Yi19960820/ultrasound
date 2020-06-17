@@ -89,7 +89,7 @@ print('Loading phase...')
 print('----------------')
 log.write('Loading phase...\n')
 log.write('----------------\n')
-shape_dset=(32,32,40)
+shape_dset=(78,78,101)
 #training
 train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
                            train=0,data_dir=data_dir)
