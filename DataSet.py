@@ -64,9 +64,9 @@ class BigImageDataset(torch.utils.data.Dataset):
         S = data['S']
         D = L + S
         L, S, D = preprocess(L, S, D)
-        L = torch.from_numpy(L.reshape(self.shape)).double()
-        S = torch.from_numpy(S.reshape(self.shape)).double()
-        D = torch.from_numpy(D.reshape(self.shape)).double()
+        L = torch.from_numpy(L.reshape(self.shape)).float()
+        S = torch.from_numpy(S.reshape(self.shape)).float()
+        D = torch.from_numpy(D.reshape(self.shape)).float()
         return L, S, D
     
     def __len__(self):
