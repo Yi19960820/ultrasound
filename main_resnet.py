@@ -57,7 +57,7 @@ seed=123
 torch.manual_seed(seed)
 #parameters for training
 lr_list=[2e-3] #list of learning rate
-TrainInstances = 2400 # Size of training dataset
+TrainInstances = 1080 # Size of training dataset
 ValInstances   = 800
 BatchSize      = 40
 ValBatchSize   = 40

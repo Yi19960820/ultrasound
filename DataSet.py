@@ -30,7 +30,7 @@ class BigImageDataset(torch.utils.data.Dataset):
             #     images_D[n] = torch.from_numpy(D.reshape(self.shape))
         #   --  VALIDATION -- RAT 2, 100 frames 
         if train is 1:
-            IndParam = 1080
+            IndParam = 1323
             self.fnames = self.fnames[NumInstances:NumInstances+IndParam]
             # for n in range(IndParam, IndParam + NumInstances):
             #     if np.mod(n - IndParam, 200) == 0: print('loading validation set %s' % (n - IndParam))
