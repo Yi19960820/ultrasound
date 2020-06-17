@@ -111,7 +111,7 @@ for learning_rate in lr_list:
     else:
         if mfile[-3:]=='pkl':
             net=ResNet3dC(gpu)
-            state_dict=torch.load("Res3dC_nocon_sim_Res3dC_Model_Tr1200_epoch10_lr2.00e-03.pkl"\
+            state_dict=torch.load("/results/Res3dC_nocon_sim_Res3dC_Model_Tr1200_epoch10_lr2.00e-03.pkl"\
                 ,map_location='cpu')
             net.load_state_dict(state_dict)
         else:
