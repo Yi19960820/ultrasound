@@ -15,59 +15,63 @@ class BigImageDataset(torch.utils.data.Dataset):
         self.fnames.sort()
 
         # dummy image loader
-        # images_L = torch.zeros(tuple([NumInstances])+self.shape)
-        # images_S = torch.zeros(tuple([NumInstances])+self.shape)
-        # images_D = torch.zeros(tuple([NumInstances])+self.shape)
+        images_L = torch.zeros(tuple([NumInstances])+self.shape)
+        images_S = torch.zeros(tuple([NumInstances])+self.shape)
+        images_D = torch.zeros(tuple([NumInstances])+self.shape)
         
         #   --  TRAIN  --  RAT 1
         if train is 0:
             self.fnames = self.fnames[:NumInstances]            
-            # for n in range(NumInstances):
-            #     if np.mod(n, 600) == 0: print('loading train set %s' % (n))
-            #     L,S,D=preprocess(L,S,D)
+            for n in range(NumInstances):
+                if np.mod(n, 50) == 0: print('loading train set %s' % (n))
+                L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
+                S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
+                D = L + S
+                L,S,D=preprocess(L,S,D)
                 
-            #     images_L[n] = torch.from_numpy(L.reshape(self.shape))
-            #     images_S[n] = torch.from_numpy(S.reshape(self.shape))
-            #     images_D[n] = torch.from_numpy(D.reshape(self.shape))
+                images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
+                images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
+                images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
         #   --  VALIDATION -- RAT 2, 100 frames 
         if train is 1:
-            IndParam = 1323-1080
-            self.fnames = self.fnames[NumInstances:NumInstances+IndParam]
-            # for n in range(IndParam, IndParam + NumInstances):
-            #     if np.mod(n - IndParam, 200) == 0: print('loading validation set %s' % (n - IndParam))
-            #     L=loadmat(data_dir + '/fista/val/L_fista%s.mat' % (n))['patch_180']
-            #     S=loadmat(data_dir + '/fista/val/S_fista%s.mat' % (n))['patch_180']
-            #     D=loadmat(data_dir + '/D_data/val/D%s.mat' % (n))['patch_180']
-            #     L,S,D=preprocess(L,S,D)
+            IndParam = 1200
+            self.fnames = self.fnames[IndParam:NumInstances+IndParam]
+            for n in range(NumInstances):
+                if np.mod(n, 50) == 0: print('loading train set %s' % (n))
+                L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
+                S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
+                D = L + S
+                L,S,D=preprocess(L,S,D)
                 
-            #     images_L[n-IndParam] = torch.from_numpy(L.reshape(self.shape))
-            #     images_S[n-IndParam] = torch.from_numpy(S.reshape(self.shape))
-            #     images_D[n-IndParam] = torch.from_numpy(D.reshape(self.shape))
+                images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
+                images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
+                images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
         
         self.transform = transform
 
-        # self.images_L = images_L
-        # self.images_S = images_S
-        # self.images_D = images_D
+        self.images_L = images_L
+        self.images_S = images_S
+        self.images_D = images_D
     
     def __getitem__(self, idx):
         # Do something here that will load the actual data from the list of datasets.
         # We want to use this lazy loading so we don't need 25 GB of RAM.
 
-        # data_file = self.fnames[idx]
-        # hf = h5py.File(self.fname, 'r')
-        # data_arr = hf.get(data_file).value
-        # L = data_arr[0]+1j*data_arr[1]
-        # S = data_arr[2]+1j*data_arr[3]
-        data = np.load(os.path.join(self.DATA_DIR, self.fnames[idx]))
-        L = data['L']
-        S = data['S']
-        D = L + S
-        L, S, D = preprocess(L, S, D)
-        L = torch.from_numpy(L.reshape(self.shape)).float()
-        S = torch.from_numpy(S.reshape(self.shape)).float()
-        D = torch.from_numpy(D.reshape(self.shape)).float()
+        # data = np.load(os.path.join(self.DATA_DIR, self.fnames[idx]))
+        # L = data['L']
+        # S = data['S']
+        # D = L + S
+        # L, S, D = preprocess(L, S, D)
+        # L = torch.from_numpy(L.reshape(self.shape)).float()
+        # S = torch.from_numpy(S.reshape(self.shape)).float()
+        # D = torch.from_numpy(D.reshape(self.shape)).float()
+
+        L = self.images_L[idx]
+        S = self.images_S[idx]
+        D = self.images_D[idx]
+
         return L, S, D
     
     def __len__(self):
-        return len(self.fnames)
+        # return len(self.fnames)
+        return len(self.images_L)

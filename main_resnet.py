@@ -57,7 +57,7 @@ seed=123
 torch.manual_seed(seed)
 #parameters for training
 lr_list=[2e-3] #list of learning rate
-TrainInstances = 1080 # Size of training dataset
+TrainInstances = 1200 # Size of training dataset
 ValInstances   = 800
 BatchSize      = 40
 ValBatchSize   = 40
@@ -73,7 +73,7 @@ d_sim='/data/toy/'
 data_dir={'invivo':d_invivo,'sim_pm':d_simpm,'sim':d_sim}[prefix]
 conter=Converter()
 player=Player()
-formshow={'pre':'concat','shape':(78,78,101*2)}
+formshow={'pre':'concat','shape':(39,39,100)}
 formlist=[]
 for i in range(6):
     formlist.append(formshow)
@@ -89,7 +89,7 @@ print('Loading phase...')
 print('----------------')
 log.write('Loading phase...\n')
 log.write('----------------\n')
-shape_dset=(78,78,101*2)    # The last dimension is 2*the number of frames (for real and imaginary)
+shape_dset=(39,39,100)    # The last dimension is 2*the number of frames (for real and imaginary)
 #training
 train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
                            train=0,data_dir=data_dir)
@@ -124,7 +124,7 @@ for learning_rate in lr_list:
     optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate)
 
     #Array for recording data
-    outputs_S = to_var(torch.zeros([1,1,78,78,101*2]))
+    outputs_S = to_var(torch.zeros([1,1,39,39,100]))
     lossmean_vec=np.zeros((num_epochs,))
     lossmean_val_vec=np.zeros((num_epochs,))
     

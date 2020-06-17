@@ -14,6 +14,10 @@ sd_names = os.listdir(SD_DIR)
 random.shuffle(sd_names)
 
 for i in tqdm.tqdm(range(min(len(tissue_names), len(sd_names)))):
-    blood = loadmat(os.path.join(SD_DIR, sd_names[i]))['bloodData']
-    tissue = loadmat(os.path.join(LR_DIR, tissue_names[i]))['acc3']
-    np.savez_compressed(os.path.join(OUT_DIR, f'{i}'), L=tissue, S=blood)
+    for x in (1,2):
+        for z in (1,2):
+            blood = loadmat(os.path.join(SD_DIR, sd_names[i]))['bloodData']
+            blood = blood[int(39*(z-1)):int(39*z), int(39*(x-1)):int(39*x)]
+            tissue = loadmat(os.path.join(LR_DIR, tissue_names[i]))['acc3']
+            tissue = tissue[int(39*(z-1)):int(39*z), int(39*(x-1)):int(39*x)]
+            np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue, S=blood)
