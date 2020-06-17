@@ -5,7 +5,7 @@ import h5py
 import numpy as np
 
 class BigImageDataset(torch.utils.data.Dataset):
-    DATA_DIR='/home/sie3/data/sim-data'
+    DATA_DIR='/data/sim-data/'
 
     def __init__(self, NumInstances, shape, train, transform=None, data_dir=None):
         data_dir = self.DATA_DIR if data_dir is None else data_dir
@@ -80,11 +80,7 @@ class BigImageDataset(torch.utils.data.Dataset):
     
     def __getitem__(self, idx):
         # Do something here that will load the actual data from the list of datasets.
-        # We want to use this lazy loading so we don't need 25 GB of RAM, which would be excessive.
-
-        # L = self.images_L[index]
-        # S = self.images_S[index]
-        # D = self.images_D[index]
+        # We want to use this lazy loading so we don't need 25 GB of RAM.
 
         data_file = self.fnames[idx]
         hf = h5py.File(self.fname, 'r')
@@ -94,3 +90,6 @@ class BigImageDataset(torch.utils.data.Dataset):
         D = L + S
 
         return L, S, D
+    
+    def __len__(self):
+        return len(self.fnames)
