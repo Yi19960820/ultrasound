@@ -156,6 +156,7 @@ for learning_rate in lr_list:
 
                 outputs_S=net(inputs[None,None])  # Forward
                 loss=floss(outputs_S.squeeze(), targets_S)  # Current loss
+                print(f'Loss: {loss.item()}')
                 loss_mean+=loss.item()
                 loss.backward()
 

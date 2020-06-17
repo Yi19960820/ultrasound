@@ -13,7 +13,7 @@ tissue_names = os.listdir(LR_DIR)
 sd_names = os.listdir(SD_DIR)
 random.shuffle(sd_names)
 
-for i in tqdm.tqdm(range(4*min(len(tissue_names), len(sd_names)))):
+for i in tqdm.tqdm(range(min(len(tissue_names), len(sd_names)))):
     for x in (1,2):
         for z in (1,2):
             blood = loadmat(os.path.join(SD_DIR, sd_names[i]))['bloodData']
