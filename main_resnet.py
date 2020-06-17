@@ -42,7 +42,7 @@ def to_var(x):
 ProjectName='Res3dC_nocon'
 prefix='sim' #invivo,sim_pm,sim
 #Load model
-loadmodel=False
+loadmodel=True
 mfile='Results/Res3dC_nocon_train.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
@@ -111,7 +111,8 @@ for learning_rate in lr_list:
     else:
         if mfile[-3:]=='pkl':
             net=ResNet3dC(gpu)
-            state_dict=torch.load(mfile,map_location='cpu')
+            state_dict=torch.load("Res3dC_nocon_sim_Res3dC_Model_Tr1200_epoch10_lr2.00e-03.pkl"\
+                ,map_location='cpu')
             net.load_state_dict(state_dict)
         else:
             net=torch.load(mfile)
@@ -134,7 +135,7 @@ for learning_rate in lr_list:
     log.write('Training the model over %d samples, with learning rate %.6f\n\n'\
           %(TrainInstances,learning_rate))
     # Run over each epoch
-    for epoch in range(num_epochs):
+    for epoch in range(1,num_epochs):
         #print time
         ts=time.time()
         st=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
@@ -183,7 +184,17 @@ for learning_rate in lr_list:
         endtime=time.time()
         print('Test time is %f'%(endtime-starttime))
         log.write('Test time is %f\n'%(endtime-starttime))
-            
+
+        #Save model in each epoch
+        if True or loss_val_mean<minloss:
+            print('saved at [epoch%d/%d]'%(epoch+1,num_epochs))
+            log.write('saved at [epoch%d/%d]\n'\
+                  %(epoch+1,num_epochs))
+            torch.save(net.state_dict(), 
+                       "/results/%s_%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
+                       %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
+            minloss=min(loss_val_mean,minloss)
+        
         #Observe results
         if plot and ((epoch+1)%plotT==0 or epoch==0):
             [xtr,ytr,ptr,xval,yval,pval]=conter.torch2np([D[ii],S[ii],outputs_S,
@@ -209,17 +220,6 @@ for learning_rate in lr_list:
                 print('hitbadrut')
                 log.write('hitbadrut\n')
                 break
-
-        #Save model in each epoch
-        if True or loss_val_mean<minloss:
-            print('saved at [epoch%d/%d]'\
-                  %(epoch+1,num_epochs))
-            log.write('saved at [epoch%d/%d]\n'\
-                  %(epoch+1,num_epochs))
-            torch.save(net.state_dict(), 
-                       "/results/%s_%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
-                       %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
-            minloss=min(loss_val_mean,minloss)
 
     """Save logs, prediction, loss figure, loss data, model and settings """
     #Graphs
