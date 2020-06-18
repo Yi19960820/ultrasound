@@ -49,7 +49,7 @@ if __name__=='__main__':
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
     #Whether to plot predictions during training and frequency
-    plot=True
+    plot=False
     plotT=1
     if not plot:
         plt.ioff()
@@ -196,6 +196,18 @@ if __name__=='__main__':
                         "/results/%s_%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
                         %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
                 minloss=min(loss_val_mean,minloss)
+        
+            # Print loss
+            if (epoch + 1)%1==0:    # % 10
+                print('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e'\
+                    %(epoch+1,num_epochs,loss_mean,loss_val_mean))
+                log.write('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e\n'\
+                    %(epoch+1,num_epochs,loss_mean,loss_val_mean))
+
+                if loss.item() > 100:
+                    print('hitbadrut')
+                    log.write('hitbadrut\n')
+                    break
             
             #Observe results
             if plot and ((epoch+1)%plotT==0 or epoch==0):
@@ -211,17 +223,6 @@ if __name__=='__main__':
             lossmean_vec[epoch]=loss_mean
             lossmean_val_vec[epoch]=loss_val_mean
 
-            # Print loss
-            if (epoch + 1)%1==0:    # % 10
-                print('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e'\
-                    %(epoch+1,num_epochs,loss_mean,loss_val_mean))
-                log.write('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e\n'\
-                    %(epoch+1,num_epochs,loss_mean,loss_val_mean))
-
-                if loss.item() > 100:
-                    print('hitbadrut')
-                    log.write('hitbadrut\n')
-                    break
 
         """Save logs, prediction, loss figure, loss data, model and settings """
         #Graphs
