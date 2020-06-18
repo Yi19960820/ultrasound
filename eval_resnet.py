@@ -16,6 +16,7 @@ from CORONA.classes.Dataset import Converter
 from CORONA.network.ResNet3dC import ResNet3dC
 from DataSet import BigImageDataset
 import torch.utils.data as data
+import os
 from main_resnet import to_var
 #from tools.mat2gif import mat2gif
 
@@ -63,6 +64,7 @@ with torch.no_grad():
     loss_mean = 0
     test_data = BigImageDataset(100, (m,n,time*2), 2, data_dir=data_dir)
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
+    nx = 0
     for _,(_,S,D) in enumerate(test_loader):
         for jj in range(4):
             inputs = to_var(D[jj])
@@ -72,13 +74,17 @@ with torch.no_grad():
             loss = floss(out_S.squeeze(), targets).item()
             loss_mean += loss
             [predmv,Sum]=convert.torch2np([out_S, D[jj]],[form_out, form_out])
+            
             #Save gif
             # if saveGif:
             #     mat2gif([Sum,predmv,Bubbles],save_gif_dir,
             #             note=note,cmap=cmap,tit=['Input','Prediction','Ground Truth'])
+
             #Save matrix
             if saveMat:
-                savemat(save_mat_dir,{'D':D[jj],'S':S[jj],'Sp':predmv})
+                savemat(os.path.join(save_mat_dir, f'{nx}'),{'D':D[jj],'S':S[jj],'Sp':predmv})
+
+            nx += 1
 
 loss_mean /= 1000
 print(f'Mean loss: {loss_mean}')
