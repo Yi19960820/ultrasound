@@ -62,7 +62,7 @@ floss = torch.nn.MSELoss()
 with torch.no_grad():
     loss_mean = 0
     test_data = BigImageDataset(100, (m,n,time*2), 2, data_dir=data_dir)
-    test_loader = data.DataLoader(test_data, batch_size=4, num_workers=2, shuffle=False)
+    test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     for _,(_,S,D) in enumerate(test_loader):
         for jj in range(4):
             inputs = to_var(D[jj])
