@@ -46,6 +46,19 @@ class BigImageDataset(torch.utils.data.Dataset):
                 images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
                 images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
                 images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
+        if train is 2:
+            IndParam = 2000
+            self.fnames = self.fnames[IndParam:NumInstances+IndParam]
+            for n in range(NumInstances):
+                if np.mod(n, 50) == 0: print('loading train set %s' % (n))
+                L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
+                S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
+                D = L + S
+                L,S,D=preprocess(L,S,D)
+                
+                images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
+                images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
+                images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
         
         self.transform = transform
 
