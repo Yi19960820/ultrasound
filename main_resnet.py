@@ -44,10 +44,10 @@ if __name__=='__main__':
     prefix='sim' #invivo,sim_pm,sim
     #Load model
     loadmodel=False
-    mfile='Results/Res3dC_nocon_train.pkl'
+    mfile='/results/Res3dC_nocon_train.pkl'
 
     """Network Settings: Remember to change the parameters when you change model!"""
-    gpu=False #if gpu=True, the ResNet will use more parameters
+    gpu=True #if gpu=True, the ResNet will use more parameters
     #Whether to plot predictions during training and frequency
     plot=True
     plotT=1
@@ -58,7 +58,7 @@ if __name__=='__main__':
     torch.manual_seed(seed)
     #parameters for training
     lr_list=[2e-3] #list of learning rate
-    TrainInstances = 1200 # Size of training dataset
+    TrainInstances = 2400 # Size of training dataset
     ValInstances   = 800
     BatchSize      = 40
     ValBatchSize   = 40
@@ -149,6 +149,7 @@ if __name__=='__main__':
             print('Loading and calculating training batches...')
             log.write('Loading and calculating training batches...\n')
             starttime=time.time()
+            ibatch = 1
             for _,(_,S,D) in enumerate(train_loader):
                 # set the gradients to zero at the beginning of each epoch
                 optimizer.zero_grad()  
@@ -158,10 +159,10 @@ if __name__=='__main__':
 
                     outputs_S=net(inputs[None,None])  # Forward
                     loss=floss(outputs_S.squeeze(), targets_S)  # Current loss
-                    print(f'Loss: {loss.item()}')
                     loss_mean+=loss.item()
                     loss.backward()
-
+                print('Finished batch {}'.format(ibatch))
+                ibatch += 1
                 optimizer.step()
             loss_mean=loss_mean/TrainInstances
             endtime=time.time()

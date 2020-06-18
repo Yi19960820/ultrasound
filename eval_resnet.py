@@ -27,7 +27,7 @@ from main_resnet import to_var
 mfile = '/results/Res3dC_nocon_sim_Res3dC_Model_Tr1200_epoch10_lr2.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
-gpu=False #if gpu=True, the ResNet will use more parameters
+gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
 data_dir='/data/toy/'
 m,n,time=39,39,101 #size of data
@@ -62,7 +62,7 @@ floss = torch.nn.MSELoss()
 #Processing
 with torch.no_grad():
     loss_mean = 0
-    test_data = BigImageDataset(100, (m,n,time*2), 2, data_dir=data_dir)
+    test_data = BigImageDataset(10, (m,n,time*2), 2, data_dir=data_dir)
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
     for _,(_,S,D) in enumerate(test_loader):
@@ -73,8 +73,8 @@ with torch.no_grad():
             out_S = model(inputs[None, None])
             loss = floss(out_S.squeeze(), targets).item()
             loss_mean += loss
-            [predmv,Sum]=convert.torch2np([out_S, D[jj]],[form_out, form_out])
-            
+            [Sp, Dg, Sg]=convert.torch2np([out_S, D[jj], S[jj]],[form_out, form_out, form_out])
+
             #Save gif
             # if saveGif:
             #     mat2gif([Sum,predmv,Bubbles],save_gif_dir,
@@ -82,7 +82,7 @@ with torch.no_grad():
 
             #Save matrix
             if saveMat:
-                savemat(os.path.join(save_mat_dir, f'{nx}'),{'D':D[jj],'S':S[jj],'Sp':predmv})
+                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp})
 
             nx += 1
 
