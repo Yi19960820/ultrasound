@@ -56,6 +56,7 @@ if mfile[-3:]=='pkl':
 else:
     model=torch.load(mfile)
 
+model = model.cuda()
 model.eval()
 floss = torch.nn.MSELoss()
 

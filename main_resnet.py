@@ -49,7 +49,7 @@ if __name__=='__main__':
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
     #Whether to plot predictions during training and frequency
-    plot=False
+    plot=True
     plotT=1
     if not plot:
         plt.ioff()
@@ -113,7 +113,7 @@ if __name__=='__main__':
             if mfile[-3:]=='pkl':
                 net=ResNet3dC(gpu)
                 state_dict=torch.load("/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch10_lr2.00e-03.pkl"\
-                    ,map_location='cpu')
+                    ,map_location='cuda:0')
                 net.load_state_dict(state_dict)
             else:
                 net=torch.load(mfile)
