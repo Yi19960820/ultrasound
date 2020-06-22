@@ -74,7 +74,7 @@ if __name__=='__main__':
     data_dir={'invivo':d_invivo,'sim_pm':d_simpm,'sim':d_sim}[prefix]
     conter=Converter()
     player=Player()
-    formshow={'pre':'concat','shape':(39,39,202)}
+    formshow={'pre':'concat','shape':(39,39,101)}
     formlist=[]
     for i in range(6):
         formlist.append(formshow)
@@ -112,7 +112,7 @@ if __name__=='__main__':
         else:
             if mfile[-3:]=='pkl':
                 net=ResNet3dC(gpu)
-                state_dict=torch.load("/results/Res3dC_nocon_sim_Res3dC_Model_Tr1200_epoch10_lr2.00e-03.pkl"\
+                state_dict=torch.load("/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch10_lr2.00e-03.pkl"\
                     ,map_location='cpu')
                 net.load_state_dict(state_dict)
             else:
