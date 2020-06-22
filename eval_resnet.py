@@ -47,8 +47,8 @@ form_out={'pre':'concat','shape':[m,n,time]}
 convert=Converter()
 
 #Load the model
-#device='cuda:0' if torch.cuda.is_available() else 'cpu'
-device='cpu'
+device='cuda:0' if torch.cuda.is_available() else 'cpu'
+# device='cpu'
 if mfile[-3:]=='pkl':
     model=ResNet3dC(gpu)
     state_dict=torch.load(mfile,map_location=device)
