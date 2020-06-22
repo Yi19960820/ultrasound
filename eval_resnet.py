@@ -67,7 +67,7 @@ with torch.no_grad():
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
     for _,(_,S,D) in enumerate(test_loader):
-        for jj in range(4):
+        for jj in range(len(D)):
             inputs = to_var(D[jj])
             targets = to_var(S[jj])
 
@@ -87,5 +87,5 @@ with torch.no_grad():
 
             nx += 1
 
-loss_mean /= 1000
+loss_mean /= len(test_data)
 print(f'Mean loss: {loss_mean}')
