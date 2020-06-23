@@ -8,17 +8,20 @@ def log_rms(mat):
     return logplot
 
 def plot_patches():
-    outputs = loadmat('/home/sam/Documents/mats/0.mat')
+    outputs = loadmat('/home/sam/Documents/mats/9.mat')
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
 
-    fig, (ax1, ax2, ax3) = plt.subplots(1,3)
+    fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(7,3))
     print(S.dtype)
     plt.set_cmap('hot')
     ax1.imshow(log_rms(D))
+    ax1.set_title('Input')
     ax2.imshow(log_rms(S))
+    ax2.set_title('Ground truth S')
     ax3.imshow(log_rms(Sp))
+    ax3.set_title('Reconstructed S')
     plt.show()
 
 def plot_loss():
@@ -34,4 +37,5 @@ def plot_loss():
     plt.legend()
     plt.show()
 
-plot_loss()
+plot_patches()
+# plot_loss()

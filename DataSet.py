@@ -34,7 +34,7 @@ class BigImageDataset(torch.utils.data.Dataset):
                 images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
         #   --  VALIDATION -- RAT 2, 100 frames 
         if train is 1:
-            IndParam = 2400
+            IndParam = 3200
             self.fnames = self.fnames[IndParam:NumInstances+IndParam]
             for n in range(NumInstances):
                 if np.mod(n, 50) == 0: print('loading train set %s' % (n))
@@ -47,7 +47,7 @@ class BigImageDataset(torch.utils.data.Dataset):
                 images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
                 images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
         if train is 2:
-            IndParam = 3200
+            IndParam = 4000
             self.fnames = self.fnames[IndParam:NumInstances+IndParam]
             for n in range(NumInstances):
                 if np.mod(n, 50) == 0: print('loading train set %s' % (n))
