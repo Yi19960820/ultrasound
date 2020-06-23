@@ -62,8 +62,8 @@ if __name__=='__main__':
     ValInstances   = 800
     BatchSize      = 40
     ValBatchSize   = 40
-    num_epochs     = 10
-    frame=10
+    num_epochs     = 20
+    frame=20
     #directory of datasets
     d_invivo='/data/Invivo/' 
     d_simpm='/data/Sim_PM/'
