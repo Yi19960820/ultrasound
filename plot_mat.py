@@ -8,7 +8,7 @@ def log_rms(mat):
     return logplot
 
 if __name__=='__main__':
-    outputs = loadmat('/home/sam/Documents/0.mat')
+    outputs = loadmat('/home/sam/Documents/mats/0.mat')
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']

@@ -43,8 +43,8 @@ if __name__=='__main__':
     ProjectName='Res3dC_nocon'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
-    loadmodel=False
-    mfile='/results/Res3dC_nocon_train.pkl'
+    loadmodel=True
+    mfile='/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch20_lr2.00e-03.pkl'
 
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
@@ -112,8 +112,7 @@ if __name__=='__main__':
         else:
             if mfile[-3:]=='pkl':
                 net=ResNet3dC(gpu)
-                state_dict=torch.load("/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch10_lr2.00e-03.pkl"\
-                    ,map_location='cuda:0')
+                state_dict=torch.load(mfile, map_location='cuda:0')
                 net.load_state_dict(state_dict)
             else:
                 net=torch.load(mfile)
