@@ -27,6 +27,8 @@ for i in range(min(len(tissue_names), len(sd_names))):
             tissue = tissue[int(39*(z-1)):int(39*z), int(39*(x-1)):int(39*x)]
 
             bw_start = sd_names[i].find('vesselwidth')+12
+            print(sd_names[i])
+            print(sd_names[i][bw_start:])
             bw_end = (sd_names[i][bw_start:])[sd_names[i][bw_start:].find('_'):].find('_')
             width_str = sd_names[i][bw_start:bw_end]
             print(width_str)
