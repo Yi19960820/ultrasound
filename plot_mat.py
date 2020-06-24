@@ -5,11 +5,12 @@ import scipy.linalg as la
 
 def log_rms(mat):
     meansquare = np.sum(np.abs(mat)**2, axis=2, dtype=float)
-    logplot = 10*np.log10(meansquare/np.amax(meansquare))
+    # logplot = 10*np.log10(meansquare/np.amax(meansquare))
+    logplot = meansquare/np.amax(meansquare)
     return logplot
 
 def plot_patches():
-    outputs = loadmat('/home/sam/Documents/mats/9.mat')
+    outputs = loadmat('/home/sam/Documents/mats/4.mat')
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']

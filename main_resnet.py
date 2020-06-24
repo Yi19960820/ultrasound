@@ -54,7 +54,7 @@ if __name__=='__main__':
     if not plot:
         plt.ioff()
     #seed
-    seed=123
+    seed=1234
     torch.manual_seed(seed)
     #parameters for training
     lr_list=[2e-3] #list of learning rate
