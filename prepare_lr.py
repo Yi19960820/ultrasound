@@ -29,6 +29,7 @@ for i in tqdm.tqdm(range(min(len(tissue_names), len(sd_names)))):
             bw_start = sd_names[i].find('vesselwidth')+12
             bw_end = sd_names[i][sd_names[i][bw_start:].find('_')+1:].find('_')
             width_str = sd_names[i][bw_start:bw_end]
+            print(width_str)
             width = float(width_str[:width_str.find('_')])
             width_unit = width_str[width_str.find('_')+1:]
             if width_unit=='mm':
