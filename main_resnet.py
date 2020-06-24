@@ -40,10 +40,10 @@ if __name__=='__main__':
     """Settings"""
     """========================================================================="""
     #Name and choice of training set
-    ProjectName='Res3dC_nocon'
+    ProjectName='bloodx2'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
-    loadmodel=True
+    loadmodel=False
     mfile='/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch20_lr2.00e-03.pkl'
 
     """Network Settings: Remember to change the parameters when you change model!"""
@@ -222,6 +222,9 @@ if __name__=='__main__':
             lossmean_vec[epoch]=loss_mean
             lossmean_val_vec[epoch]=loss_val_mean
 
+            np.savez('/results/%s_%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
+                %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
+                lossmean_vec,lossmean_val_vec)
 
         """Save logs, prediction, loss figure, loss data, model and settings """
         #Graphs

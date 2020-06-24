@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
+import scipy.linalg as la
 
 def log_rms(mat):
     meansquare = np.sum(np.abs(mat)**2, axis=2, dtype=float)
@@ -13,15 +14,26 @@ def plot_patches():
     Sp = outputs['Sp']
     S = outputs['S']
 
-    fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(7,3))
-    print(S.dtype)
+    fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
-    ax1.imshow(log_rms(D))
-    ax1.set_title('Input')
-    ax2.imshow(log_rms(S))
-    ax2.set_title('Ground truth S')
-    ax3.imshow(log_rms(Sp))
-    ax3.set_title('Reconstructed S')
+
+    svals, Drec = svt(D, 17)
+
+    ax[0][0].imshow(log_rms(D))
+    ax[0][0].set_title('Input')
+
+    ax[0][1].imshow(log_rms(S))
+    ax[0][1].set_title('Ground truth S')
+
+    ax[0][2].imshow(log_rms(Sp))
+    ax[0][2].set_title('Reconstructed S')
+
+    ax[1][0].semilogy(range(1, len(svals)+1), svals)
+    ax[1][0].set_title('Singular values')
+
+    ax[1][1].imshow(log_rms(Drec))
+    ax[1][1].set_title('SVT')
+
     plt.show()
 
 def plot_loss():
@@ -37,5 +49,18 @@ def plot_loss():
     plt.legend()
     plt.show()
 
-plot_patches()
-# plot_loss()
+def svt(D,e1, e2=None):
+    n1, n2, n3 = D.shape
+    e1 -= 1     # change 1-indexed e.val number to 0-indexed array index
+    caso = D.reshape((n1*n2, n3))
+    U, S, Vh = la.svd(caso, full_matrices=False)
+    print(S.shape)
+    if e2 is None:
+        e2 = n3
+    casorec = U[:,e1:e2]@np.diag(S[e1:e2])@(Vh[:,e1:e2].T)
+    Drec = casorec.reshape(D.shape)
+    return S, Drec
+
+if __name__=='__main__':
+    plot_patches()
+    # plot_loss()
