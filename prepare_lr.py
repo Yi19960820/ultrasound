@@ -16,7 +16,7 @@ random.shuffle(tissue_names)
 random.shuffle(sd_names)
 
 n = 0
-for i in tqdm.tqdm(range(min(len(tissue_names), len(sd_names)))):
+for i in range(min(len(tissue_names), len(sd_names))):
     if n>24:
         break
     for x in (1,2):
