@@ -29,7 +29,7 @@ for i in range(min(len(tissue_names), len(sd_names))):
             bw_start = sd_names[i].find('vesselwidth')+12
             print(sd_names[i])
             print(sd_names[i][bw_start:])
-            bw_end = (sd_names[i][bw_start:])[sd_names[i][bw_start:].find('_'):].find('_')
+            bw_end = (sd_names[i][bw_start:])[sd_names[i][bw_start:].find('_'):].find('_')+bw_start
             width_str = sd_names[i][bw_start:bw_end]
             print(width_str)
             width = float(width_str[:width_str.find('_')])
