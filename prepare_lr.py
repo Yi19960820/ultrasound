@@ -6,6 +6,9 @@ import os
 import random
 import tqdm
 
+def find_2nd(string, substring):
+   return string.find(substring, string.find(substring) + 1)
+
 LR_DIR = '/data/low-rank/'
 SD_DIR = '/data/sim-data/'
 OUT_DIR = '/data/toy-widths/'
@@ -29,7 +32,7 @@ for i in range(min(len(tissue_names), len(sd_names))):
             bw_start = sd_names[i].find('vesselwidth')+12
             print(sd_names[i])
             print(sd_names[i][bw_start:])
-            bw_end = (sd_names[i][bw_start:])[sd_names[i][bw_start:].find('_'):].find('_')+bw_start
+            bw_end = find_2nd(sd_names[i][bw_start:], '_')+bw_start
             width_str = sd_names[i][bw_start:bw_end]
             print(width_str)
             width = float(width_str[:width_str.find('_')])
