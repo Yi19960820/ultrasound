@@ -24,7 +24,7 @@ from main_resnet import to_var
 """========================================================================="""
 #Model file
 # 10 epochs on sim
-mfile = '/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch20_lr2.00e-03.pkl'
+mfile = '/results/bloodx2_sim_Res3dC_Model_Tr3200_epoch40_lr2.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
