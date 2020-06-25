@@ -18,10 +18,7 @@ sd_names = os.listdir(SD_DIR)
 random.shuffle(tissue_names)
 random.shuffle(sd_names)
 
-n = 0
 for i in range(min(len(tissue_names), len(sd_names))):
-    if n>24:
-        break
     for x in (1,2):
         for z in (1,2):
             blood = loadmat(os.path.join(SD_DIR, sd_names[i]))['bloodData']
@@ -43,4 +40,3 @@ for i in range(min(len(tissue_names), len(sd_names))):
                 width *= 1e-6
 
             np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue, S=blood, width=width)
-    n += 1
