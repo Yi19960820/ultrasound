@@ -70,7 +70,7 @@ with torch.no_grad():
     fnames.sort()
 
     widths = []
-    for i in range(100):
+    for i in range(10):
         sample = np.load(os.path.join(data_dir, fnames[i]))
         widths.append(sample['width'])
 
