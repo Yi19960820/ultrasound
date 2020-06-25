@@ -10,7 +10,7 @@ def log_rms(mat):
     return logplot
 
 def plot_patches():
-    outputs = loadmat('/home/sam/Documents/mats/4.mat')
+    outputs = loadmat('/home/sam/Documents/mats/6.mat')
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
@@ -18,7 +18,7 @@ def plot_patches():
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec = svt(D, 17)
+    svals, Drec = svt(D, 4)
 
     ax[0][0].imshow(log_rms(D))
     ax[0][0].set_title('Input')

@@ -18,7 +18,7 @@ sd_names = os.listdir(SD_DIR)
 random.shuffle(tissue_names)
 random.shuffle(sd_names)
 
-for i in range(min(len(tissue_names), len(sd_names))):
+for i in tqdm.tqdm(range(min(len(tissue_names), len(sd_names)))):
     for x in (1,2):
         for z in (1,2):
             blood = loadmat(os.path.join(SD_DIR, sd_names[i]))['bloodData']
@@ -27,11 +27,8 @@ for i in range(min(len(tissue_names), len(sd_names))):
             tissue = tissue[int(39*(z-1)):int(39*z), int(39*(x-1)):int(39*x)]
 
             bw_start = sd_names[i].find('vesselwidth')+12
-            print(sd_names[i])
-            print(sd_names[i][bw_start:])
             bw_end = find_2nd(sd_names[i][bw_start:], '_')+bw_start
             width_str = sd_names[i][bw_start:bw_end]
-            print(width_str)
             width = float(width_str[:width_str.find('_')])
             width_unit = width_str[width_str.find('_')+1:]
             if width_unit=='mm':

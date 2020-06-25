@@ -63,14 +63,14 @@ floss = torch.nn.MSELoss()
 #Processing
 with torch.no_grad():
     loss_mean = 0
-    test_data = BigImageDataset(10, (m,n,time*2), 2, data_dir=data_dir)
+    test_data = BigImageDataset(40, (m,n,time*2), 2, data_dir=data_dir)
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
     fnames = os.listdir(data_dir)[4000:]
     fnames.sort()
 
     widths = []
-    for i in range(10):
+    for i in range(40):
         sample = np.load(os.path.join(data_dir, fnames[i]))
         widths.append(sample['width'])
 
