@@ -29,7 +29,7 @@ mfile = '/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch20_lr2.00e-03.pkl'
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-data_dir='/data/toy/'
+data_dir='/data/toy-widths/'
 m,n,time=39,39,101 #size of data
 #Save gif
 saveGif=True
@@ -66,7 +66,15 @@ with torch.no_grad():
     test_data = BigImageDataset(10, (m,n,time*2), 2, data_dir=data_dir)
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
-    for _,(_,S,D) in enumerate(test_loader):
+    fnames = os.listdir(data_dir)[4000:]
+    fnames.sort()
+
+    widths = []
+    for i in range(100):
+        sample = np.load(os.path.join(data_dir, fnames[i]))
+        widths.append(sample['width'])
+
+    for i,(_,S,D) in enumerate(test_loader):
         for jj in range(len(D)):
             inputs = to_var(D[jj])
             targets = to_var(S[jj])
@@ -83,7 +91,7 @@ with torch.no_grad():
 
             #Save matrix
             if saveMat:
-                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp})
+                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, 'width':widths[4*i+jj]})
 
             nx += 1
 
