@@ -10,8 +10,8 @@ def find_2nd(string, substring):
    return string.find(substring, string.find(substring) + 1)
 
 LR_DIR = '/data/low-rank/'
-SD_DIR = '/data/sim-data/'
-OUT_DIR = '/data/toy-widths/'
+SD_DIR = '/data/sim-data-better/'
+OUT_DIR = '/data/toy-real/'
 TISSUE_BOOST = 2
 tissue_names = os.listdir(LR_DIR)
 sd_names = os.listdir(SD_DIR)

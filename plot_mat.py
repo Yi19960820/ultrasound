@@ -7,9 +7,10 @@ import sys
 from copy import copy
 
 def log_rms(mat):
+    # TODO make the dynamic ranges the same (I think this is done by default)
     meansquare = np.sum(np.abs(mat)**2, axis=2, dtype=float)/mat.shape[2]
-    # logplot = 10*np.log10(meansquare/np.amax(meansquare))
-    logplot = meansquare/np.amax(meansquare)
+    logplot = 10*np.log10(meansquare/np.amax(meansquare))
+    # logplot = meansquare/np.amax(meansquare)
     return logplot
 
 def plot_column(n):
@@ -25,13 +26,13 @@ def plot_column(n):
 
     fig, ax = plt.subplots(2, 2, figsize=(9,6))
     plt.set_cmap('hot')
-    ax[0][1].imshow(np.abs(S[:,col])**2, aspect='auto')
+    ax[0][1].imshow(10*np.log10(np.abs(S[:,col])**2), aspect='auto')
     ax[0][1].set_title('Column 11 per frame')
     ax[0][0].imshow(log_rms(S))
     rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
     ax[0][0].add_patch(rect)
     ax[0][0].set_title('Ground truth S')
-    ax[1][1].imshow(np.abs(Sp[:,col])**2, aspect='auto')
+    ax[1][1].imshow(10*np.log10(np.abs(Sp[:,col])**2), aspect='auto')
     ax[1][0].set_title('Reconstructed S')
     ax[1][0].imshow(log_rms(Sp))
     rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
