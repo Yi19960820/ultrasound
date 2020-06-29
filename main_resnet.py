@@ -40,7 +40,7 @@ if __name__=='__main__':
     """Settings"""
     """========================================================================="""
     #Name and choice of training set
-    ProjectName='bloodx2'
+    ProjectName='bloodx2_better'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
     loadmodel=False
@@ -62,7 +62,7 @@ if __name__=='__main__':
     ValInstances   = 800
     BatchSize      = 40
     ValBatchSize   = 40
-    num_epochs     = 40
+    num_epochs     = 50
     frame=20
     #directory of datasets
     d_invivo='/data/Invivo/' 
