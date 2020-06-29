@@ -18,7 +18,6 @@ class BigImageDataset(torch.utils.data.Dataset):
         images_L = torch.zeros(tuple([NumInstances])+self.shape)
         images_S = torch.zeros(tuple([NumInstances])+self.shape)
         images_D = torch.zeros(tuple([NumInstances])+self.shape)
-        print(data_dir)
 
         #   --  TRAIN  --  RAT 1
         if train is 0:
@@ -27,6 +26,7 @@ class BigImageDataset(torch.utils.data.Dataset):
                 if np.mod(n, 50) == 0: print('loading train set %s' % (n))
                 L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
                 S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
+                print(L)
                 D = L + S
                 L,S,D=preprocess(L,S,D)
                 
