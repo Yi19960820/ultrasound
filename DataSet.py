@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 class BigImageDataset(torch.utils.data.Dataset):
-    DATA_DIR='/data/toy/'
+    DATA_DIR='/data/toy-real/'
 
     def __init__(self, NumInstances, shape, train, transform=None, data_dir=None):
         data_dir = self.DATA_DIR if data_dir is None else data_dir
@@ -18,7 +18,8 @@ class BigImageDataset(torch.utils.data.Dataset):
         images_L = torch.zeros(tuple([NumInstances])+self.shape)
         images_S = torch.zeros(tuple([NumInstances])+self.shape)
         images_D = torch.zeros(tuple([NumInstances])+self.shape)
-        
+        print(data_dir)
+
         #   --  TRAIN  --  RAT 1
         if train is 0:
             self.fnames = self.fnames[:NumInstances]            

@@ -26,6 +26,7 @@ for i in tqdm.tqdm(range(len(sd_names))):
     width = mats['b']
 
     n1, n2, n3 = tissue.shape
+    print(n1,n2,n3)
     caso = tissue.reshape((n1*n2, n3))
     U, s, Vh = svd(caso, full_matrices=False)
     caso_red = U[:,:NSV]@np.diag(s[:NSV])@(Vh[:,:NSV].T)
