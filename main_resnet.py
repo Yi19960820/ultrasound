@@ -67,7 +67,7 @@ if __name__=='__main__':
     #directory of datasets
     d_invivo='/data/Invivo/' 
     d_simpm='/data/Sim_PM/'
-    d_sim='/data/toy/'
+    d_sim='/data/toy-real/'
     """========================================================================="""
 
     #Dataset, converter and player
