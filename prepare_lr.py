@@ -34,8 +34,8 @@ for i in tqdm.tqdm(range(len(sd_names))):
     for x in (1,2):
         for z in (1,2):
             
-            blood = blood[int(39*(z-1)):int(39*z), int(39*(x-1)):int(39*x)]
-            tissue = tissue[int(39*(z-1)):int(39*z), int(39*(x-1)):int(39*x)]
+            blood_quad = blood[int(39*(z-1)):int(39*z), int(39*(x-1)):int(39*x)]
+            tissue_quad = tissue[int(39*(z-1)):int(39*z), int(39*(x-1)):int(39*x)]
 
             # bw_start = sd_names[i].find('vesselwidth')+12
             # bw_end = find_2nd(sd_names[i][bw_start:], '_')+bw_start
@@ -48,4 +48,4 @@ for i in tqdm.tqdm(range(len(sd_names))):
             #     width *= 1e-6
 
             np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), \
-                L=tissue, S=blood, width=width, angle=angle, nsv=NSV, x=x, z=z)
+                L=tissue_quad, S=blood_quad, width=width, angle=angle, nsv=NSV, x=x, z=z)
