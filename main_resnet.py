@@ -58,11 +58,11 @@ if __name__=='__main__':
     torch.manual_seed(seed)
     #parameters for training
     lr_list=[2e-3] #list of learning rate
-    TrainInstances = 3200 # Size of training dataset
+    TrainInstances = 6000 # Size of training dataset
     ValInstances   = 800
     BatchSize      = 40
     ValBatchSize   = 40
-    num_epochs     = 50
+    num_epochs     = 30
     frame=20
     #directory of datasets
     d_invivo='/data/Invivo/' 

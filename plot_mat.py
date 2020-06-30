@@ -9,8 +9,8 @@ from copy import copy
 def log_rms(mat):
     # TODO make the dynamic ranges the same (I think this is done by default)
     meansquare = np.sum(np.abs(mat)**2, axis=2, dtype=float)/mat.shape[2]
-    logplot = 10*np.log10(meansquare/np.amax(meansquare))
-    # logplot = meansquare/np.amax(meansquare)
+    # logplot = 10*np.log10(meansquare/np.amax(meansquare))
+    logplot = meansquare/np.amax(meansquare)
     return logplot
 
 def plot_column(n):
@@ -67,7 +67,7 @@ def plot_patches(n, q1, q2):
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec = svt(D, 4)
+    svals, Drec = svt(D, 5)
 
     ax[0][0].imshow(log_rms(D))
     ax[0][0].set_title('Input')
@@ -118,6 +118,6 @@ def svt(D,e1, e2=None):
     return S, Drec
 
 if __name__=='__main__':
-    # plot_patches(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
+    plot_patches(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
     # plot_loss()
-    plot_column(32)
+    # plot_column(32)
