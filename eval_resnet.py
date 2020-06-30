@@ -24,7 +24,7 @@ from main_resnet import to_var
 """========================================================================="""
 #Model file
 # 10 epochs on sim
-mfile = '/results/bloodx2_sim_Res3dC_Model_Tr3200_epoch40_lr2.00e-03.pkl'
+mfile = '/results/bloodx2_better_sim_Res3dC_Model_Tr3200_epoch50_lr2.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
@@ -70,9 +70,13 @@ with torch.no_grad():
     fnames.sort()
 
     widths = []
+    angles = []
+    quads = []
     for i in range(40):
         sample = np.load(os.path.join(data_dir, fnames[i]))
         widths.append(sample['width'])
+        angles.append(sample['angle'])
+        quads.append((sample['x'], sample['z']))
 
     for i,(_,S,D) in enumerate(test_loader):
         for jj in range(len(D)):
@@ -91,7 +95,8 @@ with torch.no_grad():
 
             #Save matrix
             if saveMat:
-                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, 'width':widths[4*i+jj]})
+                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, \
+                    'width':widths[4*i+jj], angles:angles[4*i+jj], quads:quads[4*i+jj]})
 
             nx += 1
 
