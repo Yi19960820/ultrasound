@@ -29,7 +29,7 @@ mfile = '/results/bloodx2_better_sim_Res3dC_Model_Tr3200_epoch50_lr2.00e-03.pkl'
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-data_dir='/data/toy-widths/'
+data_dir='/data/toy-real/'
 m,n,time=39,39,101 #size of data
 #Save gif
 saveGif=True
