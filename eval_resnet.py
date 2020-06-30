@@ -96,7 +96,7 @@ with torch.no_grad():
             #Save matrix
             if saveMat:
                 savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, \
-                    'width':widths[4*i+jj], angles:angles[4*i+jj], quads:quads[4*i+jj]})
+                    'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj]})
 
             nx += 1
 
