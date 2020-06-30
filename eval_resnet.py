@@ -85,6 +85,7 @@ with torch.no_grad():
 
             out_S = model(inputs[None, None])
             loss = floss(out_S.squeeze(), targets).item()
+            print(f'{nx}: {loss}')
             loss_mean += loss
             [Sp, Dg, Sg]=convert.torch2np([out_S, D[jj], S[jj]],[form_out, form_out, form_out])
 

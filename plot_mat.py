@@ -5,6 +5,7 @@ from scipy.io import loadmat
 import scipy.linalg as la
 import sys
 from copy import copy
+from CORONA.Res3dC.DataSet_3dC import preprocess
 
 def log_rms(mat):
     # TODO make the dynamic ranges the same (I think this is done by default)
@@ -13,11 +14,18 @@ def log_rms(mat):
     logplot = meansquare/np.amax(meansquare)
     return logplot
 
+def mse(L, S, D, Sp):
+    Ln, Sn, Dn = preprocess(L, S, D)
+    _, Spn, _ = preprocess(D-Sp, Sp, D)
+    n1, n2, n3 = D.shape
+    return np.sum(np.abs(Sn-Spn)**2)/(n1*n2*n3)
+    # return np.sum(np.abs(S-Sp)**2)/(n1*n2*n3)
+
 def plot_column(n):
     # outputs = loadmat(f'/home/sam/Documents/mats-2-real/{n}.mat')
     outputs = loadmat(f'/home/sam/Documents/mats/{n}.mat')
     w = 39
-    col = 10
+    col = 32
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
@@ -89,7 +97,8 @@ def plot_patches(n, q1, q2):
     ax[1][1].set_title('SVT')
     ax[1][1].add_patch(copies[2])
 
-
+    print(mse(D-S, S, D, Sp))
+    print(mse(D-Drec, S, D, Drec))
     plt.show()
 
 def plot_loss():
@@ -110,7 +119,6 @@ def svt(D,e1, e2=None):
     e1 -= 1     # change 1-indexed e.val number to 0-indexed array index
     caso = D.reshape((n1*n2, n3))
     U, S, Vh = la.svd(caso, full_matrices=False)
-    print(S.shape)
     if e2 is None:
         e2 = n3
     casorec = U[:,e1:e2]@np.diag(S[e1:e2])@(Vh[:,e1:e2].T)
@@ -120,4 +128,4 @@ def svt(D,e1, e2=None):
 if __name__=='__main__':
     plot_patches(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
     # plot_loss()
-    # plot_column(32)
+    # plot_column(4)
