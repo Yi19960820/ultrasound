@@ -39,6 +39,20 @@ def ssim(S, Sp):
 
     return np.abs((2*mu_x*mu_y+c1)*(2*cov+c2)/((mu_x**2+mu_y**2+c1)*(var_x+var_y+c2)))
 
+def plot_metrics(fname):
+    fname = os.path.abspath(fname)
+    metric_data = np.load(fname)
+    nums = np.array(range(len(metric_data['rn'])))+6800
+    plt.scatter(nums, metric_data['rn'], label='ResNet')
+    plt.scatter(nums, metric_data['sv'], label='SVT')
+    plt.title('PSNR for ResNet, TB=2.5, Rank=4')
+    plt.ylabel('PSNR (dB)')
+    plt.xlabel('Sample #')
+    plt.hlines(np.mean(metric_data['rn']), 6800, 7800, color='yellow', label='ResNet avg.')
+    plt.hlines(np.mean(metric_data['sv']), 6800, 7800, color='black', label='SVT avg.')
+    plt.legend(loc='lower left')
+    plt.show()
+
 def metrics():
     svt_metric = []
     resnet_metric = []
@@ -52,13 +66,14 @@ def metrics():
         svals, St = svt(D, 10)
         svt_metric.append(psnr(S, St))
         resnet_metric.append(psnr(S, Sp))
-    plt.scatter(range(len(outs)), resnet_metric)
-    plt.scatter(range(len(outs)), svt_metric)
+    plt.scatter(range(len(outs)), resnet_metric, label='ResNet')
+    plt.scatter(range(len(outs)), svt_metric, label='SVT')
     print(np.mean(resnet_metric))
     print(np.mean(svt_metric))
     plt.ylabel('PSNR (dB)')
     plt.xlabel('Sample #')
     plt.title('PSNR for ResNet, TB=2.5, Rank=4')
+    plt.legend()
     plt.show()
 
 def plot_column(n):
@@ -179,5 +194,6 @@ def svt(D,e1, e2=None):
 if __name__=='__main__':
     # plot_patches(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
     # plot_loss()
-    plot_column(int(sys.argv[1]))
+    # plot_column(int(sys.argv[1]))
     # metrics()
+    plot_metrics(sys.argv[1])

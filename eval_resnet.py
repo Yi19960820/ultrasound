@@ -25,12 +25,12 @@ from plot_mat import psnr, svt
 """========================================================================="""
 #Model file
 # 10 epochs on sim
-mfile = '/results/bloodx2_better_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
+mfile = '/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch20_lr2.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-data_dir='/data/toy-real/'
+data_dir='/data/toy-widths/'
 m,n,time=39,39,101 #size of data
 #Save gif
 saveGif=True
@@ -67,13 +67,13 @@ with torch.no_grad():
     test_data = BigImageDataset(1000, (m,n,time*2), 2, data_dir=data_dir)
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
-    fnames = os.listdir(data_dir)[6800:]
+    fnames = os.listdir(data_dir)[4000:]
     fnames.sort()
 
     widths = []
     angles = []
     quads = []
-    for i in range(40):
+    for i in range(1000):
         sample = np.load(os.path.join(data_dir, fnames[i]))
         widths.append(sample['width'])
         angles.append(sample['angle'])
@@ -113,4 +113,4 @@ print(f'Mean loss: {loss_mean}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)}')
     print(f'SVT mean PSNR: {np.mean(svt_list)}')
-    np.savez_compressed(os.path.join(save_mat_dir, 'metrics.npz'), rn=resnet_list, sv=svt_list)
+    np.savez_compressed(os.path.join(save_mat_dir, 'metrics_2400.npz'), rn=resnet_list, sv=svt_list)
