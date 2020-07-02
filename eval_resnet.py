@@ -70,14 +70,14 @@ with torch.no_grad():
     fnames = os.listdir(data_dir)[4000:]
     fnames.sort()
 
-    widths = []
-    angles = []
-    quads = []
-    for i in range(1000):
-        sample = np.load(os.path.join(data_dir, fnames[i]))
-        widths.append(sample['width'])
-        angles.append(sample['angle'])
-        quads.append((sample['x'], sample['z']))
+    # widths = []
+    # angles = []
+    # quads = []
+    # for i in range(1000):
+    #     sample = np.load(os.path.join(data_dir, fnames[i]))
+    #     widths.append(sample['width'])
+    #     angles.append(sample['angle'])
+    #     quads.append((sample['x'], sample['z']))
 
     resnet_list = []
     svt_list = []
