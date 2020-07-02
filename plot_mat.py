@@ -5,37 +5,78 @@ from scipy.io import loadmat
 import scipy.linalg as la
 import sys
 from copy import copy
+import os
 from CORONA.Res3dC.DataSet_3dC import preprocess
 
 def log_rms(mat):
     # TODO make the dynamic ranges the same (I think this is done by default)
     meansquare = np.sum(np.abs(mat)**2, axis=2, dtype=float)/mat.shape[2]
-    # logplot = 10*np.log10(meansquare/np.amax(meansquare))
-    logplot = meansquare/np.amax(meansquare)
+    logplot = 10*np.log10(meansquare/np.amax(meansquare))
+    # logplot = meansquare/np.amax(meansquare)
     return logplot
 
 def mse(L, S, D, Sp):
     Ln, Sn, Dn = preprocess(L, S, D)
     _, Spn, _ = preprocess(D-Sp, Sp, D)
-    n1, n2, n3 = D.shape
-    return np.sum(np.abs(Sn-Spn)**2)/(n1*n2*n3)
+    n1, n2, n3 = Spn.shape
+    return np.mean(np.abs(Sn-Spn)**2)
     # return np.sum(np.abs(S-Sp)**2)/(n1*n2*n3)
+
+def psnr(S, Sp):
+    return 10*np.log10(np.abs(np.amax(S))**2/np.mean(np.abs(S-Sp)**2))
+
+def psnr_per_frame(S, Sp):
+    return psnr(S, Sp)/S.shape[-1]
+
+def ssim(S, Sp):
+    c1 = (0.01*2)**2
+    c2 = (0.03*2)**2
+    mu_x = np.mean(S)
+    mu_y = np.mean(Sp)
+    var_x = np.mean(np.abs(S)**2)-np.abs(np.mean(S))**2
+    var_y = np.mean(np.abs(Sp)**2)-np.abs(np.mean(Sp))**2
+    cov = np.mean(S*np.conj(Sp))-np.mean(S)*np.mean(np.conj(Sp))
+
+    return np.abs((2*mu_x*mu_y+c1)*(2*cov+c2)/((mu_x**2+mu_y**2+c1)*(var_x+var_y+c2)))
+
+def metrics():
+    svt_metric = []
+    resnet_metric = []
+    data_dir = '/home/sam/Documents/mats/'
+    outs = os.listdir(data_dir)
+    for n in range(len(outs)):
+        outputs = loadmat(os.path.join(data_dir, outs[n]))
+        Sp = outputs['Sp']
+        S = outputs['S']   
+        D = outputs['D']
+        svals, St = svt(D, 10)
+        svt_metric.append(psnr(S, St))
+        resnet_metric.append(psnr(S, Sp))
+    plt.scatter(range(len(outs)), resnet_metric)
+    plt.scatter(range(len(outs)), svt_metric)
+    print(np.mean(resnet_metric))
+    print(np.mean(svt_metric))
+    plt.ylabel('PSNR (dB)')
+    plt.xlabel('Sample #')
+    plt.title('PSNR for ResNet, TB=2.5, Rank=4')
+    plt.show()
 
 def plot_column(n):
     # outputs = loadmat(f'/home/sam/Documents/mats-2-real/{n}.mat')
     outputs = loadmat(f'/home/sam/Documents/mats/{n}.mat')
     w = 39
-    col = 32
+    col = 3
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
+    svals, St = svt(D, 10)
     width = outputs['width'][0][0]
     width_px = w/.0025*width
 
-    fig, ax = plt.subplots(2, 2, figsize=(9,6))
+    fig, ax = plt.subplots(3, 2, figsize=(9,6))
     plt.set_cmap('hot')
     ax[0][1].imshow(10*np.log10(np.abs(S[:,col])**2), aspect='auto')
-    ax[0][1].set_title('Column 11 per frame')
+    ax[0][1].set_title(f'Column {col} per frame')
     ax[0][0].imshow(log_rms(S))
     rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
     ax[0][0].add_patch(rect)
@@ -45,8 +86,18 @@ def plot_column(n):
     ax[1][0].imshow(log_rms(Sp))
     rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
     ax[1][0].add_patch(rect)
-    ax[1][1].set_title('Column 11 per frame')
+    ax[1][1].set_title(f'Column {col} per frame')
+    ax[2][0].set_title('SVT S')
+    ax[2][0].imshow(log_rms(St))
+    rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
+    ax[2][0].add_patch(rect)
+    ax[2][1].set_title(f'Column {col} per frame')
+    ax[2][1].imshow(10*np.log10(np.abs(St[:,col])**2), aspect='auto')
 
+    print(f'ResNet PSNR: {psnr(S, Sp)}')
+    print(f'SVT PSNR: {psnr(S, St)}')
+    # print(ssim(S, Sp))
+    # print(ssim(S, St))
     plt.show()
 
 def plot_patches(n, q1, q2):
@@ -126,6 +177,7 @@ def svt(D,e1, e2=None):
     return S, Drec
 
 if __name__=='__main__':
-    plot_patches(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
+    # plot_patches(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
     # plot_loss()
-    # plot_column(4)
+    plot_column(int(sys.argv[1]))
+    # metrics()

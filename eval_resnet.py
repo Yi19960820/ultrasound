@@ -18,13 +18,14 @@ from DataSet import BigImageDataset
 import torch.utils.data as data
 import os
 from main_resnet import to_var
+from plot_mat import psnr, svt
 #from tools.mat2gif import mat2gif
 
 """Settings"""
 """========================================================================="""
 #Model file
 # 10 epochs on sim
-mfile = '/results/bloodx2_better_sim_Res3dC_Model_Tr3200_epoch50_lr2.00e-03.pkl'
+mfile = '/results/bloodx2_better_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
@@ -37,7 +38,7 @@ save_gif_dir='/results/gifs'
 cmap='hot'
 note='abs'
 #Save matrix
-saveMat=True
+saveMat=False
 save_mat_dir='/results/mats'
 """========================================================================="""
 
@@ -63,10 +64,10 @@ floss = torch.nn.MSELoss()
 #Processing
 with torch.no_grad():
     loss_mean = 0
-    test_data = BigImageDataset(40, (m,n,time*2), 2, data_dir=data_dir)
+    test_data = BigImageDataset(1000, (m,n,time*2), 2, data_dir=data_dir)
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
-    fnames = os.listdir(data_dir)[4000:]
+    fnames = os.listdir(data_dir)[6800:]
     fnames.sort()
 
     widths = []
@@ -78,6 +79,8 @@ with torch.no_grad():
         angles.append(sample['angle'])
         quads.append((sample['x'], sample['z']))
 
+    resnet_list = []
+    svt_list = []
     for i,(_,S,D) in enumerate(test_loader):
         for jj in range(len(D)):
             inputs = to_var(D[jj])
@@ -98,8 +101,16 @@ with torch.no_grad():
             if saveMat:
                 savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, \
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj]})
+            else:
+                _, St = svt(Dg, 10)
+                resnet_list.append(psnr(Sg, Sp))
+                svt_list.append(psnr(Sg, St))
 
             nx += 1
 
 loss_mean /= len(test_data)
 print(f'Mean loss: {loss_mean}')
+if not saveMat:
+    print(f'ResNet mean PSNR: {np.mean(resnet_list)}')
+    print(f'SVT mean PSNR: {np.mean(svt_list)}')
+    np.savez_compressed(os.path.join(save_mat_dir, 'metrics.npz'), rn=resnet_list, sv=svt_list)
