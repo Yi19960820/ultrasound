@@ -8,7 +8,7 @@ import os
 class BigImageDataset(torch.utils.data.Dataset):
     DATA_DIR='/data/toy-real/'
 
-    def __init__(self, NumInstances, shape, train, transform=None, data_dir=None):
+    def __init__(self, NumInstances, shape, train, transform=None, data_dir=None, train_size=3200, val_size=800):
         data_dir = self.DATA_DIR if data_dir is None else data_dir
         self.shape=shape
         self.fnames = os.listdir(data_dir)
@@ -34,7 +34,7 @@ class BigImageDataset(torch.utils.data.Dataset):
                 images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
         #   --  VALIDATION -- RAT 2, 100 frames 
         if train is 1:
-            IndParam = 2400
+            IndParam = train_size
             self.fnames = self.fnames[IndParam:NumInstances+IndParam]
             for n in range(NumInstances):
                 if np.mod(n, 50) == 0: print('loading train set %s' % (n))
@@ -47,7 +47,7 @@ class BigImageDataset(torch.utils.data.Dataset):
                 images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
                 images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
         if train is 2:
-            IndParam = 3000
+            IndParam = val_size+train_size
             self.fnames = self.fnames[IndParam:NumInstances+IndParam]
             for n in range(NumInstances):
                 if np.mod(n, 50) == 0: print('loading train set %s' % (n))

@@ -25,7 +25,7 @@ from plot_mat import psnr, svt
 """========================================================================="""
 #Model file
 # 10 epochs on sim
-mfile = '/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch20_lr2.00e-03.pkl'
+mfile = '/results/Res3dC_nocon_sim_Res3dC_Model_Tr3200_epoch40_lr2.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
@@ -113,4 +113,4 @@ print(f'Mean loss: {loss_mean}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)}')
     print(f'SVT mean PSNR: {np.mean(svt_list)}')
-    np.savez_compressed(os.path.join(save_mat_dir, 'metrics_2400.npz'), rn=resnet_list, sv=svt_list)
+    np.savez_compressed(os.path.join(save_mat_dir, 'metrics_3200.npz'), rn=resnet_list, sv=svt_list)

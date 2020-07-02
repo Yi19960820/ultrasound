@@ -50,7 +50,7 @@ def plot_metrics(fname):
     plt.xlabel('Sample #')
     plt.hlines(np.mean(metric_data['rn']), 6800, 7800, color='yellow', label='ResNet avg.')
     plt.hlines(np.mean(metric_data['sv']), 6800, 7800, color='black', label='SVT avg.')
-    plt.legend(loc='lower left')
+    plt.legend(loc='best')
     plt.show()
 
 def metrics():
