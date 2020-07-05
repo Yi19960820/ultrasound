@@ -65,7 +65,7 @@ frame=10
 #directory of datasets
 d_invivo = '../Data/Invivo/' #
 d_simpm  = '../../Ultrasound_805/data/Sim_PM/'
-d_sim    = '../results/Sim/'
+d_sim    = '../data/toy-real/'
 #Whether to calculate in GPU
 CalInGPU=params_net['CalInGPU']
 """========================================================================="""
