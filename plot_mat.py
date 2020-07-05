@@ -45,7 +45,7 @@ def plot_metrics(fname):
     nums = np.array(range(len(metric_data['rn'])))+6800
     plt.scatter(nums, metric_data['rn'], label='ResNet')
     plt.scatter(nums, metric_data['sv'], label='SVT')
-    plt.title('PSNR for ResNet, TB=2.5, Rank=4')
+    plt.title('PSNR for ResNet, TB=2.5, Rank 1-3')
     plt.ylabel('PSNR (dB)')
     plt.xlabel('Sample #')
     plt.hlines(np.mean(metric_data['rn']), 6800, 7800, color='yellow', label='ResNet avg.')
