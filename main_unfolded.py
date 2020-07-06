@@ -16,7 +16,7 @@ import torch.utils.data as data
 import sys
 sys.path.append('../')
 
-from DataSet import BigImageDataset
+from DataSetUnfolded import BigImageDataset
 from CORONA.network.UnfoldedNet3dC import UnfoldedNet3dC,to_var
 from CORONA.classes.Dataset import Converter
 from CORONA.classes.Player import Player
@@ -153,6 +153,7 @@ for learning_rate in lr_list:
         print('Loading and calculating training batches...')
         log.write('Loading and calculating training batches...\n')
         starttime=time.time()
+        ibatch = 1
         for _,(L,S,D) in enumerate(train_loader):
             # set the gradients to zero at the beginning of each epoch
             optimizer.zero_grad()  
@@ -170,6 +171,8 @@ for learning_rate in lr_list:
                 loss.backward()
                 
             optimizer.step()
+            print('Finished batch {}'.format(ibatch))
+            ibatch += 1
         loss_mean=loss_mean/TrainInstances
         endtime=time.time()
         print('Training time is %f'%(endtime-starttime))

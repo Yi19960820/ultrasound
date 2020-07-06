@@ -14,7 +14,7 @@ sys.path.append('../')
 from CORONA.classes.Player import Player
 from CORONA.classes.Dataset import Converter
 from CORONA.network.ResNet3dC import ResNet3dC
-from DataSet import BigImageDataset
+from DataSetUnfolded import BigImageDataset
 import torch.utils.data as data
 import os
 from main_resnet import to_var
