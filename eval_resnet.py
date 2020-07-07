@@ -116,4 +116,4 @@ print(f'Mean loss: {loss_mean}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)} dB')
     print(f'SVT mean PSNR: {np.mean(svt_list)} dB')
-    np.savez_compressed(os.path.join(save_mat_dir, 'metrics_3200.npz'), rn=resnet_list, sv=svt_list)
+    np.savez_compressed(os.path.join(save_mat_dir, f'metrics_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list)
