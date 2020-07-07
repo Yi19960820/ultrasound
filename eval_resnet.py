@@ -30,8 +30,8 @@ mfile = '/results/Res3dC_nocon_sim_Res3dC_Model_Tr3200_epoch40_lr2.00e-03.pkl'
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-data_dir='/data/toy-widths/'
-m,n,time=39,39,101 #size of data
+data_dir='/data/toy-real/'
+m,n,time=39,39,20 #size of data
 #Save gif
 saveGif=True
 save_gif_dir='/results/gifs'
@@ -61,23 +61,26 @@ model = model.cuda()
 model.eval()
 floss = torch.nn.MSELoss()
 
+TrainInstances = 6000
+ValInstances = 800
+
 #Processing
 with torch.no_grad():
     loss_mean = 0
-    test_data = BigImageDataset(1000, (m,n,time*2), 2, data_dir=data_dir)
+    test_data = BigImageDataset(1000, (m,n,time*2), 2, data_dir=data_dir, train_size=TrainInstances, val_size=ValInstances)
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
-    fnames = os.listdir(data_dir)[4000:]
+    fnames = os.listdir(data_dir)[TrainInstances+ValInstances:]
     fnames.sort()
 
-    # widths = []
-    # angles = []
-    # quads = []
-    # for i in range(1000):
-    #     sample = np.load(os.path.join(data_dir, fnames[i]))
-    #     widths.append(sample['width'])
-    #     angles.append(sample['angle'])
-    #     quads.append((sample['x'], sample['z']))
+    widths = []
+    angles = []
+    quads = []
+    for i in range(1000):
+        sample = np.load(os.path.join(data_dir, fnames[i]))
+        widths.append(sample['width'])
+        angles.append(sample['angle'])
+        quads.append((sample['x'], sample['z']))
 
     resnet_list = []
     svt_list = []

@@ -40,7 +40,7 @@ if __name__=='__main__':
     """Settings"""
     """========================================================================="""
     #Name and choice of training set
-    ProjectName='bloodx2_better'
+    ProjectName='bloodx2_20'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
     loadmodel=False
@@ -63,6 +63,7 @@ if __name__=='__main__':
     BatchSize      = 40
     ValBatchSize   = 40
     num_epochs     = 30
+    m, n, p = (39,39,20)
     frame=20
     #directory of datasets
     d_invivo='/data/Invivo/' 
@@ -74,7 +75,7 @@ if __name__=='__main__':
     data_dir={'invivo':d_invivo,'sim_pm':d_simpm,'sim':d_sim}[prefix]
     conter=Converter()
     player=Player()
-    formshow={'pre':'concat','shape':(39,39,101)}
+    formshow={'pre':'concat','shape':(m,n,p)}
     formlist=[]
     for i in range(6):
         formlist.append(formshow)
@@ -90,14 +91,14 @@ if __name__=='__main__':
     print('----------------')
     log.write('Loading phase...\n')
     log.write('----------------\n')
-    shape_dset=(39,39,202)    # The last dimension is 2*the number of frames (for real and imaginary)
+    shape_dset=(m,n,p*2)    # The last dimension is 2*the number of frames (for real and imaginary)
     #training
     train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
                             train=0,data_dir=data_dir)
     train_loader=data.DataLoader(train_dataset,batch_size=BatchSize,shuffle=True)
     #validation
     val_dataset=BigImageDataset(round(ValInstances),shape_dset,
-                            train=1,data_dir=data_dir)
+                            train=1,data_dir=data_dir, train_size=TrainInstances)
     val_loader=data.DataLoader(val_dataset,batch_size=ValBatchSize,shuffle=True)
     print('Finished loading.\n')
     log.write('Finished loading.\n\n')
@@ -125,7 +126,7 @@ if __name__=='__main__':
         optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate)
 
         #Array for recording data
-        outputs_S = to_var(torch.zeros([1,1,39,39,202]))
+        outputs_S = to_var(torch.zeros([1,1,m,m,p*2]))
         lossmean_vec=np.zeros((num_epochs,))
         lossmean_val_vec=np.zeros((num_epochs,))
         
