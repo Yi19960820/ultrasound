@@ -64,7 +64,7 @@ if __name__=='__main__':
     ValBatchSize   = 40
     num_epochs     = 30
     m, n, p = (39,39,20)
-    frame=20
+    frame=10
     #directory of datasets
     d_invivo='/data/Invivo/' 
     d_simpm='/data/Sim_PM/'
@@ -214,10 +214,10 @@ if __name__=='__main__':
                 [xtr,ytr,ptr,xval,yval,pval]=conter.torch2np([D[ii],S[ii],outputs_S,
                                                             Dv[jj],Sv[jj],outputs_Sv],
                                                             formlist)
-                player.plotmat([xtr[:,:,frame],ytr[:,:,frame],ptr[:,:,frame],
-                            xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
-                                tit=['xtr','ytr','ptr','xval','yval','pval'],
-                                supt='Epoch{%d/%d}'%(epoch+1,num_epochs))
+                # player.plotmat([xtr[:,:,frame],ytr[:,:,frame],ptr[:,:,frame],
+                #             xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
+                #                 tit=['xtr','ytr','ptr','xval','yval','pval'],
+                #                 supt='Epoch{%d/%d}'%(epoch+1,num_epochs))
                 plt.pause(0.1)
             
             lossmean_vec[epoch]=loss_mean
