@@ -74,7 +74,7 @@ CalInGPU=params_net['CalInGPU']
 data_dir={'invivo':d_invivo,'sim_pm':d_simpm,'sim':d_sim}[prefix]
 conter=Converter()
 player=Player()
-formshow={'pre':'concat','shape':(39,39,101)}
+formshow={'pre':'concat','shape':(39,39,20)}
 formlist=[]
 for i in range(6):
     formlist.append(formshow)
@@ -91,7 +91,7 @@ print('Loading phase...')
 print('----------------')
 log.write('Loading phase...\n')
 log.write('----------------\n')
-shape_dset=(39,39,202)
+shape_dset=(39,39,40)
 #training
 train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
                            train=0,data_dir=data_dir)
@@ -126,8 +126,8 @@ for learning_rate in lr_list:
     optimizer = torch.optim.Adam(net.parameters(),lr=learning_rate)
 
     #Array for recording datas
-    outputs_S = to_var(torch.zeros([39,39,202]),CalInGPU)
-    outputs_L = to_var(torch.zeros([39,39,202]),CalInGPU)
+    outputs_S = to_var(torch.zeros([39,39,40]),CalInGPU)
+    outputs_L = to_var(torch.zeros([39,39,40]),CalInGPU)
     lossmean_vec=np.zeros((num_epochs,))
     lossmean_val_vec=np.zeros((num_epochs,))
     exp_vec_L = np.zeros((num_epochs,net.layers))
