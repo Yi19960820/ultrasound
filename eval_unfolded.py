@@ -95,7 +95,7 @@ with torch.no_grad():
             inputs = to_var(D[jj])
             targets = to_var(L[jj])
 
-            out_L = model(inputs[None, None])
+            out_L = model(inputs)
             loss = floss(out_L.squeeze(), targets).item()
             print(f'{nx}: {loss}')
             loss_mean += loss
