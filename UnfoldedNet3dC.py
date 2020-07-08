@@ -86,7 +86,8 @@ class ISTACell(nn.Module):
 
         # Perform the SVD using the Scipy implementation
         # This gets around an issue with Intel MKL
-        form_out={'pre':'concat','shape':[m,n]}
+        form_out={'pre':None,'shape':[m,n]}
+        print(x)
         U,S,V=svd(self.converter.torch2np([x],[form_out])[0], full_matrices=False)
         S = np.diag(S)
         U = torch.from_numpy(U)
