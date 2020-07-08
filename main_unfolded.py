@@ -17,7 +17,7 @@ import sys
 sys.path.append('../')
 
 from DataSetUnfolded import BigImageDataset
-from CORONA.network.UnfoldedNet3dC import UnfoldedNet3dC,to_var
+from UnfoldedNet3dC import UnfoldedNet3dC,to_var
 from CORONA.classes.Dataset import Converter
 from CORONA.classes.Player import Player
 
