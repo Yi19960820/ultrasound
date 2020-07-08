@@ -93,7 +93,7 @@ class ISTACell(nn.Module):
         S = np.diag(S)
         U = torch.from_numpy(U).reshape((m,n))
         S = torch.from_numpy(S).reshape((n,n))
-        V = torch.from_numpy(V).reshape((m,n))
+        V = torch.from_numpy(V).reshape((n,n))
         
         S=self.relu(S-th*S[0])
         
