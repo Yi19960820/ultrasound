@@ -89,6 +89,7 @@ class ISTACell(nn.Module):
         form_out={'pre':'concat','shape':[m,n]}
         # U,S,V=svd(self.converter.torch2np([x],[form_out])[0], full_matrices=False)
         U,S,V=svd(x.cpu().detach().numpy(), full_matrices=False)
+        print(U.shape, S,shape, V.shape)
         S = np.diag(S)
         U = torch.from_numpy(U).reshape((m,n))
         S = torch.from_numpy(S).reshape((n,n))
