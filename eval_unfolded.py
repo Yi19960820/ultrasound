@@ -57,7 +57,7 @@ convert=Converter()
 device='cuda:0' if torch.cuda.is_available() else 'cpu'
 # device='cpu'
 if mfile[-3:]=='pkl':
-    model=UnfoldedNet3dC(gpu)
+    model=UnfoldedNet3dC(params_net)
     state_dict=torch.load(mfile,map_location=device)
     model.load_state_dict(state_dict)
 else:
