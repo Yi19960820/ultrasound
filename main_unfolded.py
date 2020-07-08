@@ -16,7 +16,7 @@ import torch.utils.data as data
 import sys
 sys.path.append('../')
 
-from DataSetUnfolded import BigImageDataset
+from DataSet import BigImageDataset
 from UnfoldedNet3dC import UnfoldedNet3dC,to_var
 from CORONA.classes.Dataset import Converter
 from CORONA.classes.Player import Player
