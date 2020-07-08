@@ -89,7 +89,6 @@ class ISTACell(nn.Module):
         form_out={'pre':'concat','shape':[m,n]}
         # U,S,V=svd(self.converter.torch2np([x],[form_out])[0], full_matrices=False)
         U,S,V=svd(x.cpu().detach().numpy(), full_matrices=False)
-        print(U.shape, S.shape, V.shape)
         S = np.diag(S)
         U = torch.from_numpy(U).reshape((m,n))
         S = torch.from_numpy(S).reshape((n,n))
@@ -99,7 +98,8 @@ class ISTACell(nn.Module):
         
         US=to_var(torch.zeros(m,n),self.CalInGPU)
         stmp=to_var(torch.zeros(n),self.CalInGPU)
-        stmp[0:S.shape[0]]=S
+        # stmp[0:S.shape[0]]=S
+        stmp=S
         minmn=min(m,n)
         US[:,0:minmn]=U[:,0:minmn]
         
