@@ -42,7 +42,7 @@ m,n,p=(39,39,20)
 """Network Settings"""
 params_net={}
 params_net['layers']=20 #10     # was 7
-params_net['kernel']=[(5,1)]*3+[(3,1)]*7
+params_net['kernel']=[(5,2)]*10+[(3,1)]*10
 params_net['coef_L']=0.4
 params_net['coef_S']=1.8
 params_net['CalInGPU']=True #whether to calculate in GPU
