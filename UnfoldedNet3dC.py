@@ -90,19 +90,19 @@ class ISTACell(nn.Module):
         # U,S,V=svd(self.converter.torch2np([x],[form_out])[0], full_matrices=False)
         U,S,V=svd(x.cpu().detach().numpy(), full_matrices=False)
         # S = np.diag(S)
-        U = torch.from_numpy(U).reshape((m,n))
-        S = torch.from_numpy(S).reshape((n,))
-        V = torch.from_numpy(V).reshape((n,n))
+        U = torch.from_numpy(U).reshape((m,n)).cuda()
+        S = torch.from_numpy(S).reshape((n,)).cuda()
+        V = torch.from_numpy(V).reshape((n,n)).cuda()
         
         S=self.relu(S-th*S[0])
-        
+
         US=to_var(torch.zeros(m,n),self.CalInGPU)
         stmp=to_var(torch.zeros(n),self.CalInGPU)
         stmp[0:S.shape[0]]=S
         # stmp=S
         minmn=min(m,n)
         US[:,0:minmn]=U[:,0:minmn]
-        
+
         x=(US*stmp)@V.t()
         return x
     
