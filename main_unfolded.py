@@ -46,7 +46,7 @@ params_net['coef_S']=1.8
 params_net['CalInGPU']=True #whether to calculate in GPU
 params_net['kernel']=params_net['kernel'][0:params_net['layers']]
 #Whether to plot predictions during training and frequency
-plot=True
+plot=False
 plotT=1
 if not plot:
     plt.ioff()
@@ -257,6 +257,7 @@ for learning_rate in lr_list:
     """Save logs, prediction, loss figure, loss data, model and settings """
     #Graphs
     #Save the prediction figure
+    '''
     if not plot:
         [xtr,ystr,pstr,xval,ysval]=conter.torch2np([D[ii],S[ii],outputs_S,
                                                          Dv[jj],Sv[jj]],
@@ -274,6 +275,8 @@ for learning_rate in lr_list:
         plt.savefig('/results/%s_%s_Unfolded_Pred_al%.2f_Tr%s_epoch%s_lr%.2e.png'\
                     %(ProjectName,prefix,ALPHA,TrainInstances,
                       num_epochs,learning_rate))
+        '''
+
     #MSE
     fig=plt.figure()
     epochs_vec=np.arange(0,num_epochs,1)
@@ -289,6 +292,7 @@ for learning_rate in lr_list:
     pickle.dump(fig,open("/results/%s_%s_Unfolded_LossFig_al%.2f_Tr%s_epoch%s_lr%.2e.fig.pickle"\
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate),'wb'))
     
+    '''
     #Lamb L
     fig1=plt.figure()
     colormap=plt.cm.gist_ncar
@@ -320,6 +324,7 @@ for learning_rate in lr_list:
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate))
     pickle.dump(fig2,open("/results/%s_%s_Unfolded_expSFig_al%.2f_Tr%s_epoch%s_lr%.2e.fig.pickle"\
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate),'wb'))
+   '''
    
     #Save data of thresholding parameters for L, S
     np.savez('/results/%s_%s_Unfolded_expLSData_al%.2f_Tr%s_epoch%s_lr%.2e'\
