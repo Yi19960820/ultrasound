@@ -30,16 +30,18 @@ import pickle
 """Settings"""
 """========================================================================="""
 #Name and choice of training set
-ProjectName = 'x2_better_unf'
+ProjectName = 'x2_better_20layer'
 prefix      = 'sim' #invivo,sim_pm,sim
 #Load model
 loadmodel   = False
 #mfile       = 'Results/Unfolded_sim_train.pkl'
 mfile       = '../saved/Unf_coefS1d8_coefL0d4_sim10epoch_2400Tr.pkl'
 
+m,n,p=(39,39,20)
+
 """Network Settings"""
 params_net={}
-params_net['layers']=7 #10
+params_net['layers']=20 #10     # was 7
 params_net['kernel']=[(5,1)]*3+[(3,1)]*7
 params_net['coef_L']=0.4
 params_net['coef_S']=1.8
@@ -74,7 +76,7 @@ CalInGPU=params_net['CalInGPU']
 data_dir={'invivo':d_invivo,'sim_pm':d_simpm,'sim':d_sim}[prefix]
 conter=Converter()
 player=Player()
-formshow={'pre':'concat','shape':(39,39,20)}
+formshow={'pre':'concat','shape':(m,n,p)}
 formlist=[]
 for i in range(6):
     formlist.append(formshow)
@@ -91,7 +93,7 @@ print('Loading phase...')
 print('----------------')
 log.write('Loading phase...\n')
 log.write('----------------\n')
-shape_dset=(39,39,40)
+shape_dset=(m,n,p*2)
 #training
 train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
                            train=0,data_dir=data_dir)
@@ -126,8 +128,8 @@ for learning_rate in lr_list:
     optimizer = torch.optim.Adam(net.parameters(),lr=learning_rate)
 
     #Array for recording datas
-    outputs_S = to_var(torch.zeros([39,39,40]),CalInGPU)
-    outputs_L = to_var(torch.zeros([39,39,40]),CalInGPU)
+    outputs_S = to_var(torch.zeros([m,n,p*2]),CalInGPU)
+    outputs_L = to_var(torch.zeros([m,n,p*2]),CalInGPU)
     lossmean_vec=np.zeros((num_epochs,))
     lossmean_val_vec=np.zeros((num_epochs,))
     exp_vec_L = np.zeros((num_epochs,net.layers))
@@ -325,7 +327,7 @@ for learning_rate in lr_list:
     pickle.dump(fig2,open("/results/%s_%s_Unfolded_expSFig_al%.2f_Tr%s_epoch%s_lr%.2e.fig.pickle"\
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate),'wb'))
    '''
-   
+
     #Save data of thresholding parameters for L, S
     np.savez('/results/%s_%s_Unfolded_expLSData_al%.2f_Tr%s_epoch%s_lr%.2e'\
              %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate)
