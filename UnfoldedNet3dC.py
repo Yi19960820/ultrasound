@@ -88,7 +88,7 @@ class ISTACell(nn.Module):
         # This gets around an issue with Intel MKL
         form_out={'pre':'concat','shape':[m,n]}
         # U,S,V=svd(self.converter.torch2np([x],[form_out])[0], full_matrices=False)
-        U,S,V=svd(x.detach().numpy(), full_matrices=False)
+        U,S,V=svd(x.cpu().detach().numpy(), full_matrices=False)
         S = np.diag(S)
         U = torch.from_numpy(U)
         S = torch.from_numpy(S)
