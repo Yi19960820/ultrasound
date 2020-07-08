@@ -163,10 +163,9 @@ for learning_rate in lr_list:
                 targets_S=to_var(S[ii],CalInGPU)
 
                 # Forward + backward + loss
-                outputs_L,outputs_S=net(inputs)  # Forward
+                outputs_L=net(inputs)  # Forward
                 # Current loss
-                loss=ALPHA*floss(outputs_L,targets_L)+\
-                     (1-ALPHA)*floss(outputs_S,targets_S)
+                loss=ALPHA*floss(outputs_L,targets_L)
                 loss_mean+=loss.item()
                 loss.backward()
                 
@@ -189,10 +188,9 @@ for learning_rate in lr_list:
                     targets_Lv=to_var(Lv[jj],CalInGPU)
                     targets_Sv=to_var(Sv[jj],CalInGPU)
     
-                    outputs_Lv,outputs_Sv=net(inputsv)  # Forward
+                    outputs_Lv=net(inputsv)  # Forward
                     # Current loss
-                    loss_val=ALPHA*floss(outputs_Lv,targets_Lv)+\
-                             (1-ALPHA)*floss(outputs_Sv,targets_Sv)
+                    loss_val=ALPHA*floss(outputs_Lv,targets_Lv)
                     loss_val_mean+=loss_val.item()
         loss_val_mean=loss_val_mean/ValInstances
         endtime=time.time()
@@ -201,8 +199,8 @@ for learning_rate in lr_list:
             
         #Observe results
         if plot and ((epoch+1)%plotT==0 or epoch==0):
-            [xtr,ystr,pstr,xval,ysval,psval]=conter.torch2np([D[ii],S[ii],outputs_S,
-                                                         Dv[jj],Sv[jj],outputs_Sv],
+            [xtr,ystr,pstr,xval,ysval]=conter.torch2np([D[ii],S[ii],outputs_S,
+                                                         Dv[jj],Sv[jj]],
                                                          formlist)
             [yltr,pltr,ylval,plval]=conter.torch2np([L[ii],outputs_L,
                                                     Lv[jj],outputs_Lv],
@@ -235,28 +233,33 @@ for learning_rate in lr_list:
             log.write('exp_S: '+str(exp_S)+'\n')
 
             if loss.item()>100:
-                print('hitbadrut')
-                log.write('hitbadrut\n')
+                print('Diverges')
+                log.write('Diverges\n')
                 break
+                
+        # Save loss each epoch
+        np.savez('/results/%s_%s_Unfolded_LossData_al%.2f_Tr%s_epoch%s_lr%.2e'\
+            %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate),
+            lossmean_vec,lossmean_val_vec)
 
         #Save model in each epoch
         if True or loss_val_mean<minloss:
-            print('saved at [epoch%d/%d]'\
-                  %(epoch+1,num_epochs))
             log.write('saved at [epoch%d/%d]\n'\
                   %(epoch+1,num_epochs))
             torch.save(net.state_dict(), 
-                       'Results/%s_%s_Unfolded_Model_al%.2f_Tr%s_epoch%s_lr%.2e.pkl'\
+                       '/results/%s_%s_Unfolded_Model_al%.2f_Tr%s_epoch%s_lr%.2e.pkl'\
                        %(ProjectName,prefix,ALPHA,TrainInstances,
                         num_epochs,learning_rate))
-            minloss=min(loss_val_mean,minloss)    
+            minloss=min(loss_val_mean,minloss)
+            print('saved at [epoch%d/%d]'\
+                  %(epoch+1,num_epochs))    
             
     """Save logs, prediction, loss figure, loss data, model and settings """
     #Graphs
     #Save the prediction figure
     if not plot:
-        [xtr,ystr,pstr,xval,ysval,psval]=conter.torch2np([D[ii],S[ii],outputs_S,
-                                                         Dv[jj],Sv[jj],outputs_Sv],
+        [xtr,ystr,pstr,xval,ysval]=conter.torch2np([D[ii],S[ii],outputs_S,
+                                                         Dv[jj],Sv[jj]],
                                                          formlist)
         [yltr,pltr,ylval,plval]=conter.torch2np([L[ii],outputs_L,
                                                 Lv[jj],outputs_Lv],
@@ -283,11 +286,8 @@ for learning_rate in lr_list:
     plt.legend()
     plt.savefig("/results/%s_%s_Unfolded_LossPng_al%.2f_Tr%s_epoch%s_lr%.2e.png"\
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate))
-    pickle.dump(fig,open("Results/%s_%s_Unfolded_LossFig_al%.2f_Tr%s_epoch%s_lr%.2e.fig.pickle"\
+    pickle.dump(fig,open("/results/%s_%s_Unfolded_LossFig_al%.2f_Tr%s_epoch%s_lr%.2e.fig.pickle"\
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate),'wb'))
-    np.savez('/results/%s_%s_Unfolded_LossData_al%.2f_Tr%s_epoch%s_lr%.2e'\
-             %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate),
-             lossmean_vec,lossmean_val_vec)
     
     #Lamb L
     fig1=plt.figure()
@@ -302,7 +302,7 @@ for learning_rate in lr_list:
     plt.title("Lambda L as function of epochs")
     plt.savefig("/results/%s_%s_Unfolded_expLPng_al%.2f_Tr%s_epoch%s_lr%.2e.png"\
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate))
-    pickle.dump(fig1,open("Results/%s_%s_Unfolded_expLFig_al%.2f_Tr%s_epoch%s_lr%.2e.fig.pickle"\
+    pickle.dump(fig1,open("/results/%s_%s_Unfolded_expLFig_al%.2f_Tr%s_epoch%s_lr%.2e.fig.pickle"\
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate),'wb'))
 
     #Lamb S
@@ -316,9 +316,9 @@ for learning_rate in lr_list:
     plt.xlabel('epoch')
     plt.ylabel('Lambda S')
     plt.title("Lambda S as function of epochs")
-    plt.savefig("Results/%s_%s_Unfolded_expSPng_al%.2f_Tr%s_epoch%s_lr%.2e.png"\
+    plt.savefig("/results/%s_%s_Unfolded_expSPng_al%.2f_Tr%s_epoch%s_lr%.2e.png"\
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate))
-    pickle.dump(fig2,open("Results/%s_%s_Unfolded_expSFig_al%.2f_Tr%s_epoch%s_lr%.2e.fig.pickle"\
+    pickle.dump(fig2,open("/results/%s_%s_Unfolded_expSFig_al%.2f_Tr%s_epoch%s_lr%.2e.fig.pickle"\
                 %(ProjectName,prefix,ALPHA,TrainInstances,num_epochs,learning_rate),'wb'))
    
     #Save data of thresholding parameters for L, S

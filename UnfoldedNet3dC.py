@@ -4,6 +4,8 @@ Created on Wed Aug 29 11:12:43 2018
 
 @author: Yi Zhang
 @author: Sam Ehrenstein
+
+Modified by Sam (Bayat group, CWRU) to only calculate L from the assumption that S=D-L.
 """
 
 import torch
@@ -53,7 +55,7 @@ class ISTACell(nn.Module):
         self.conv6=Conv3dC(kernel)
         
         self.exp_L=nn.Parameter(exp_L)
-        self.exp_S=nn.Parameter(exp_S)
+        # self.exp_S=nn.Parameter(exp_S)
         
         self.coef_L=coef_L
         self.coef_S=coef_S
@@ -64,20 +66,22 @@ class ISTACell(nn.Module):
     def forward(self,data):
         x=data[0]
         L=data[1]
-        S=data[2]
+        # S=data[2]
+        S = x-L
         H,W,T2=x.shape
         
         Ltmp=self.conv1(x)+self.conv2(L)+self.conv3(S)         
-        Stmp=self.conv4(x)+self.conv5(L)+self.conv6(S)
-        
+        # Stmp=self.conv4(x)+self.conv5(L)+self.conv6(S)
+        # Stmp = x-Ltmp
+
         thL=self.sig(self.exp_L)*self.coef_L
-        thS=self.sig(self.exp_S)*self.coef_S
+        # thS=self.sig(self.exp_S)*self.coef_S
         
         L=self.svtC(Ltmp.view(H*W,T2),thL)
-        S=self.mixthre(Stmp.view(H*W,T2),thS)
+        # S=self.mixthre(Stmp.view(H*W,T2),thS)
         
         data[1]=L.view(H,W,T2)
-        data[2]=S.view(H,W,T2)
+        # data[2]=S.view(H,W,T2)
         
         return data
             
@@ -86,7 +90,8 @@ class ISTACell(nn.Module):
 
         # Perform the SVD using the Scipy implementation
         # This gets around an issue with Intel MKL
-        form_out={'pre':'concat','shape':[m,n]}
+
+        # form_out={'pre':'concat','shape':[m,n]}
         # U,S,V=svd(self.converter.torch2np([x],[form_out])[0], full_matrices=False)
         U,S,V=svd(x.cpu().detach().numpy(), full_matrices=False)
         # S = np.diag(S)
@@ -147,14 +152,14 @@ class UnfoldedNet3dC(nn.Module):
         return nn.Sequential(*filt)
     
     def forward(self,x):
-        data=to_var(torch.zeros([3]+list(x.shape)),self.CalInGPU)
+        data=to_var(torch.zeros([2]+list(x.shape)),self.CalInGPU)
         data[0]=x
         
         data=self.filter(data)  
         L=data[1]
-        S=data[2]
+        # S=data[2]
         
-        return L,S
+        return L
     
     def getexp_LS(self):
         exp_L,exp_S=self.sig(self.exp_L)*self.coef_L,self.sig(self.exp_S)*self.coef_S
