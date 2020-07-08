@@ -22,7 +22,6 @@ class Conv3dC(nn.Module):
     def __init__(self,kernel):
         super(Conv3dC,self).__init__()
         
-        self.converter = Converter()
         pad0=int((kernel[0]-1)/2)
         pad1=int((kernel[1]-1)/2)
         self.convR=nn.Conv3d(1,1,(kernel[0],kernel[0],kernel[1]),(1,1,1),(pad0,pad0,pad1))
@@ -44,6 +43,8 @@ class ISTACell(nn.Module):
     def __init__(self,kernel,exp_L,exp_S,coef_L,coef_S,CalInGPU):
         super(ISTACell,self).__init__()
         
+        self.converter = Converter()
+
         self.conv1=Conv3dC(kernel)
         self.conv2=Conv3dC(kernel)
         self.conv3=Conv3dC(kernel)
