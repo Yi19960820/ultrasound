@@ -93,11 +93,13 @@ class ISTACell(nn.Module):
 
         # form_out={'pre':'concat','shape':[m,n]}
         # U,S,V=svd(self.converter.torch2np([x],[form_out])[0], full_matrices=False)
-        U,S,V=svd(x.cpu().detach().numpy(), full_matrices=False)
-        # S = np.diag(S)
-        U = torch.from_numpy(U).reshape((m,n)).cuda()
-        S = torch.from_numpy(S).reshape((n,)).cuda()
-        V = torch.from_numpy(V).reshape((n,n)).cuda()
+        # U,S,V=svd(x.cpu().detach().numpy(), full_matrices=False)
+        # # S = np.diag(S)
+        # U = torch.from_numpy(U).reshape((m,n)).cuda()
+        # S = torch.from_numpy(S).reshape((n,)).cuda()
+        # V = torch.from_numpy(V).reshape((n,n)).cuda()
+
+        U,S,V = torch.svd(x)
         
         S=self.relu(S-th*S[0])
 
@@ -155,7 +157,7 @@ class UnfoldedNet3dC(nn.Module):
         data=to_var(torch.zeros([2]+list(x.shape)),self.CalInGPU)
         data[0]=x
         
-        data=self.filter(data)  
+        data=self.filter(data)
         L=data[1]
         # S=data[2]
         
@@ -174,8 +176,14 @@ class UnfoldedNet3dC(nn.Module):
     
 if __name__=='__main__':
     tmp=torch.tensor(0)
+
+    params_net={'layers':10,
+            'kernel':[(5,1)]*3+[(3,1)]*7,
+            'coef_L':0.4,
+            'coef_S':1.8,
+            'CalInGPU':True}
     #print(ISTACell((3,3),tmp,tmp,tmp,tmp,tmp))
-    net=(UnfoldedNet3dC())
+    net=(UnfoldedNet3dC(params_net))
     for name, param in net.named_parameters():
         if param.requires_grad:
             print(name)
