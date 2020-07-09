@@ -29,7 +29,7 @@ from DataSet import BigImageDataset
 mfile = '/results/x2_better_10layer_sim_Unfolded_Model_al0.50_Tr3200_epoch50_lr2.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
-params_net={'layers':7,
+params_net={'layers':10,
             'kernel':[(5,1)]*3+[(3,1)]*7,
             'coef_L':0.4,
             'coef_S':1.8,
