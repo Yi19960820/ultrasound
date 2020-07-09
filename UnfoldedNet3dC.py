@@ -174,16 +174,16 @@ class UnfoldedNet3dC(nn.Module):
             
         return exp_L,exp_S
     
-if __name__=='__main__':
-    tmp=torch.tensor(0)
+# if __name__=='__main__':
+#     tmp=torch.tensor(0)
 
-    params_net={'layers':10,
-            'kernel':[(5,1)]*3+[(3,1)]*7,
-            'coef_L':0.4,
-            'coef_S':1.8,
-            'CalInGPU':True}
-    #print(ISTACell((3,3),tmp,tmp,tmp,tmp,tmp))
-    net=(UnfoldedNet3dC(params_net))
-    for name, param in net.named_parameters():
-        if param.requires_grad:
-            print(name)
+#     params_net={'layers':10,
+#             'kernel':[(5,1)]*3+[(3,1)]*7,
+#             'coef_L':0.4,
+#             'coef_S':1.8,
+#             'CalInGPU':True}
+#     #print(ISTACell((3,3),tmp,tmp,tmp,tmp,tmp))
+#     net=(UnfoldedNet3dC(params_net))
+#     for name, param in net.named_parameters():
+#         if param.requires_grad:
+#             print(name)
