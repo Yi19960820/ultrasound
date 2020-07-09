@@ -30,7 +30,7 @@ import pickle
 """Settings"""
 """========================================================================="""
 #Name and choice of training set
-ProjectName = 'x2_better_20layer'
+ProjectName = 'x2_better_10layer'
 prefix      = 'sim' #invivo,sim_pm,sim
 #Load model
 loadmodel   = False
@@ -41,8 +41,8 @@ m,n,p=(39,39,20)
 
 """Network Settings"""
 params_net={}
-params_net['layers']=20 #10     # was 7
-params_net['kernel']=[(5,3)]*10+[(3,1)]*10
+params_net['layers']=10 #10     # was 7
+params_net['kernel']=[(5,1)]*3+[(3,1)]*7
 params_net['coef_L']=0.4
 params_net['coef_S']=1.8
 params_net['CalInGPU']=True #whether to calculate in GPU
