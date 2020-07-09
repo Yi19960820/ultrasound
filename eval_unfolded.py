@@ -26,7 +26,7 @@ from DataSet import BigImageDataset
 """========================================================================="""
 #Model file
 # Unfoledd trained only on sim for 50 epochs
-mfile = '/results/x2_better_unf_sim_Unfolded_Model_al0.50_Tr3200_epoch50_lr2.00e-03.pkl'
+mfile = '/results/x2_better_10layer_sim_Unfolded_Model_al0.50_Tr3200_epoch50_lr2.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
 params_net={'layers':7,
