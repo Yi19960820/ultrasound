@@ -69,23 +69,26 @@ for the offset. For example, the x=1, z=1 quadrant would be offset from the top 
 
 LR_DIR = '/data/low-rank/'
 SD_DIR = '/data/sim-data-better/'
-OUT_DIR = '/data/toy-real/'
-BLOOD_BOOST = 2
+OUT_DIR = '/data/toy-real-ranked/'
 NSV = 4
+TB = 5
+NFRAMES = 20
 sd_names = os.listdir(SD_DIR)
 random.shuffle(sd_names)
 
 for i in tqdm.tqdm(range(len(sd_names))):
     mats = loadmat(os.path.join(SD_DIR, sd_names[i]))
-    blood = mats['blood']*BLOOD_BOOST
-    tissue = mats['L']
+    coeff = random.choice([1,1.5,2,2.5])
+    blood = mats['blood'][:,:,:NFRAMES]*TB/coeff
+    tissue = mats['L'][:,:,:NFRAMES]
     angle = mats['a']
     width = mats['b']
 
+    rank = random.randint(1,NSV)
     n1, n2, n3 = tissue.shape
     caso = tissue.reshape((n1*n2, n3))
     U, s, Vh = svd(caso, full_matrices=False)
-    caso_red = U[:,:NSV]@np.diag(s[:NSV])@(Vh[:,:NSV].T)
+    caso_red = U[:,:rank]@np.diag(s[:rank])@(Vh[:,:rank].T)
     tissue = caso_red.reshape((n1, n2, n3))
     for x in (1,2):
         for z in (1,2):
@@ -104,4 +107,4 @@ for i in tqdm.tqdm(range(len(sd_names))):
             #     width *= 1e-6
 
             np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), \
-                L=tissue_quad, S=blood_quad, width=width, angle=angle, nsv=NSV, x=x, z=z)
+                L=tissue_quad, S=blood_quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff)
