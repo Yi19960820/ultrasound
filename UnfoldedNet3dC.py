@@ -19,6 +19,28 @@ def to_var(X,CalInGPU):
     if CalInGPU and torch.cuda.is_available():
         X = X.cuda()
     return Variable(X)
+
+# https://github.com/smortezavi/Randomized_SVD_GPU/blob/master/pytorch_randomized_svd.ipynb
+def simple_randomized_torch_svd(M, k=10):
+    B = torch.tensor(M).cuda(0)
+    m, n = B.size()
+    transpose = False
+    if m < n:
+        transpose = True
+        B = B.transpose(0, 1).cuda(0)
+        m, n = B.size()
+    rand_matrix = torch.rand((n,k), dtype=torch.double).cuda(0)  # short side by k
+    Q, _ = torch.qr(B @ rand_matrix)                              # long side by k
+    Q.cuda(0)
+    smaller_matrix = (Q.transpose(0, 1) @ B).cuda(0)             # k by short side
+    U_hat, s, V = torch.svd(smaller_matrix,False)
+    U_hat.cuda(0)
+    U = (Q @ U_hat)
+    
+    if transpose:
+        return V.transpose(0, 1), s, U.transpose(0, 1)
+    else:
+        return U, s, V
     
 class Conv3dC(nn.Module):
     def __init__(self,kernel):
@@ -99,7 +121,7 @@ class ISTACell(nn.Module):
         # S = torch.from_numpy(S).reshape((n,)).cuda()
         # V = torch.from_numpy(V).reshape((n,n)).cuda()
 
-        U,S,V = torch.svd(x)
+        U,S,V = simple_randomized_torch_svd(x, k=10)
         
         S=self.relu(S-th*S[0])
 
