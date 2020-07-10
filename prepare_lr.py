@@ -11,7 +11,7 @@ def find_2nd(string, substring):
     '''
     Finds the start index of the second instance of `substring` in `string`.
     '''
-   return string.find(substring, string.find(substring) + 1)
+    return string.find(substring, string.find(substring) + 1)
 
 def create_quads(blood, tissue, x, z):
     '''
