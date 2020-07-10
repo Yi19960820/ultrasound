@@ -40,7 +40,7 @@ if __name__=='__main__':
     """Settings"""
     """========================================================================="""
     #Name and choice of training set
-    ProjectName='bloodx2_20'
+    ProjectName='multi_rank'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
     loadmodel=False
