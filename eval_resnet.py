@@ -31,7 +31,7 @@ mfile = '/results/multi_rank_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-data_dir='/data/toy-real/'
+data_dir='/data/toy-real-ranked/'
 m,n,time=39,39,20 #size of data
 #Save gif
 saveGif=True
