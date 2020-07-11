@@ -48,9 +48,39 @@ def plot_metrics(fname):
     plt.title('PSNR for ResNet, TB=2.5, Rank 1-3')
     plt.ylabel('PSNR (dB)')
     plt.xlabel('Sample #')
-    plt.hlines(np.mean(metric_data['rn']), 6800, 7800, color='yellow', label='ResNet avg.')
-    plt.hlines(np.mean(metric_data['sv']), 6800, 7800, color='black', label='SVT avg.')
+    plt.hlines(np.mean(metric_data['rn']), 6800, 8800, color='yellow', label='ResNet avg.')
+    plt.hlines(np.mean(metric_data['sv']), 6800, 8800, color='black', label='SVT avg.')
     plt.legend(loc='best')
+    plt.show()
+
+def plot_by_rank(fname):
+    fname = os.path.abspath(fname)
+    metric_data = np.load(fname)
+    grid = np.zeros((4,4))
+    counts = np.zeros((4,4))
+    for i in range(len(metric_data['rn'])):
+        ls = metric_data['lsratios'][i]
+        rank = metric_data['ranks'][i]
+        counts[int(ls*2)-2][rank-1] += 1
+        grid[int(ls*2)-2][rank-1] += metric_data['rn'][i]
+    grid /= counts
+    print(grid)
+    plt.imshow(grid)
+
+    for (j,i),label in np.ndenumerate(grid):
+        label_text = '{:06.3f}'.format(label)
+        plt.text(i,j,label_text,ha='center',va='center')
+
+    xticks = np.arange(4)
+    xticklabels = [1,2,3,4]
+    yticks = np.arange(5)-0.5
+    yticklabels = [1,1.5,2,2.5]
+    plt.xticks(xticks, xticklabels)
+    plt.yticks(yticks, yticklabels)
+
+    plt.xlabel('Rank')
+    plt.ylabel('L/S')
+    plt.title('PSNR (dB) vs. rank and L/S')
     plt.show()
 
 def metrics():
@@ -196,4 +226,5 @@ if __name__=='__main__':
     # plot_loss()
     # plot_column(int(sys.argv[1]))
     # metrics()
-    plot_metrics(sys.argv[1])
+    # plot_metrics(sys.argv[1])
+    plot_by_rank(sys.argv[1])

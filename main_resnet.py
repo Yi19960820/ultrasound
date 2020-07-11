@@ -44,8 +44,8 @@ if __name__=='__main__':
     ProjectName='multi_rank'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
-    loadmodel=False
-    mfile='/results/Res3dC_nocon_sim_Res3dC_Model_Tr2400_epoch20_lr2.00e-03.pkl'
+    loadmodel=True
+    mfile='/results/multi_rank_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
 
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
@@ -58,7 +58,7 @@ if __name__=='__main__':
     seed=1234
     torch.manual_seed(seed)
     #parameters for training
-    lr_list=[2e-3] #list of learning rate
+    lr_list=[1e-3] #list of learning rate
     TrainInstances = 6000 # Size of training dataset
     ValInstances   = 800
     BatchSize      = 40

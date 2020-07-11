@@ -99,7 +99,6 @@ with torch.no_grad():
 
             out_S = model(inputs[None, None])
             loss = floss(out_S.squeeze(), targets).item()
-            print(f'{nx}: {loss}')
             loss_mean += loss
             [Sp, Dg, Sg]=convert.torch2np([out_S, D[jj], S[jj]],[form_out, form_out, form_out])
 
@@ -112,7 +111,7 @@ with torch.no_grad():
             if saveMat:
                 savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, \
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
-                    'lsratio':coeffs[4*i+j], 'rank':ranks[4*i+j]})
+                    'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
                 _, St = svt(Dg, 6)
                 resnet_list.append(psnr(Sg, Sp))
