@@ -141,6 +141,7 @@ def plot_column(n):
 
     print(f'ResNet PSNR: {psnr(S, Sp)}')
     print(f'SVT PSNR: {psnr(S, St)}')
+    print(f"Rank: {outputs['rank'][0][0]}")
     # print(ssim(S, Sp))
     # print(ssim(S, St))
     plt.show()
@@ -153,40 +154,41 @@ def plot_patches(n):
     Sp = outputs['Sp']
     S = outputs['S']
     width = outputs['width'][0][0]
+    angle = outputs['angle'][0][0]
     q = outputs['quad']
     q1 = q[0][0]
     q2 = q[0][1]
     width_px = w/.0025*width
+    print(q1, q2)
 
-    # if q1==0 and q2==0:
-    #     angle = 90 + 45
-    #     x = w - width_px/2*np.cos((angle-90)/np.pi*180)
-    #     y = w - width_px/2*np.sin((angle-90)/np.pi*180)
+    if q1==1 and q2==1:
+        x = w - width_px/2*np.cos(angle-np.pi/2)
+        y = w - width_px/2*np.sin(angle-np.pi/2)
     # elif q1==1 and q2==1:
     #     angle = -75
     #     x = -width_px/2*np.cos(angle/np.pi*180)
     #     y = width_px/2*np.sin(angle/np.pi*180)
 
-    # bbox = Rectangle((x,y), width_px, 39*1.414, angle=angle, fill=False, color='blue')
-    # copies = [copy(bbox) for _ in range(3)]
+    bbox = Rectangle((x,y), width_px, 39*1.414, angle=angle, fill=False, color='blue')
+    copies = [copy(bbox) for _ in range(3)]
 
 
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec = svt(D, 6)
+    svals, Drec = svt(D, 5)
 
     ax[0][0].imshow(log_rms(D))
     ax[0][0].set_title('Input')
-    # ax[0][0].add_patch(bbox)
+    ax[0][0].add_patch(bbox)
 
     ax[0][1].imshow(log_rms(S))
     ax[0][1].set_title('Ground truth S')
-    # ax[0][1].add_patch(copies[0])
+    ax[0][1].add_patch(copies[0])
 
     ax[0][2].imshow(log_rms(Sp))
     ax[0][2].set_title('Reconstructed S')
-    # ax[0][2].add_patch(copies[1])
+    ax[0][2].add_patch(copies[1])
 
 
     ax[1][0].semilogy(range(1, len(svals)+1), svals)
@@ -194,9 +196,11 @@ def plot_patches(n):
 
     ax[1][1].imshow(log_rms(Drec))
     ax[1][1].set_title('SVT')
-    # ax[1][1].add_patch(copies[2])
+    ax[1][1].add_patch(copies[2])
 
+    print(angle*180/np.pi)
     print(outputs['rank'][0][0])
+    print(outputs['lsratio'][0][0])
     plt.show()
 
 def plot_loss():
@@ -224,9 +228,9 @@ def svt(D,e1, e2=None):
     return S, Drec
 
 if __name__=='__main__':
-    # plot_patches(int(sys.argv[1]))
+    plot_patches(int(sys.argv[1]))
     # plot_loss()
-    plot_column(int(sys.argv[1]))
+    # plot_column(int(sys.argv[1]))
     # metrics()
     # plot_metrics(sys.argv[1])
     # plot_by_rank(sys.argv[1])

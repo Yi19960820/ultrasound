@@ -45,7 +45,7 @@ if __name__=='__main__':
     prefix='sim' #invivo,sim_pm,sim
     #Load model
     loadmodel=False
-    mfile='/results/multi_rank_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
+    mfile='/results/multi_rank_1_6_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
 
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
@@ -69,7 +69,7 @@ if __name__=='__main__':
     #directory of datasets
     d_invivo='/data/Invivo/' 
     d_simpm='/data/Sim_PM/'
-    d_sim='/data/toy-real-ranked/'
+    d_sim='/data/toy-rnd-1-6/'
     """========================================================================="""
 
     #Dataset, converter and player
