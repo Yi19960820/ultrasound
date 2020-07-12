@@ -49,18 +49,19 @@ for the offset. For example, the x=1, z=1 quadrant would be offset from the top 
         array : the tissue quandrant
     '''
     n1, n2 = shape2d
+    s1, s2, _ = blood.shape
     if x==1:
         xl = random.randint(0, maxdist)
         xr = xl+n2
     else:
-        xr = n2-random.randint(0, maxdist)
+        xr = s2-random.randint(0, maxdist)
         xl = xr-n2
     
     if z==1:
         zl = random.randint(0, maxdist)
         zr = zl+n1
     else:
-        zr = n1-random.randint(0, maxdist)
+        zr = s1-random.randint(0, maxdist)
         zl = zr-n1
     
     blood_quad = blood[zl:zr, xl:xr]
