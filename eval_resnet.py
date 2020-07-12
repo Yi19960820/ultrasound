@@ -26,7 +26,7 @@ from tqdm import tqdm
 """========================================================================="""
 #Model file
 # 10 epochs on sim
-mfile = '/results/multi_rank_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
+mfile = '/results/multi_rank_sim_Res3dC_Model_Tr6000_epoch30_lr1.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
