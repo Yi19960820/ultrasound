@@ -44,7 +44,7 @@ if __name__=='__main__':
     ProjectName='multi_rank_1_6'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
-    loadmodel=False
+    loadmodel=True
     mfile='/results/multi_rank_1_6_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
 
     """Network Settings: Remember to change the parameters when you change model!"""
@@ -58,7 +58,7 @@ if __name__=='__main__':
     seed=1234
     torch.manual_seed(seed)
     #parameters for training
-    lr_list=[2e-3] #list of learning rate
+    lr_list=[1e-3] #list of learning rate
     TrainInstances = 6000 # Size of training dataset
     ValInstances   = 800
     BatchSize      = 40
