@@ -84,6 +84,7 @@ for i in tqdm.tqdm(range(len(sd_names))):
     angle = mats['a']
     width = mats['b']
 
+    print(tissue.shape)
     rank = random.randint(1,NSV)
     n1, n2, n3 = tissue.shape
     caso = tissue.reshape((n1*n2, n3))
