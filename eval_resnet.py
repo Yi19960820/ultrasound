@@ -49,6 +49,16 @@ form_in={'pre':'concat','shape':[-1,1,m,n,time*2]}
 form_out={'pre':'concat','shape':[m,n,time]}
 convert=Converter()
 
+TrainInstances = 6000
+ValInstances = 800
+TestInstances = 200
+
+# with open('eval_resnet.yml') as f:
+#     config = yaml.load(f)
+#     mfile = config['mfile']
+#     gpu = config['gpu']
+#     data_dir = config['data_dir']
+
 #Load the model
 device='cuda:0' if torch.cuda.is_available() else 'cpu'
 # device='cpu'
@@ -62,10 +72,6 @@ else:
 model = model.cuda()
 model.eval()
 floss = torch.nn.MSELoss()
-
-TrainInstances = 6000
-ValInstances = 800
-TestInstances = 2000
 
 #Processing
 with torch.no_grad():
