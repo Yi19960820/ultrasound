@@ -93,7 +93,7 @@ def metrics():
         Sp = outputs['Sp']
         S = outputs['S']   
         D = outputs['D']
-        svals, St = svt(D, 10)
+        svals, St = svt(D, 6)
         svt_metric.append(psnr(S, St))
         resnet_metric.append(psnr(S, Sp))
     plt.scatter(range(len(outs)), resnet_metric, label='ResNet')
@@ -108,13 +108,13 @@ def metrics():
 
 def plot_column(n):
     # outputs = loadmat(f'/home/sam/Documents/mats-2-real/{n}.mat')
-    outputs = loadmat(f'/home/sam/Documents/mats/{n}.mat')
+    outputs = loadmat(f'/home/sam/Documents/mats-multi/{n}.mat')
     w = 39
-    col = 3
+    col = 11
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
-    svals, St = svt(D, 10)
+    svals, St = svt(D, 6)
     width = outputs['width'][0][0]
     width_px = w/.0025*width
 
@@ -145,45 +145,48 @@ def plot_column(n):
     # print(ssim(S, St))
     plt.show()
 
-def plot_patches(n, q1, q2):
+def plot_patches(n):
     # outputs = loadmat(f'/home/sam/Documents/mats-2-real/{n}.mat')
-    outputs = loadmat(f'/home/sam/Documents/mats/{n}.mat')
+    outputs = loadmat(f'/home/sam/Documents/mats-multi/{n}.mat')
     w = 39
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
     width = outputs['width'][0][0]
+    q = outputs['quad']
+    q1 = q[0][0]
+    q2 = q[0][1]
     width_px = w/.0025*width
 
-    if q1==0 and q2==0:
-        angle = 90 + 45
-        x = w - width_px/2*np.cos((angle-90)/np.pi*180)
-        y = w - width_px/2*np.sin((angle-90)/np.pi*180)
-    elif q1==1 and q2==1:
-        angle = -75
-        x = -width_px/2*np.cos(angle/np.pi*180)
-        y = width_px/2*np.sin(angle/np.pi*180)
+    # if q1==0 and q2==0:
+    #     angle = 90 + 45
+    #     x = w - width_px/2*np.cos((angle-90)/np.pi*180)
+    #     y = w - width_px/2*np.sin((angle-90)/np.pi*180)
+    # elif q1==1 and q2==1:
+    #     angle = -75
+    #     x = -width_px/2*np.cos(angle/np.pi*180)
+    #     y = width_px/2*np.sin(angle/np.pi*180)
 
-    bbox = Rectangle((x,y), width_px, 39*1.414, angle=angle, fill=False, color='blue')
-    copies = [copy(bbox) for _ in range(3)]
+    # bbox = Rectangle((x,y), width_px, 39*1.414, angle=angle, fill=False, color='blue')
+    # copies = [copy(bbox) for _ in range(3)]
 
 
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec = svt(D, 5)
+    svals, Drec = svt(D, 6)
 
     ax[0][0].imshow(log_rms(D))
     ax[0][0].set_title('Input')
-    ax[0][0].add_patch(bbox)
+    # ax[0][0].add_patch(bbox)
 
     ax[0][1].imshow(log_rms(S))
     ax[0][1].set_title('Ground truth S')
-    ax[0][1].add_patch(copies[0])
+    # ax[0][1].add_patch(copies[0])
 
     ax[0][2].imshow(log_rms(Sp))
     ax[0][2].set_title('Reconstructed S')
-    ax[0][2].add_patch(copies[1])
+    # ax[0][2].add_patch(copies[1])
 
 
     ax[1][0].semilogy(range(1, len(svals)+1), svals)
@@ -191,10 +194,9 @@ def plot_patches(n, q1, q2):
 
     ax[1][1].imshow(log_rms(Drec))
     ax[1][1].set_title('SVT')
-    ax[1][1].add_patch(copies[2])
+    # ax[1][1].add_patch(copies[2])
 
-    print(mse(D-S, S, D, Sp))
-    print(mse(D-Drec, S, D, Drec))
+    print(outputs['rank'][0][0])
     plt.show()
 
 def plot_loss():
@@ -222,9 +224,9 @@ def svt(D,e1, e2=None):
     return S, Drec
 
 if __name__=='__main__':
-    # plot_patches(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]))
+    # plot_patches(int(sys.argv[1]))
     # plot_loss()
-    # plot_column(int(sys.argv[1]))
+    plot_column(int(sys.argv[1]))
     # metrics()
     # plot_metrics(sys.argv[1])
-    plot_by_rank(sys.argv[1])
+    # plot_by_rank(sys.argv[1])

@@ -42,7 +42,7 @@ def create_random_quads(blood, tissue, x, z, maxdist, shape2d):
         z, int : the z quadrant index. 1=top, 2=bottom.
         maxdist, int : the maximum distance, in array entries, to offset from the two sides the quadrant would align with if not\
 for the offset. For example, the x=1, z=1 quadrant would be offset from the top and left by up to maxdist units.
-        shape2d, (int, int) : the first two dimension of blood and tissue.
+        shape2d, (int, int) : the first two dimensions of blood and tissue.
     
     Returns:
         array : the blood quadrant
@@ -69,8 +69,8 @@ for the offset. For example, the x=1, z=1 quadrant would be offset from the top 
 
 LR_DIR = '/data/low-rank/'
 SD_DIR = '/data/sim-data-better/'
-OUT_DIR = '/data/toy-real-ranked/'
-NSV = 4
+OUT_DIR = '/data/toy-rnd-1-6/'
+NSV = 6
 TB = 5
 NFRAMES = 20
 sd_names = os.listdir(SD_DIR)
@@ -93,8 +93,8 @@ for i in tqdm.tqdm(range(len(sd_names))):
     for x in (1,2):
         for z in (1,2):
             
-            blood_quad, tissue_quad = create_quads(blood, tissue, x, z)
-            # blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (n1,n2))
+            # blood_quad, tissue_quad = create_quads(blood, tissue, x, z)
+            blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (n1,n2))
 
             # bw_start = sd_names[i].find('vesselwidth')+12
             # bw_end = find_2nd(sd_names[i][bw_start:], '_')+bw_start
