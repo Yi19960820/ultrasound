@@ -84,7 +84,6 @@ for i in tqdm.tqdm(range(len(sd_names))):
     angle = mats['a']
     width = mats['b']
 
-    print(tissue.shape)
     rank = random.randint(1,NSV)
     n1, n2, n3 = tissue.shape
     caso = tissue.reshape((n1*n2, n3))
@@ -95,7 +94,7 @@ for i in tqdm.tqdm(range(len(sd_names))):
         for z in (1,2):
             
             # blood_quad, tissue_quad = create_quads(blood, tissue, x, z)
-            blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (n1/2,n2/2))
+            blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (int(n1/2),int(n2/2)))
 
             # bw_start = sd_names[i].find('vesselwidth')+12
             # bw_end = find_2nd(sd_names[i][bw_start:], '_')+bw_start
