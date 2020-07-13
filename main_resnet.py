@@ -31,6 +31,7 @@ import time
 import datetime
 import pickle
 from tqdm import tqdm
+import yaml
 
 def to_var(x):
     if torch.cuda.is_available():
@@ -69,7 +70,8 @@ if __name__=='__main__':
     #directory of datasets
     d_invivo='/data/Invivo/' 
     d_simpm='/data/Sim_PM/'
-    d_sim='/data/toy-rnd-1-6/'
+    cfg = yaml.load(open('resnet.yaml'))
+    d_sim = cfg['datadir']
     """========================================================================="""
 
     #Dataset, converter and player

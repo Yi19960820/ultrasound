@@ -6,6 +6,7 @@ import os
 import random
 import tqdm
 from scipy.linalg import svd
+import yaml
 
 def find_2nd(string, substring):
     '''
@@ -70,8 +71,9 @@ for the offset. For example, the x=1, z=1 quadrant would be offset from the top 
 
 LR_DIR = '/data/low-rank/'
 SD_DIR = '/data/sim-data-better/'
-OUT_DIR = '/data/toy-rnd-1-6/'
-NSV = 6
+cfg = yaml.load(open('resnet.yaml'))
+OUT_DIR = cfg['datadir']
+NSV = 7
 TB = 5
 NFRAMES = 20
 sd_names = os.listdir(SD_DIR)
@@ -79,7 +81,7 @@ random.shuffle(sd_names)
 
 for i in tqdm.tqdm(range(len(sd_names))):
     mats = loadmat(os.path.join(SD_DIR, sd_names[i]))
-    coeff = random.choice([1,1.5,2,2.5])
+    coeff = random.choice([1,1.5,2,2.5,3,3.5,4])
     blood = mats['blood'][:,:,:NFRAMES]*TB/coeff
     tissue = mats['L'][:,:,:NFRAMES]
     angle = mats['a']

@@ -64,15 +64,15 @@ def plot_by_rank(fname):
         counts[int(ls*2)-2][rank-1] += 1
         grid[int(ls*2)-2][rank-1] += metric_data['rn'][i]
     grid /= counts
-    print(grid)
+    print(f'Standard deviation: {np.std(grid)}')
     plt.imshow(grid)
 
     for (j,i),label in np.ndenumerate(grid):
         label_text = '{:06.3f}'.format(label)
         plt.text(i,j,label_text,ha='center',va='center')
 
-    xticks = np.arange(4)
-    xticklabels = [1,2,3,4]
+    xticks = np.arange(6)
+    xticklabels = [1,2,3,4,5,6]
     yticks = np.arange(5)-0.5
     yticklabels = [1,1.5,2,2.5]
     plt.xticks(xticks, xticklabels)
