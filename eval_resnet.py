@@ -26,7 +26,7 @@ from tqdm import tqdm
 """========================================================================="""
 #Model file
 # 10 epochs on sim
-mfile = '/results/multi_rank_sim_Res3dC_Model_Tr6000_epoch30_lr1.00e-03.pkl'
+mfile = '/results/multi_rank_1_6_sim_Res3dC_Model_Tr6000_epoch30_lr1.00e-03.pkl'
 
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
@@ -39,7 +39,7 @@ save_gif_dir='/results/gifs'
 cmap='hot'
 note='abs'
 #Save matrix
-saveMat=True
+saveMat=False
 saveMetadata=True
 save_mat_dir='/results/mats'
 """========================================================================="""
@@ -51,7 +51,7 @@ convert=Converter()
 
 TrainInstances = 6000
 ValInstances = 800
-TestInstances = 200
+TestInstances = 2000
 
 # with open('eval_resnet.yml') as f:
 #     config = yaml.load(f)
@@ -119,7 +119,7 @@ with torch.no_grad():
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
-                _, St = svt(Dg, 6)
+                _, St = svt(Dg, 7)
                 resnet_list.append(psnr(Sg, Sp))
                 svt_list.append(psnr(Sg, St))
 
