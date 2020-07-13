@@ -20,6 +20,7 @@ import os
 from main_resnet import to_var
 from plot_mat import psnr, svt
 from tqdm import tqdm
+import yaml
 #from tools.mat2gif import mat2gif
 
 """Settings"""
@@ -31,7 +32,6 @@ mfile = '/results/multi_rank_1_6_sim_Res3dC_Model_Tr6000_epoch30_lr1.00e-03.pkl'
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-data_dir='/data/toy-rnd-1-6/'
 m,n,time=39,39,20 #size of data
 #Save gif
 saveGif=True
@@ -42,6 +42,10 @@ note='abs'
 saveMat=False
 saveMetadata=True
 save_mat_dir='/results/mats'
+
+cfg = yaml.load(open('resnet.yaml'))
+data_dir = cfg['datadir']
+
 """========================================================================="""
 
 #Converter
@@ -119,7 +123,7 @@ with torch.no_grad():
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
-                _, St = svt(Dg, ranks[4*i+jj]+2)
+                _, St = svt(Dg, 7)
                 resnet_list.append(psnr(Sg, Sp))
                 svt_list.append(psnr(Sg, St))
 
