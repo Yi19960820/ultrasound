@@ -58,7 +58,6 @@ if __name__=='__main__':
     seed=1234
     torch.manual_seed(seed)
     #parameters for training
-    lr_list=[1e-3] #list of learning rate
     TrainInstances = 6000 # Size of training dataset
     ValInstances   = 800
     BatchSize      = 40
@@ -69,10 +68,14 @@ if __name__=='__main__':
     #directory of datasets
     d_invivo='/data/Invivo/' 
     d_simpm='/data/Sim_PM/'
+
+    # Load settings from config file
     cfg = yaml.load(open('resnet.yaml'))
     d_sim = cfg['datadir']
     loadmodel = cfg['loadmodel']
-    print(type(loadmodel))
+    lr_list = list(cfg['lr'])
+    if loadmodel:
+        mfile = cfg['mfile']
     """========================================================================="""
 
     #Dataset, converter and player
