@@ -45,6 +45,7 @@ save_mat_dir='/results/mats'
 
 cfg = yaml.load(open('resnet.yaml'))
 data_dir = cfg['datadir']
+TestInstances = cfg['ntest']
 
 """========================================================================="""
 
@@ -55,7 +56,6 @@ convert=Converter()
 
 TrainInstances = 6000
 ValInstances = 800
-TestInstances = 2000
 
 # with open('eval_resnet.yml') as f:
 #     config = yaml.load(f)

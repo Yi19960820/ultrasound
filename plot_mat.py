@@ -142,6 +142,7 @@ def plot_column(n):
     print(f'ResNet PSNR: {psnr(S, Sp)}')
     print(f'SVT PSNR: {psnr(S, St)}')
     print(f"Rank: {outputs['rank'][0][0]}")
+    print(f"L/S: {outputs['lsratio'][0][0]}")
     # print(ssim(S, Sp))
     # print(ssim(S, St))
     plt.show()
@@ -230,7 +231,7 @@ def svt(D,e1, e2=None):
 if __name__=='__main__':
     # plot_patches(int(sys.argv[1]))
     # plot_loss()
-    # plot_column(int(sys.argv[1]))
+    plot_column(int(sys.argv[1]))
     # metrics()
     # plot_metrics(sys.argv[1])
-    plot_by_rank(sys.argv[1])
+    # plot_by_rank(sys.argv[1])

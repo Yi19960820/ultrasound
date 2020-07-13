@@ -76,6 +76,7 @@ if __name__=='__main__':
     lr_list = [cfg['lr']]
     if loadmodel:
         mfile = cfg['mfile']
+    print(loadmodel)
     """========================================================================="""
 
     #Dataset, converter and player
