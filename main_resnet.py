@@ -73,6 +73,8 @@ if __name__=='__main__':
     cfg = yaml.load(open('resnet.yaml'))
     d_sim = cfg['datadir']
     loadmodel = cfg['loadmodel']
+    if loadmodel=='False':
+        loadmodel=False
     lr_list = [cfg['lr']]
     if loadmodel:
         mfile = cfg['mfile']
