@@ -39,7 +39,7 @@ save_gif_dir='/results/gifs'
 cmap='hot'
 note='abs'
 #Save matrix
-saveMat=False
+saveMat=True
 saveMetadata=True
 save_mat_dir='/results/mats'
 
