@@ -70,7 +70,7 @@ if __name__=='__main__':
     d_simpm='/data/Sim_PM/'
 
     # Load settings from config file
-    cfg = yaml.load(open('resnet.yaml'))
+    cfg = yaml.load(open('/data/resnet.yaml'))
     d_sim = cfg['datadir']
     loadmodel = cfg['loadmodel']
     if loadmodel=='False':
