@@ -56,8 +56,8 @@ def plot_metrics(fname):
 def plot_by_rank(fname):
     fname = os.path.abspath(fname)
     metric_data = np.load(fname)
-    grid = np.zeros((4,4))
-    counts = np.zeros((4,4))
+    grid = np.zeros((4,6))
+    counts = np.zeros((4,6))
     for i in range(len(metric_data['rn'])):
         ls = metric_data['lsratios'][i]
         rank = metric_data['ranks'][i]
@@ -228,9 +228,9 @@ def svt(D,e1, e2=None):
     return S, Drec
 
 if __name__=='__main__':
-    plot_patches(int(sys.argv[1]))
+    # plot_patches(int(sys.argv[1]))
     # plot_loss()
     # plot_column(int(sys.argv[1]))
     # metrics()
     # plot_metrics(sys.argv[1])
-    # plot_by_rank(sys.argv[1])
+    plot_by_rank(sys.argv[1])

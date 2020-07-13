@@ -31,7 +31,7 @@ mfile = '/results/multi_rank_1_6_sim_Res3dC_Model_Tr6000_epoch30_lr1.00e-03.pkl'
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-data_dir='/data/toy-real-ranked/'
+data_dir='/data/toy-rnd-1-6/'
 m,n,time=39,39,20 #size of data
 #Save gif
 saveGif=True
@@ -130,5 +130,5 @@ print(f'Mean loss: {loss_mean}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)} dB')
     print(f'SVT mean PSNR: {np.mean(svt_list)} dB')
-    np.savez_compressed(os.path.join(save_mat_dir, f'metrics_multi_rank_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
+    np.savez_compressed(os.path.join(save_mat_dir, f'metrics_multi_rank_1_6_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
         lsratios=coeffs, ranks=ranks)
