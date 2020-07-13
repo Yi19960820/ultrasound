@@ -42,11 +42,10 @@ if __name__=='__main__':
     """Settings"""
     """========================================================================="""
     #Name and choice of training set
-    ProjectName='multi_rank_1_6'
+    ProjectName='multi_rank_1_7'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
-    loadmodel=True
-    mfile='/results/multi_rank_1_6_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
+    mfile='/results/multi_rank_1_7_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
 
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
@@ -72,6 +71,8 @@ if __name__=='__main__':
     d_simpm='/data/Sim_PM/'
     cfg = yaml.load(open('resnet.yaml'))
     d_sim = cfg['datadir']
+    loadmodel = cfg['loadmodel']
+    print(type(loadmodel))
     """========================================================================="""
 
     #Dataset, converter and player
