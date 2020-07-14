@@ -66,8 +66,8 @@ def plot_metrics(fname):
 def plot_by_rank(fname):
     fname = os.path.abspath(fname)
     metric_data = np.load(fname)
-    grid = np.zeros((4,6))
-    counts = np.zeros((4,6))
+    grid = np.zeros((7,7))
+    counts = np.zeros((7,7))
     for i in range(len(metric_data['rn'])):
         ls = metric_data['lsratios'][i]
         rank = metric_data['ranks'][i]
@@ -80,10 +80,10 @@ def plot_by_rank(fname):
         label_text = '{:06.3f}'.format(label)
         plt.text(i,j,label_text,ha='center',va='center')
 
-    xticks = np.arange(6)
-    xticklabels = [1,2,3,4,5,6]
-    yticks = np.arange(5)-0.5
-    yticklabels = [1,1.5,2,2.5]
+    xticks = np.arange(7)
+    xticklabels = [1,2,3,4,5,6,7]
+    yticks = np.arange(8)-0.5
+    yticklabels = [1,1.5,2,2.5,3,3.5,4]
     plt.xticks(xticks, xticklabels)
     plt.yticks(yticks, yticklabels)
 
