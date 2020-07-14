@@ -7,6 +7,7 @@ import sys
 from copy import copy
 import os
 from CORONA.Res3dC.DataSet_3dC import preprocess
+import argparse
 
 def log_rms(mat):
     # TODO make the dynamic ranges the same (I think this is done by default)
@@ -39,6 +40,15 @@ def ssim(S, Sp):
 
     return np.abs((2*mu_x*mu_y+c1)*(2*cov+c2)/((mu_x**2+mu_y**2+c1)*(var_x+var_y+c2)))
 
+def filter_mats(data_dir, rank=None, ls=None):
+    data_dir = os.path.abspath(data_dir)
+    mats = os.listdir(data_dir)
+    for m in mats:
+        mat = loadmat(os.path.join(data_dir, m))
+        if rank==None or rank==mat['rank'][0][0]:
+            if ls==None or ls==mat['lsratio'][0][0]:
+                print(m)
+
 def plot_metrics(fname):
     fname = os.path.abspath(fname)
     metric_data = np.load(fname)
@@ -64,7 +74,6 @@ def plot_by_rank(fname):
         counts[int(ls*2)-2][rank-1] += 1
         grid[int(ls*2)-2][rank-1] += metric_data['rn'][i]
     grid /= counts
-    print(f'Standard deviation: {np.std(grid)}')
     plt.imshow(grid)
 
     for (j,i),label in np.ndenumerate(grid):
@@ -106,11 +115,9 @@ def metrics():
     plt.legend()
     plt.show()
 
-def plot_column(n):
-    # outputs = loadmat(f'/home/sam/Documents/mats-2-real/{n}.mat')
-    outputs = loadmat(f'/home/sam/Documents/mats-multi/{n}.mat')
+def plot_column(fname, col=11):
+    outputs = loadmat(os.path.abspath(fname))
     w = 39
-    col = 11
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
@@ -143,13 +150,11 @@ def plot_column(n):
     print(f'SVT PSNR: {psnr(S, St)}')
     print(f"Rank: {outputs['rank'][0][0]}")
     print(f"L/S: {outputs['lsratio'][0][0]}")
-    # print(ssim(S, Sp))
-    # print(ssim(S, St))
     plt.show()
 
-def plot_patches(n):
-    # outputs = loadmat(f'/home/sam/Documents/mats-2-real/{n}.mat')
-    outputs = loadmat(f'/home/sam/Documents/mats-multi/{n}.mat')
+def plot_patches(fname):
+    fname = os.path.abspath(fname)
+    outputs = loadmat(fname)
     w = 39
     D = outputs['D']
     Sp = outputs['Sp']
@@ -229,9 +234,26 @@ def svt(D,e1, e2=None):
     return S, Drec
 
 if __name__=='__main__':
-    # plot_patches(int(sys.argv[1]))
-    # plot_loss()
-    plot_column(int(sys.argv[1]))
-    # metrics()
-    # plot_metrics(sys.argv[1])
-    # plot_by_rank(sys.argv[1])
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--patches', action='store_true')
+    parser.add_argument('--column', action='store_true')
+    parser.add_argument('--metrics', action='store_true')
+    parser.add_argument('--grid', action='store_true')
+    parser.add_argument('--filter', action='store_true')
+
+    parser.add_argument('-f', '--fname')
+    parser.add_argument('-c', '--col', type=int)
+    parser.add_argument('--rank', type=int)
+    parser.add_argument('--ls', type=float)
+    args = parser.parse_args()
+
+    if args.patches:
+        plot_patches(args.fname)
+    elif args.column:
+        plot_column(args.fname, args.col)
+    elif args.metrics:
+        plot_metrics(args.fname)
+    elif args.grid:
+        plot_by_rank(args.fname)
+    elif args.filter:
+        filter_mats(args.fname, args.rank, args.ls)
