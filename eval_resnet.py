@@ -85,7 +85,8 @@ with torch.no_grad():
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
     fnames = os.listdir(data_dir)
-    fnames = fnames[TrainInstances+ValInstances:].sort()
+    fnames = fnames[TrainInstances+ValInstances:]
+    fnames.sort()
 
     widths = []
     angles = []
