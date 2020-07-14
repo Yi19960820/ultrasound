@@ -39,14 +39,13 @@ save_gif_dir='/results/gifs'
 cmap='hot'
 note='abs'
 #Save matrix
-saveMat=True
 saveMetadata=True
 save_mat_dir='/results/mats'
 
 cfg = yaml.load(open('/data/resnet.yaml'))
 data_dir = cfg['datadir']
 TestInstances = cfg['ntest']
-
+saveMat = cfg['saveMat']
 """========================================================================="""
 
 #Converter
