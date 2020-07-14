@@ -84,8 +84,8 @@ with torch.no_grad():
         train_size=TrainInstances, val_size=ValInstances)
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
-    fnames = os.listdir(data_dir)[TrainInstances+ValInstances:]
-    fnames.sort()
+    fnames = os.listdir(data_dir)
+    fnames = fnames[TrainInstances+ValInstances:].sort()
 
     widths = []
     angles = []
@@ -134,5 +134,5 @@ print(f'Mean loss: {loss_mean}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)} dB')
     print(f'SVT mean PSNR: {np.mean(svt_list)} dB')
-    np.savez_compressed(os.path.join(save_mat_dir, f'metrics_multi_rank_1_6_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
+    np.savez_compressed(os.path.join(save_mat_dir, f'metrics_multi_rank_1_7_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
         lsratios=coeffs, ranks=ranks)
