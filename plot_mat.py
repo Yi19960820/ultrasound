@@ -63,21 +63,25 @@ def plot_metrics(fname):
     plt.legend(loc='best')
     plt.show()
 
-def plot_by_rank(fname):
+def plot_by_rank(fname, diff=False):
     fname = os.path.abspath(fname)
     metric_data = np.load(fname)
     grid = np.zeros((7,7))
-    counts = np.zeros((7,7))
+    grid_sv = np.zeros_like(grid)
+    counts = np.zeros_like(grid)
     for i in range(len(metric_data['rn'])):
         ls = metric_data['lsratios'][i]
         rank = metric_data['ranks'][i]
         counts[int(ls*2)-2][rank-1] += 1
         grid[int(ls*2)-2][rank-1] += metric_data['rn'][i]
+        grid_sv[int(ls*2)-2][rank-1] += metric_data['sv'][i]
+    if diff:
+        grid -= grid_sv
     grid /= counts
     plt.imshow(grid)
 
     for (j,i),label in np.ndenumerate(grid):
-        label_text = '{:06.3f}'.format(label)
+        label_text = '{:6.2f}'.format(label)
         plt.text(i,j,label_text,ha='center',va='center')
 
     xticks = np.arange(7)
@@ -89,7 +93,10 @@ def plot_by_rank(fname):
 
     plt.xlabel('Rank')
     plt.ylabel('L/S')
-    plt.title('PSNR (dB) vs. rank and L/S')
+    if diff:
+        plt.title('PSNR (dB) difference from SVT vs. rank and L/S')
+    else:
+        plt.title('PSNR (dB) vs. rank and L/S')
     plt.show()
 
 def metrics():
@@ -121,7 +128,7 @@ def plot_column(fname, col=11):
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
-    svals, St = svt(D, 6)
+    svals, St = svt(D, 9)
     width = outputs['width'][0][0]
     width_px = w/.0025*width
 
@@ -245,6 +252,7 @@ if __name__=='__main__':
     parser.add_argument('-c', '--col', type=int)
     parser.add_argument('--rank', type=int)
     parser.add_argument('--ls', type=float)
+    parser.add_argument('--diff', action='store_true')
     args = parser.parse_args()
 
     if args.patches:
@@ -254,6 +262,6 @@ if __name__=='__main__':
     elif args.metrics:
         plot_metrics(args.fname)
     elif args.grid:
-        plot_by_rank(args.fname)
+        plot_by_rank(args.fname, args.diff)
     elif args.filter:
         filter_mats(args.fname, args.rank, args.ls)

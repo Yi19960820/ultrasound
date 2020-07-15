@@ -123,7 +123,7 @@ with torch.no_grad():
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
-                _, St = svt(Dg, 7)
+                _, St = svt(Dg, 8)
                 resnet_list.append(psnr(Sg, Sp))
                 svt_list.append(psnr(Sg, St))
 
