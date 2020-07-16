@@ -43,7 +43,7 @@ if __name__=='__main__':
     """Settings"""
     """========================================================================="""
     #Name and choice of training set
-    ProjectName='deep_1_7'
+    ProjectName='complex_deep_1_7'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
     mfile='/results/multi_rank_1_7_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
