@@ -7,7 +7,7 @@ class ConvBlock3dC(nn.Module):
     '''
     Convolutional (encoding) block for the U-Net.
     '''
-    def __init__(self, Cin, Cmid, Cout, w, p):
+    def __init__(self, Cin, Cout, w, p):
         super(ConvBlock3dC, self).__init__()
 
         w1, w2 = w
@@ -15,10 +15,10 @@ class ConvBlock3dC(nn.Module):
         p1, p2 = p
 
         self.relu = nn.ReLU()
-        self.conv0 = Conv3dC(Cin,Cmid,(w1,w1,w2),(2,2,s2),(p1,p1,p2))
-        self.conv1 = Conv3dC(Cin,Cmid,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.conv2 = Conv3dC(Cmid,Cmid,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.conv3 = Conv3dC(Cmid,Cmid,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
+        self.conv0 = Conv3dC(Cin,Cout,(w1,w1,w2),(2*s1,2*s1,s2),(p1,p1,p2))
+        self.conv1 = Conv3dC(Cout,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
+        self.conv2 = Conv3dC(Cout,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
+        self.conv3 = Conv3dC(Cout,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
         
         def forward(self, xR, xI):
             yR, yI = self.conv0(xR, xI)
@@ -62,14 +62,14 @@ class DeconvBlock3dC(nn.Module):
         s1, s2 = 1,1
 
         self.relu = nn.ReLU()
-        self.conv0 = Deconv3dC(Cin,Cmid,(w1,w1,w2),(2,2,s2),(p1,p1,p2))
-        self.conv1 = Deconv3dC(Cin,Cmid,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.conv2 = Deconv3dC(Cmid,Cmid,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.conv3 = Deconv3dC(Cmid,Cmid,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
+        self.conv0 = Deconv3dC(Cin,Cin,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
+        self.conv1 = Deconv3dC(Cin,Cin,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
+        self.conv2 = Deconv3dC(Cin,Cin,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
+        self.conv3 = Deconv3dC(Cin,Cout,(w1,w1,w2),(2*s1,2*s1,s2),(p1,p1,p2))
         
         def forward(self, xR, xI, xRc, xIc):
-            yR += xRc
-            yI += xIc
+            yR = xR + xRc
+            yI = xI + xIc
             yR, yI = self.conv0(yR, yI)
             yRp, yIp = self.conv1(yR, yI)
             yRp, yIp = self.conv2(yRp, yIp)
@@ -79,8 +79,14 @@ class DeconvBlock3dC(nn.Module):
             return yR, yI
 
 class UGenerator3dC(nn.Module):
-    def __init__(self, gpu=True, nchans=8):
+    def __init__(self, gpu=True):
         super(UGenerator3dC, self).__init__()
-
-        self.relu = nn.ReLU()
         
+        c  = [1, 4, 8, 16, 32]
+        w1 = [0 ,5, 3,  3,  3]
+        w2 = [0 ,5, 3,  3,  3]
+        p1 = [0, 2, 1,  1,  1]
+        p2 = [0, 2, 1,  1,  1]
+        
+        self.relu = nn.ReLU()
+        self.conv1
