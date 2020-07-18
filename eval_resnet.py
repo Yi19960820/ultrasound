@@ -13,7 +13,7 @@ from scipy.io import savemat
 sys.path.append('../')
 from CORONA.classes.Player import Player
 from CORONA.classes.Dataset import Converter
-from ResNet3dC import ResNet3dC
+from CORONA.network.ResNet3dC import ResNet3dC
 from DataSet import BigImageDataset
 import torch.utils.data as data
 import os
