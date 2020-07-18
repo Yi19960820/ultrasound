@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Aug 20 21:48:02 2018
-Modified on Fri Jun 12 2020 by Sam Ehrenstein
+Created on Fri Jul 17 2020
 
-@author: Yi Zhang
 @author: Sam Ehrenstein
 """
 
@@ -45,7 +43,6 @@ if __name__=='__main__':
     ProjectName='complex_deep_1_7'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
-    mfile='/results/multi_rank_1_7_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
 
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
@@ -166,8 +163,8 @@ if __name__=='__main__':
             print('\n'+st)
             log.write('\n'+st+'\n')
             
-            loss_val_mean=0
-            loss_mean=0
+            gen_loss_mean = 0
+            disc_loss_mean = 0
             # Train
             print('Loading and calculating training batches...')
             log.write('Loading and calculating training batches...\n')
@@ -207,90 +204,42 @@ if __name__=='__main__':
             gen_loss_mean /= TrainInstances
             disc_loss_mean /= TrainInstances
             endtime=time.time()
+            g_lossmean_vec[epoch] = gen_loss_mean
+            d_lossmean_vec[epoch] = disc_loss_mean
             print('Training time is %f'%(endtime-starttime))
             log.write('Training time is %f\n'%(endtime-starttime))
             
             #Save model in each epoch
-            if True or loss_val_mean<minloss:
-                print('saved at [epoch%d/%d]'%(epoch+1,num_epochs))
-                log.write('saved at [epoch%d/%d]\n'\
-                    %(epoch+1,num_epochs))
-                torch.save(generator.state_dict(), 
-                        "/results/%s_%s_Gen_Model_Tr%s_epoch%s_lr%.2e.pkl"\
-                        %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
-                torch.save(discriminator.state_dict(), 
-                        "/results/%s_%s_Dis_Model_Tr%s_epoch%s_lr%.2e.pkl"\
-                        %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
-                minloss=min(loss_val_mean,minloss)
+            print('saved at [epoch%d/%d]'%(epoch+1,num_epochs))
+            log.write('saved at [epoch%d/%d]\n'\
+                %(epoch+1,num_epochs))
+            torch.save(generator.state_dict(), 
+                    "/results/%s_%s_Gen_Model_Tr%s_epoch%s_lr%.2e.pkl"\
+                    %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
+            torch.save(discriminator.state_dict(), 
+                    "/results/%s_%s_Dis_Model_Tr%s_epoch%s_lr%.2e.pkl"\
+                    %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
         
             # Print loss
             if (epoch + 1)%1==0:    # % 10
-                print('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e'\
-                    %(epoch+1,num_epochs,loss_mean,loss_val_mean))
-                log.write('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e\n'\
-                    %(epoch+1,num_epochs,loss_mean,loss_val_mean))
+                print('Epoch [%d/%d], G lossmean: %.5e, D lossmean: %.5e'\
+                    %(epoch+1,num_epochs,gen_loss_mean,disc_loss_mean))
 
-                if loss.item() > 100:
+                if gen_loss.item() > 100:
                     print('hitbadrut')
                     log.write('hitbadrut\n')
                     break
-            
-            #Observe results
-            if plot and ((epoch+1)%plotT==0 or epoch==0):
-                [xtr,ytr,ptr,xval,yval,pval]=conter.torch2np([D[ii],S[ii],outputs_S,
-                                                            Dv[jj],Sv[jj],outputs_Sv],
-                                                            formlist)
-                # player.plotmat([xtr[:,:,frame],ytr[:,:,frame],ptr[:,:,frame],
-                #             xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
-                #                 tit=['xtr','ytr','ptr','xval','yval','pval'],
-                #                 supt='Epoch{%d/%d}'%(epoch+1,num_epochs))
-                plt.pause(0.1)
-            
-            lossmean_vec[epoch]=loss_mean
-            lossmean_val_vec[epoch]=loss_val_mean
 
             np.savez('/results/%s_%s_GAN_LossData_Tr%s_epoch%s_lr%.2e'\
                 %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
-                lossmean_vec,lossmean_val_vec)
+                g_lossmean_vec, d_lossmean_vec)
 
         """Save logs, prediction, loss figure, loss data, model and settings """
-        #Graphs
-        #Save the prediction figure
-        [xtr,ytr,ptr,xval,yval,pval]=conter.torch2np([D[ii],S[ii],outputs_S,
-                                                    Dv[jj],Sv[jj],outputs_Sv],
-                                                    formlist)
-        player.plotmat([xtr[:,:,frame],ytr[:,:,frame],ptr[:,:,frame],
-                    xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
-                        tit=['xtr','ytr','ptr','xval','yval','pval'],
-                        supt='Epoch{%d/%d}'%(epoch+1,num_epochs),ion=False)
-        plt.savefig('/results/%s_%s_GAN_Pred_Tr%s_epoch%s_lr%.2e.png'\
-                    %(ProjectName,prefix,TrainInstances,
-                    num_epochs,learning_rate),ion=False)
-
-        #MSE
-        fig=plt.figure()
-        epochs_vec=np.arange(0, num_epochs, 1)
-        plt.semilogy(epochs_vec,lossmean_vec,'-*',label='loss')
-        plt.semilogy(epochs_vec,lossmean_val_vec,'-*',label='loss_val')
-        plt.xlabel('epoch')
-        plt.ylabel('Loss')
-        plt.ylim(ymin=0)
-        plt.title("MSE")
-        plt.legend()
-        #Save png, pickle, data of MSE
-        plt.savefig('/results/%s_%s_GAN_LossPng_Tr%s_epoch%s_lr%.2e.png'\
-                    %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
-        pickle.dump(fig,open("/results/%s_%s_GAN_LossFig_Tr%s_epoch%s_lr%.2e.fig.pickle"\
-                            %(ProjectName,prefix,TrainInstances,
-                            num_epochs,learning_rate),'wb'))
-        np.savez('/results/%s_%s_GAN_LossData_Tr%s_epoch%s_lr%.2e'\
-                %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
-                lossmean_vec,lossmean_val_vec)
-        
         #Save settings of training
         params={'ProjectName':ProjectName,
                 'prefix':prefix,
-                'mfile':mfile if loadmodel else None,
+                'gfile':gfile if loadmodel else None,
+                'dfile':dfile if loadmodel else None,
                 'gpu':gpu,
                 'data_dir':data_dir,
                 'shape':shape_dset,
@@ -308,8 +257,3 @@ if __name__=='__main__':
             file.write(k+'='+str(v)+'\n')
             file.write('\t')
         file.close()
-        
-        #Print min loss
-        print('\nmin Loss=%.3e'%minloss)
-        log.write('\nmin Loss=%.3e'%minloss)
-        log.close()
