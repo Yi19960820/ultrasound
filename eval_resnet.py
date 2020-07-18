@@ -13,7 +13,7 @@ from scipy.io import savemat
 sys.path.append('../')
 from CORONA.classes.Player import Player
 from CORONA.classes.Dataset import Converter
-from CORONA.network.ResNet3dC import ResNet3dC
+from ResNet3dC import ResNet3dC
 from DataSet import BigImageDataset
 import torch.utils.data as data
 import os
@@ -135,5 +135,5 @@ print(f'Mean loss: {loss_mean}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)} dB')
     print(f'SVT mean PSNR: {np.mean(svt_list)} dB')
-    np.savez_compressed(os.path.join(save_mat_dir, f'deep_1_7_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
+    np.savez_compressed(os.path.join(save_mat_dir, f'complex_deep_1_7_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
         lsratios=coeffs, ranks=ranks)
