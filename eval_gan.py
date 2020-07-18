@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Aug 26 15:10:02 2018
+Created on Fri Jul 17 2020
 
-@author: Yi Zhang
+@author: Sam Ehrenstein
 """
 
 import numpy as np
@@ -13,7 +13,7 @@ from scipy.io import savemat
 sys.path.append('../')
 from CORONA.classes.Player import Player
 from CORONA.classes.Dataset import Converter
-from CORONA.network.ResNet3dC import ResNet3dC
+from UGAN import UDiscriminator, UGenerator
 from DataSet import BigImageDataset
 import torch.utils.data as data
 import os
@@ -46,7 +46,6 @@ cfg = yaml.load(open('/data/resnet.yaml'))
 data_dir = cfg['datadir']
 TestInstances = cfg['ntest']
 saveMat = cfg['saveMat']
-mfile = cfg['mfile']
 """========================================================================="""
 
 #Converter
@@ -59,15 +58,7 @@ ValInstances = 800
 
 # with open('eval_resnet.yml') as f:
 #     config = yaml.load(f)
-#     mfile = config['mfile']
-#     gpu = config['gpu']
-#     data_dir = config['data_dir']
-
-#Load the model
-device='cuda:0' if torch.cuda.is_available() else 'cpu'
-# device='cpu'
-if mfile[-3:]=='pkl':
-    model=ResNet3dC(gpu)
+#     mfile = config['mfileYi Zhang
     state_dict=torch.load(mfile,map_location=device)
     model.load_state_dict(state_dict)
 else:
@@ -135,5 +126,5 @@ print(f'Mean loss: {loss_mean}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)} dB')
     print(f'SVT mean PSNR: {np.mean(svt_list)} dB')
-    np.savez_compressed(os.path.join(save_mat_dir, f'deep_1_7_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
+    np.savez_compressed(os.path.join(save_mat_dir, f'complex_deep_1_7_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
         lsratios=coeffs, ranks=ranks)
