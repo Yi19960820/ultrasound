@@ -144,9 +144,9 @@ class UDiscriminator(nn.Module):
         p1 = [0, 2, 1,  1,  1]
         p2 = [0, 2, 1,  1,  1]
 
-        d1 = mps(mps(shape[2], 2, 2, 0), 2, 2, 0)
-        d2 = mps(mps(shape[3], 2, 2, 0), 2, 2, 0)
-        d3 = shape[4]
+        d1 = mps(mps(shape[0], 2, 2, 0), 2, 2, 0)
+        d2 = mps(mps(shape[1], 2, 2, 0), 2, 2, 0)
+        d3 = shape[2]
 
         self.enc0 = ConvBlock3dC(c[0], c[1], (w1[1], w2[1]), (p1[1], p2[1]))
         self.pool1 = MaxPool3dC((2,2,1), (2,2,1), 0)
@@ -164,7 +164,7 @@ class UDiscriminator(nn.Module):
         T=int(T2/2)
         xRi=x[:,:,:,:,0:T]
         xIi=x[:,:,:,:,T:T2]
-
+        print(x.shape)
         xR, xI = self.enc0(xRi, xIi)
         # print('xR', type(xR))
         # print('xI', type(xI))
