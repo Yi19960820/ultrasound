@@ -7,6 +7,7 @@ Created on Sun Aug 26 15:10:02 2018
 
 import numpy as np
 import sys
+import time
 import torch
 import matplotlib.pyplot as plt
 from scipy.io import savemat
@@ -31,7 +32,7 @@ import yaml
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-m,n,time=39,39,20 #size of data
+m,n,p=39,39,20 #size of data
 #Save gif
 saveGif=True
 save_gif_dir='/results/gifs'
@@ -49,8 +50,8 @@ mfile = cfg['mfile']
 """========================================================================="""
 
 #Converter
-form_in={'pre':'concat','shape':[-1,1,m,n,time*2]}
-form_out={'pre':'concat','shape':[m,n,time]}
+form_in={'pre':'concat','shape':[-1,1,m,n,p*2]}
+form_out={'pre':'concat','shape':[m,n,p]}
 convert=Converter()
 
 TrainInstances = 6000
@@ -79,7 +80,7 @@ floss = torch.nn.MSELoss()
 #Processing
 with torch.no_grad():
     loss_mean = 0
-    test_data = BigImageDataset(TestInstances, (m,n,time*2), 2, data_dir=data_dir, \
+    test_data = BigImageDataset(TestInstances, (m,n,p*2), 2, data_dir=data_dir, \
         train_size=TrainInstances, val_size=ValInstances)
     test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
     nx = 0
@@ -102,6 +103,7 @@ with torch.no_grad():
 
     resnet_list = []
     svt_list = []
+    net_start = time.time()
     for i,(_,S,D) in tqdm(enumerate(test_loader)):
         for jj in range(len(D)):
             inputs = to_var(D[jj])
@@ -123,16 +125,30 @@ with torch.no_grad():
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
-                _, St = svt(Dg, 8)
                 resnet_list.append(psnr(Sg, Sp))
-                svt_list.append(psnr(Sg, St))
 
             nx += 1
+    net_time = time.time()-net_start
+    net_time /= TestInstances
+
+    if not saveMat:
+        svt_start = time.time()
+        for i, (_,S,D) in enumerate(test_loader):
+            for jj in range(len(D)):
+                [Dg, Sg] = convert.torch2np([D[jj], S[jj]], [form_out, form_out])
+                _, St = svt(Dg, 8)
+                svt_list.append(psnr(Sg, St))
+        svt_time = time.time()-svt_start
+        svt_time /=TestInstances
+    else:
+        svt_time = 0
 
 loss_mean /= len(test_data)
 print(f'Mean loss: {loss_mean}')
+print(f'ResNet average time per instance: {net_time}')
+print(f'SVT average time per instance: {svt_time}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)} dB')
     print(f'SVT mean PSNR: {np.mean(svt_list)} dB')
     np.savez_compressed(os.path.join(save_mat_dir, f'multi_rank_1_7_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
-        lsratios=coeffs, ranks=ranks)
+        lsratios=coeffs, ranks=ranks, ntime=net_time, stime=svt_time)
