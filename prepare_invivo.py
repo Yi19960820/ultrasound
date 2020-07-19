@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.io import loadmat
 import os
+import h5py
 import random
 import tqdm
 
@@ -9,7 +10,8 @@ OUT_DIR = '/data/invivo-samples/'
 m, n, p = 39,39,20
 nsamples = 300
 
-data = loadmat(DATA_FILE)
+# data = loadmat(DATA_FILE)
+data = h5py.File(DATA_FILE, 'r')
 n1, n2, n3, n4 = data['iq'].shape
 data_res = data['iq'].reshape(n1, n2, n3*n4)
 
