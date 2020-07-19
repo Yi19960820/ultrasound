@@ -8,7 +8,7 @@ import os
 class BigImageDataset(torch.utils.data.Dataset):
     DATA_DIR='/data/toy-real/'
 
-    def __init__(self, NumInstances, shape, train, transform=None, data_dir=None, train_size=3200, val_size=800):
+    def __init__(self, NumInstances, shape, train, transform=None, data_dir=None, train_size=3200, val_size=800, gt=True):
         data_dir = self.DATA_DIR if data_dir is None else data_dir
         self.shape=shape
         self.fnames = os.listdir(data_dir)
@@ -22,43 +22,29 @@ class BigImageDataset(torch.utils.data.Dataset):
         #   --  TRAIN  --  RAT 1
         if train is 0:
             self.fnames = self.fnames[:NumInstances]            
-            for n in range(NumInstances):
-                if np.mod(n, 50) == 0: print('loading train set %s' % (n))
-                L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
-                S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
-                D = L + S
-                L,S,D=preprocess(L,S,D)
-                
-                images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
-                images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
-                images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
         #   --  VALIDATION -- RAT 2, 100 frames 
-        if train is 1:
+        elif train is 1:
             IndParam = train_size
             self.fnames = self.fnames[IndParam:NumInstances+IndParam]
-            for n in range(NumInstances):
-                if np.mod(n, 50) == 0: print('loading train set %s' % (n))
-                L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
-                S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
-                D = L + S
-                L,S,D=preprocess(L,S,D)
-                
-                images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
-                images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
-                images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
-        if train is 2:
+        elif train is 2:
             IndParam = val_size+train_size
             self.fnames = self.fnames[IndParam:NumInstances+IndParam]
-            for n in range(NumInstances):
-                if np.mod(n, 50) == 0: print('loading train set %s' % (n))
+        
+        for n in range(NumInstances):
+            if np.mod(n, 50) == 0: print('loading train set %s' % (n))
+            if gt:
                 L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
                 S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
                 D = L + S
-                L,S,D=preprocess(L,S,D)
-                
-                images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
-                images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
-                images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
+            else:
+                D = np.load(os.path.join(data_dir, self.fnames[n]))['patch']
+                L  = np.zeros_like(D)
+                S = np.zeros_like(D)
+            L,S,D=preprocess(L,S,D)
+            
+            images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
+            images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
+            images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
         
         self.transform = transform
 
