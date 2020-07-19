@@ -171,9 +171,9 @@ if __name__=='__main__':
             starttime=time.time()
             
             for _,(_,S,D) in tqdm(enumerate(train_loader)):
-                valid = to_var(torch.FloatTensor(S.size[0], 1))
+                valid = to_var(torch.ones(TrainInstances, 1))
                 valid.requires_grad = False
-                fake = to_var(torch.FloatTensor(S.size[0], 1))
+                fake = to_var(torch.zeros(TrainInstances, 1))
                 fake.requires_grad = False
                 Sg = to_var(S)
 
