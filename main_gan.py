@@ -180,11 +180,11 @@ if __name__=='__main__':
 
                 # Train discriminator on real batch
                 d_optimizer.zero_grad()
-                real_out = discriminator(Sg)
+                real_out = discriminator(Sg[None])
                 real_loss = adv_loss(real_out, valid)
                 
                 # Train discriminator on fake batch from generator
-                fake_batch = generator(Dg)
+                fake_batch = generator(Dg[None])
                 fake_out = discriminator(fake_batch)
                 fake_loss = adv_loss(fake_out, fake)
                 
