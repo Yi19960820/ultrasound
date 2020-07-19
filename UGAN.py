@@ -62,6 +62,7 @@ class Deconv3dC(nn.Module):
 
 class DeconvBlock3dC(nn.Module):
     def __init__(self, Cin, Cout, w, p):
+        super(DeconvBlock3dC, self).__init__()
         w1, w2 = w
         p1, p2 = p
         s1, s2 = 1,1
