@@ -141,7 +141,7 @@ if __name__=='__main__':
             adv_loss = adv_loss.cuda()
         
         g_optimizer=torch.optim.Adam(generator.parameters(), lr=learning_rate)
-        d_optimizer=torch.optim.Adam(discriminator.parameters, lr=learning_rate)
+        d_optimizer=torch.optim.Adam(discriminator.parameters(), lr=learning_rate)
 
         #Array for recording data
         outputs_S = to_var(torch.zeros([1,1,m,m,p*2]))
