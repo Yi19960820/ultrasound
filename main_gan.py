@@ -176,14 +176,15 @@ if __name__=='__main__':
                 fake = to_var(torch.zeros(TrainInstances, 1))
                 fake.requires_grad = False
                 Sg = to_var(S)
+                Dg = to_var(D)
 
                 # Train discriminator on real batch
                 d_optimizer.zero_grad()
-                real_out = discriminator(S)
+                real_out = discriminator(Sg)
                 real_loss = adv_loss(real_out, valid)
                 
                 # Train discriminator on fake batch from generator
-                fake_batch = generator(D)
+                fake_batch = generator(Dg)
                 fake_out = discriminator(fake_batch)
                 fake_loss = adv_loss(fake_out, fake)
                 
