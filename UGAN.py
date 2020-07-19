@@ -20,19 +20,19 @@ class ConvBlock3dC(nn.Module):
         p1, p2 = p
 
         self.relu = nn.ReLU()
-        self.conv0 = Conv3dC(Cin,Cout,(w1,w1,w2),(2*s1,2*s1,s2),(p1,p1,p2))
-        self.conv1 = Conv3dC(Cout,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.conv2 = Conv3dC(Cout,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.conv3 = Conv3dC(Cout,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
+        self.conv0 = Conv3dC(Cin,Cout,(w1,w2),(2*s1,s2),(p1,p2))
+        self.conv1 = Conv3dC(Cout,Cout,(w1,w2),(s1,s2),(p1,p2))
+        self.conv2 = Conv3dC(Cout,Cout,(w1,w2),(s1,s2),(p1,p2))
+        self.conv3 = Conv3dC(Cout,Cout,(w1,w2),(s1,s2),(p1,p2))
         
-        def forward(self, xR, xI):
-            yR, yI = self.conv0(xR, xI)
-            yRp, yIp = self.conv1(yR, yI)
-            yRp, yIp = self.conv2(yRp, yIp)
-            yR += yRp
-            yI += yIp
-            yR = self.conv3(yR, yI)
-            return yR, yI
+    def forward(self, xR, xI):
+        yR, yI = self.conv0(xR, xI)
+        yRp, yIp = self.conv1(yR, yI)
+        yRp, yIp = self.conv2(yRp, yIp)
+        yR += yRp
+        yI += yIp
+        yR = self.conv3(yR, yI)
+        return yR, yI
 
 class Deconv3dC(nn.Module):
     """
@@ -67,19 +67,19 @@ class DeconvBlock3dC(nn.Module):
         s1, s2 = 1,1
 
         self.relu = nn.ReLU()
-        self.conv0 = Deconv3dC(Cin,Cin,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.conv1 = Deconv3dC(Cin,Cin,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.conv2 = Deconv3dC(Cin,Cin,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.conv3 = Deconv3dC(Cin,Cout,(w1,w1,w2),(2*s1,2*s1,s2),(p1,p1,p2))
+        self.conv0 = Deconv3dC(Cin,Cin,(w1,w2),(s1,s2),(p1,p2))
+        self.conv1 = Deconv3dC(Cin,Cin,(w1,w2),(s1,s2),(p1,p2))
+        self.conv2 = Deconv3dC(Cin,Cin,(w1, w2),(s1,s2),(p1,p2))
+        self.conv3 = Deconv3dC(Cin,Cout,(w1,w2),(2*s1,s2),(p1,p2))
         
-        def forward(self, xR, xI):
-            yR, yI = self.conv0(xR, xI)
-            yRp, yIp = self.conv1(yR, yI)
-            yRp, yIp = self.conv2(yRp, yIp)
-            yR += yRp
-            yI += yIp
-            yR = self.conv3(yR, yI)
-            return yR, yI
+    def forward(self, xR, xI):
+        yR, yI = self.conv0(xR, xI)
+        yRp, yIp = self.conv1(yR, yI)
+        yRp, yIp = self.conv2(yRp, yIp)
+        yR += yRp
+        yI += yIp
+        yR = self.conv3(yR, yI)
+        return yR, yI
 
 class MaxPool3dC(nn.Module):
     def __init__(self, w, s, p, d=1):
