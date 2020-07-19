@@ -31,7 +31,7 @@ class ConvBlock3dC(nn.Module):
         yRp, yIp = self.conv2(yRp, yIp)
         yR += yRp
         yI += yIp
-        yR = self.conv3(yR, yI)
+        yR, yI = self.conv3(yR, yI)
         return yR, yI
 
 class Deconv3dC(nn.Module):
@@ -166,8 +166,8 @@ class UDiscriminator(nn.Module):
         xIi=x[:,:,:,:,T:T2]
 
         xR, xI = self.enc0(xRi, xIi)
-        print('xR', type(xR))
-        print('xI', type(xI))
+        # print('xR', type(xR))
+        # print('xI', type(xI))
         xR, xI = self.pool1(xR, xI)
         xR, xI = self.enc2(xR, xI)
         xR, xI = self.pool3(xR, xI)
