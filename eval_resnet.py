@@ -133,17 +133,16 @@ with torch.no_grad():
             nx += 1
     net_time /= TestInstances
 
+    svt_time = 0
     if not saveMat:
-        svt_start = time.time()
         for i, (_,S,D) in enumerate(test_loader):
             for jj in range(len(D)):
                 [Dg, Sg] = convert.torch2np([D[jj], S[jj]], [form_out, form_out])
+                svt_start = time.time()
                 _, St = svt(Dg, 8)
+                svt_time += (time.time()-svt_start)
                 svt_list.append(psnr(Sg, St))
-        svt_time = time.time()-svt_start
         svt_time /=TestInstances
-    else:
-        svt_time = 0
 
 loss_mean /= len(test_data)
 print(f'Mean loss: {loss_mean}')
