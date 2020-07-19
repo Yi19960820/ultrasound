@@ -89,6 +89,7 @@ class MaxPool3dC(nn.Module):
         self.pool = nn.MaxPool3d(w, s, p, d, return_indices=True)
     
     def forward(self, xR, xI):
+        print(type(xR), type(xI))
         x = torch.sqrt(torch.square(xR)+torch.square(xI))
         _, inds = self.pool(x)
         yR = retrieve_from_full(xR, inds)
