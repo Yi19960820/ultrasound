@@ -104,12 +104,15 @@ with torch.no_grad():
     resnet_list = []
     svt_list = []
     net_start = time.time()
+    net_time = 0
     for i,(_,S,D) in tqdm(enumerate(test_loader)):
         for jj in range(len(D)):
             inputs = to_var(D[jj])
             targets = to_var(S[jj])
 
+            net_start = time.time()
             out_S = model(inputs[None, None])
+            net_time += (time.time()-net_start)
             loss = floss(out_S.squeeze(), targets).item()
             loss_mean += loss
             [Sp, Dg, Sg]=convert.torch2np([out_S, D[jj], S[jj]],[form_out, form_out, form_out])
@@ -128,7 +131,6 @@ with torch.no_grad():
                 resnet_list.append(psnr(Sg, Sp))
 
             nx += 1
-    net_time = time.time()-net_start
     net_time /= TestInstances
 
     if not saveMat:
