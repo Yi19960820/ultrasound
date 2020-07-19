@@ -89,7 +89,6 @@ class MaxPool3dC(nn.Module):
         self.pool = nn.MaxPool3d(w, s, p, d, return_indices=True)
     
     def forward(self, xR, xI):
-        print(type(xR), type(xI))
         x = torch.sqrt(torch.square(xR)+torch.square(xI))
         _, inds = self.pool(x)
         yR = retrieve_from_full(xR, inds)
@@ -167,6 +166,8 @@ class UDiscriminator(nn.Module):
         xIi=x[:,:,:,:,T:T2]
 
         xR, xI = self.enc0(xRi, xIi)
+        print('xR', type(xR))
+        print('xI', type(xI))
         xR, xI = self.pool1(xR, xI)
         xR, xI = self.enc2(xR, xI)
         xR, xI = self.pool3(xR, xI)
