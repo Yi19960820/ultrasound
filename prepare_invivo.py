@@ -11,9 +11,11 @@ m, n, p = 39,39,20
 nsamples = 300
 
 # data = loadmat(DATA_FILE)
-data = h5py.File(DATA_FILE, 'r')
-n1, n2, n3, n4 = data['iq'].shape
-data_res = data['iq'].reshape(n1, n2, n3*n4)
+datafile = h5py.File(DATA_FILE, 'r')
+data = datafile['iq'].value.view(np.complex128)
+data = np.moveaxis(data, range(4), (3,2,1,0))
+n1, n2, n3, n4 = data.shape
+data_res = data.reshape(n1, n2, n3*n4)
 
 for i in tqdm.tqdm(range(nsamples)):
     z = random.randint(0, n1-m)
