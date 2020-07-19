@@ -127,19 +127,19 @@ def plot_column(fname, col=11):
     w = 39
     D = outputs['D']
     Sp = outputs['Sp']
-    S = outputs['S']
-    svals, St = svt(D, 9)
-    width = outputs['width'][0][0]
-    width_px = w/.0025*width
+    # S = outputs['S']
+    svals, St = svt(D, 6)
+    # width = outputs['width'][0][0]
+    # width_px = w/.0025*width
 
     fig, ax = plt.subplots(3, 2, figsize=(9,6))
     plt.set_cmap('hot')
-    ax[0][1].imshow(10*np.log10(np.abs(S[:,col])**2), aspect='auto')
-    ax[0][1].set_title(f'Column {col} per frame')
-    ax[0][0].imshow(log_rms(S))
-    rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
-    ax[0][0].add_patch(rect)
-    ax[0][0].set_title('Ground truth S')
+    # ax[0][1].imshow(10*np.log10(np.abs(S[:,col])**2), aspect='auto')
+    # ax[0][1].set_title(f'Column {col} per frame')
+    # ax[0][0].imshow(log_rms(S))
+    # rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
+    # ax[0][0].add_patch(rect)
+    # ax[0][0].set_title('Ground truth S')
     ax[1][1].imshow(10*np.log10(np.abs(Sp[:,col])**2), aspect='auto')
     ax[1][0].set_title('Reconstructed S')
     ax[1][0].imshow(log_rms(Sp))
@@ -153,10 +153,10 @@ def plot_column(fname, col=11):
     ax[2][1].set_title(f'Column {col} per frame')
     ax[2][1].imshow(10*np.log10(np.abs(St[:,col])**2), aspect='auto')
 
-    print(f'ResNet PSNR: {psnr(S, Sp)}')
-    print(f'SVT PSNR: {psnr(S, St)}')
-    print(f"Rank: {outputs['rank'][0][0]}")
-    print(f"L/S: {outputs['lsratio'][0][0]}")
+    # print(f'ResNet PSNR: {psnr(S, Sp)}')
+    # print(f'SVT PSNR: {psnr(S, St)}')
+    # print(f"Rank: {outputs['rank'][0][0]}")
+    # print(f"L/S: {outputs['lsratio'][0][0]}")
     plt.show()
 
 def plot_patches(fname):
@@ -165,43 +165,43 @@ def plot_patches(fname):
     w = 39
     D = outputs['D']
     Sp = outputs['Sp']
-    S = outputs['S']
-    width = outputs['width'][0][0]
-    angle = outputs['angle'][0][0]
-    q = outputs['quad']
-    q1 = q[0][0]
-    q2 = q[0][1]
-    width_px = w/.0025*width
-    print(q1, q2)
+    # width = outputs['width'][0][0]
+    # angle = outputs['angle'][0][0]
+    # q = outputs['quad']
+    # q1 = q[0][0]
+    # q2 = q[0][1]
+    # width_px = w/.0025*width
+    # print(q1, q2)
 
-    if q1==1 and q2==1:
-        x = w - width_px/2*np.cos(angle-np.pi/2)
-        y = w - width_px/2*np.sin(angle-np.pi/2)
+    # if q1==1 and q2==1:
+    #     x = w - width_px/2*np.cos(angle-np.pi/2)
+    #     y = w - width_px/2*np.sin(angle-np.pi/2)
     # elif q1==1 and q2==1:
     #     angle = -75
     #     x = -width_px/2*np.cos(angle/np.pi*180)
     #     y = width_px/2*np.sin(angle/np.pi*180)
 
-    bbox = Rectangle((x,y), width_px, 39*1.414, angle=angle, fill=False, color='blue')
-    copies = [copy(bbox) for _ in range(3)]
+    # bbox = Rectangle((x,y), width_px, 39*1.414, angle=angle, fill=False, color='blue')
+    # copies = [copy(bbox) for _ in range(3)]
 
 
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec = svt(D, 5)
+    svals, Drec = svt(D, 3)
+    S = Drec
 
     ax[0][0].imshow(log_rms(D))
     ax[0][0].set_title('Input')
-    ax[0][0].add_patch(bbox)
+    # ax[0][0].add_patch(bbox)
 
-    ax[0][1].imshow(log_rms(S))
-    ax[0][1].set_title('Ground truth S')
-    ax[0][1].add_patch(copies[0])
+    # ax[0][1].imshow(log_rms(S))
+    # ax[0][1].set_title('Ground truth S')
+    # ax[0][1].add_patch(copies[0])
 
     ax[0][2].imshow(log_rms(Sp))
     ax[0][2].set_title('Reconstructed S')
-    ax[0][2].add_patch(copies[1])
+    # ax[0][2].add_patch(copies[1])
 
 
     ax[1][0].semilogy(range(1, len(svals)+1), svals)
@@ -209,11 +209,11 @@ def plot_patches(fname):
 
     ax[1][1].imshow(log_rms(Drec))
     ax[1][1].set_title('SVT')
-    ax[1][1].add_patch(copies[2])
+    # ax[1][1].add_patch(copies[2])
 
-    print(angle*180/np.pi)
-    print(outputs['rank'][0][0])
-    print(outputs['lsratio'][0][0])
+    # print(angle*180/np.pi)
+    # print(outputs['rank'][0][0])
+    # print(outputs['lsratio'][0][0])
     plt.show()
 
 def plot_loss():

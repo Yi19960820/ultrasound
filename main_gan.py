@@ -40,7 +40,7 @@ if __name__=='__main__':
     """Settings"""
     """========================================================================="""
     #Name and choice of training set
-    ProjectName='complex_deep_1_7'
+    ProjectName='gan'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
 
