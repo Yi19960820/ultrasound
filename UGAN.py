@@ -144,16 +144,16 @@ class UDiscriminator(nn.Module):
         p1 = [0, 2, 1,  1,  1]
         p2 = [0, 2, 1,  1,  1]
 
-        d1 = mps(mps(mps(shape[0], 2, 2, 1), 2, 2, 0), 2, 2, 0)
-        d2 = mps(mps(mps(shape[1], 2, 2, 1), 2, 2, 0), 2, 2, 0)
+        d1 = mps(mps(shape[0], 2, 2, 0), 2, 2, 0)
+        d2 = mps(mps(shape[1], 2, 2, 0), 2, 2, 0)
         d3 = shape[2]
 
         self.enc0 = ConvBlock3dC(c[0], c[1], (w1[1], w2[1]), (p1[1], p2[1]))
         self.pool1 = MaxPool3dC((2,2,1), (2,2,1), 0)
         self.enc2 = ConvBlock3dC(c[1], c[2], (w1[2], w2[2]), (p1[2], p2[2]))
         self.pool3 = MaxPool3dC((2,2,1), (2,2,1), 0)
-        self.enc4 = ConvBlock3dC(c[2], c[3], (w1[3], w2[3]), (p1[3], p2[3]))
-        self.pool5 = MaxPool3dC((2,2,1), (2,2,1), 0)
+        # self.enc4 = ConvBlock3dC(c[2], c[3], (w1[3], w2[3]), (p1[3], p2[3]))
+        # self.pool5 = MaxPool3dC((2,2,1), (2,2,1), 0)
         # self.conv6 = Conv3dC(c[3], c[4], (w1[4], w2[4]), (1,1,1), (p1[4], p2[4]))
         self.fc6R = nn.Linear(d1*d2*d3, 1, bias=False)
         self.fc6I = nn.Linear(d1*d2*d3, 1, bias=False)
