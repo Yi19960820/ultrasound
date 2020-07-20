@@ -179,6 +179,8 @@ class UDiscriminator(nn.Module):
         xR, xI = self.pool1(xR, xI)
         xR, xI = self.enc2(xR, xI)
         xR, xI = self.pool3(xR, xI)
+        xR = torch.flatten(xR, start_dim=2)
+        xI = torch.flatten(xI, start_dim=2)
         print('xR shape', xR.shape)
         print('xI shape', xI.shape)
         # xR, xI = self.enc4(xR, xI)
