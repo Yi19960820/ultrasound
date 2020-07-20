@@ -38,7 +38,7 @@ class Deconv3dC(nn.Module):
     """
     Conv block for 3d complex computation
     """
-    def __init__(self,Cin,Cout,kernel,stride,padding):
+    def __init__(self,Cin,Cout,kernel,stride,padding, op=(0,0)):
         """
         Args:
             Cin: number of input panes
@@ -52,8 +52,9 @@ class Deconv3dC(nn.Module):
         w1,w2=kernel
         s1,s2=stride
         p1,p2=padding
-        self.convR=nn.ConvTranspose3d(Cin,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
-        self.convI=nn.ConvTranspose3d(Cin,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2))
+        op1, op2 = op
+        self.convR=nn.ConvTranspose3d(Cin,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2), output_padding=(op1, op1, op2))
+        self.convI=nn.ConvTranspose3d(Cin,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2), output_padding=(op1, op1, op2))
     
     def forward(self,xR,xI):
         xR,xI=self.convR(xR)-self.convI(xI),self.convR(xI)+self.convI(xR)
@@ -61,17 +62,18 @@ class Deconv3dC(nn.Module):
         return xR,xI
 
 class DeconvBlock3dC(nn.Module):
-    def __init__(self, Cin, Cout, w, p):
+    def __init__(self, Cin, Cout, w, p, op=(0,0)):
         super(DeconvBlock3dC, self).__init__()
         w1, w2 = w
         p1, p2 = p
         s1, s2 = 1,1
+        op1, op2 = op
 
         self.relu = nn.ReLU()
         self.conv0 = Deconv3dC(Cin,Cin,(w1,w2),(s1,s2),(p1,p2))
         self.conv1 = Deconv3dC(Cin,Cin,(w1,w2),(s1,s2),(p1,p2))
         self.conv2 = Deconv3dC(Cin,Cin,(w1, w2),(s1,s2),(p1,p2))
-        self.conv3 = Deconv3dC(Cin,Cout,(w1,w2),(2*s1,s2),(p1,p2))
+        self.conv3 = Deconv3dC(Cin,Cout,(w1,w2),(2*s1,s2),(p1,p2), (op1, op2))
         
     def forward(self, xR, xI):
         yR, yI = self.conv0(xR, xI)
@@ -114,10 +116,10 @@ class UGenerator(nn.Module):
         self.enc1 = ConvBlock3dC(c[1], c[2], (w1[2],w2[2]), (p1[2],p2[2]))
         self.enc2 = ConvBlock3dC(c[2], c[3], (w1[3],w2[3]), (p1[3],p2[3]))
         self.enc3 = ConvBlock3dC(c[3], c[4], (w1[4],w2[4]), (p1[4],p2[4]))
-        self.dec4 = DeconvBlock3dC(c[4], c[3], (w1[3],w2[3]), (p1[3], p2[3]))
-        self.dec5 = DeconvBlock3dC(c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]))
-        self.dec6 = DeconvBlock3dC(c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]))
-        self.dec7 = DeconvBlock3dC(c[1], c[0], (w1[1],w2[1]), (p1[1], p2[1]))
+        self.dec4 = DeconvBlock3dC(c[4], c[3], (w1[3],w2[3]), (p1[3], p2[3]), op=(p1[3], p2[3])
+        self.dec5 = DeconvBlock3dC(c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]), op=(p1[2], p2[2]))
+        self.dec6 = DeconvBlock3dC(c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]), op=(p1[1], p2[1]))
+        self.dec7 = DeconvBlock3dC(c[1], c[0], (w1[1],w2[1]), (p1[1], p2[1]), op=(p1[1], p2[1]))
     
     def forward(self, x):
         T2=x.shape[-1]
