@@ -29,8 +29,8 @@ class ConvBlock3dC(nn.Module):
         yR, yI = self.conv0(xR, xI)
         yRp, yIp = self.conv1(yR, yI)
         yRp, yIp = self.conv2(yRp, yIp)
-        yR += yRp
-        yI += yIp
+        yR = yR + yRp
+        yI = yI + yIp
         yR, yI = self.conv3(yR, yI)
         return yR, yI
 
