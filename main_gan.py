@@ -185,7 +185,7 @@ if __name__=='__main__':
                 
                 # Train discriminator on fake batch from generator
                 fake_batch = generator(Dg[None].transpose(0,1))
-                fake_out = discriminator(fake_batch)
+                fake_out = discriminator(fake_batch.detach())
                 fake_loss = adv_loss(fake_out, fake)
                 
                 # Combine losses and step optimizer
