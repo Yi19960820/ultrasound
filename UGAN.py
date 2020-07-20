@@ -4,7 +4,7 @@ import numpy as np
 from ResNet3dC import Conv3dC, ResBlock3dC
 
 def retrieve_from_full(tensor, inds):
-    flat = tensor.flatten(start_dim=2)
+    flat = torch.flatten(tensor, start_dim=2)
     output = flat.gather(dim=2, index=inds.flatten(start_dim=2)).view_as(inds)
     return output
 
