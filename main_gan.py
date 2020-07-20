@@ -195,7 +195,7 @@ if __name__=='__main__':
 
                 # Now train the generator to fool the discriminator
                 g_optimizer.zero_grad()
-                gen_loss = adv_loss(fake_batch, valid)
+                gen_loss = adv_loss(fake_out, valid)
                 gen_loss.backward()
                 g_optimizer.step()
 
