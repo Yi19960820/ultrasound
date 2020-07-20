@@ -187,8 +187,8 @@ class UDiscriminator(nn.Module):
         # xR, xI = self.pool5(xR, xI)
         xR, xI = self.fc6R(xR), self.fc6I(xI)
         xR, xI = self.tanh(xR), self.tanh(xI)
+        x = torch.sqrt(torch.square(xR)+torch.square(xI))
 
-        x = torch.cat((xR, xI), -1)
         return x
 
 # Size of max pool output for dimension
