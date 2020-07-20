@@ -165,8 +165,8 @@ class UDiscriminator(nn.Module):
         # self.enc4 = ConvBlock3dC(c[2], c[3], (w1[3], w2[3]), (p1[3], p2[3]))
         # self.pool5 = MaxPool3dC((2,2,1), (2,2,1), 0)
         # self.conv6 = Conv3dC(c[3], c[4], (w1[4], w2[4]), (1,1,1), (p1[4], p2[4]))
-        self.fc6R = nn.Linear(d1*d2*d3, 1, bias=False)
-        self.fc6I = nn.Linear(d1*d2*d3, 1, bias=False)
+        self.fc6R = nn.Linear(1280, 1, bias=False)
+        self.fc6I = nn.Linear(1280, 1, bias=False)
         self.tanh = nn.Tanh()   # Using tanh because it applies component-wise to complex numbers
     
     def forward(self, x):
