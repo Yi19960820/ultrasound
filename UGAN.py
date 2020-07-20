@@ -182,7 +182,6 @@ class UDiscriminator(nn.Module):
         T=int(T2/2)
         xRi=x[:,:,:,:,0:T]
         xIi=x[:,:,:,:,T:T2]
-        print(x.shape)
         xR, xI = self.enc0(xRi, xIi)
         xR, xI = self.pool1(xR, xI)
         xR, xI = self.enc2(xR, xI)
