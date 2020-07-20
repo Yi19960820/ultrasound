@@ -4,9 +4,8 @@ import numpy as np
 from ResNet3dC import Conv3dC, ResBlock3dC
 
 def retrieve_from_full(tensor, inds):
-    dims = tensor.shape
-    flat = tensor.view(dims[0], dims[1], dims[2]*dims[3]*dims[4])
-    output = flat.gather(dim=2, index=inds.view(dims[0], dims[1], dims[2]*dims[3]*dims[4]))
+    flat = torch.flatten(tensor, start_dim=2)
+    output = flat.gather(dim=2, index=inds.flatten(start_dim=2)).view_as(inds)
     return output
 
 class ConvBlock3dC(nn.Module):
