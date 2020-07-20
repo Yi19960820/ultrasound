@@ -181,6 +181,8 @@ class UDiscriminator(nn.Module):
         xR, xI = self.pool1(xR, xI)
         xR, xI = self.enc2(xR, xI)
         xR, xI = self.pool3(xR, xI)
+        print('xR shape', xR.shape)
+        print('xI shape', xI.shape)
         # xR, xI = self.enc4(xR, xI)
         # xR, xI = self.pool5(xR, xI)
         xR, xI = self.fc6R(xR), self.fc6I(xI)
