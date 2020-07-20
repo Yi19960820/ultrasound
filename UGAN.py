@@ -6,7 +6,7 @@ from ResNet3dC import Conv3dC, ResBlock3dC
 def retrieve_from_full(tensor, inds):
     dims = tensor.shape
     flat = tensor.view(dims[0], dims[1], dims[2]*dims[3]*dims[4])
-    output = flat.gather(dim=2, index=inds.view(dims[0], dims[1], dims[2]*dims[3]*dims[4]).view_as(inds))
+    output = flat.gather(dim=2, index=inds.view(dims[0], dims[1], dims[2]*dims[3]*dims[4]))
     return output
 
 class ConvBlock3dC(nn.Module):
