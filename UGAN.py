@@ -161,7 +161,7 @@ class UDiscriminator(nn.Module):
         self.enc0 = ConvBlock3dC(c[0], c[1], (w1[1], w2[1]), (p1[1], p2[1]))
         self.pool1 = MaxPool3dC((mw1[0], mw1[0]), (ms1[0], ms2[0]), (mp1[0], mp2[0]))
         self.enc2 = ConvBlock3dC(c[1], c[2], (w1[2], w2[2]), (p1[2], p2[2]))
-        self.pool3 = MaxPool3dC((mw1[1], mw1[1]), (ms1[1], ms2[1]), (mp1[1], mp2[1]))
+        self.pool3 = MaxPool3dC((mw1[1], mw2[1]), (ms1[1], ms2[1]), (mp1[1], mp2[1]))
         # self.enc4 = ConvBlock3dC(c[2], c[3], (w1[3], w2[3]), (p1[3], p2[3]))
         # self.pool5 = MaxPool3dC((2,2,1), (2,2,1), 0)
         # self.conv6 = Conv3dC(c[3], c[4], (w1[4], w2[4]), (1,1,1), (p1[4], p2[4]))
@@ -176,8 +176,6 @@ class UDiscriminator(nn.Module):
         xIi=x[:,:,:,:,T:T2]
         print(x.shape)
         xR, xI = self.enc0(xRi, xIi)
-        # print('xR', type(xR))
-        # print('xI', type(xI))
         xR, xI = self.pool1(xR, xI)
         xR, xI = self.enc2(xR, xI)
         xR, xI = self.pool3(xR, xI)
