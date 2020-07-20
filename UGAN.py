@@ -79,7 +79,7 @@ class DeconvBlock3dC(nn.Module):
         yRp, yIp = self.conv2(yRp, yIp)
         yR += yRp
         yI += yIp
-        yR = self.conv3(yR, yI)
+        yR, yI = self.conv3(yR, yI)
         return yR, yI
 
 class MaxPool3dC(nn.Module):
@@ -181,8 +181,6 @@ class UDiscriminator(nn.Module):
         xR, xI = self.pool3(xR, xI)
         xR = torch.flatten(xR, start_dim=1)
         xI = torch.flatten(xI, start_dim=1)
-        print('xR shape', xR.shape)
-        print('xI shape', xI.shape)
         # xR, xI = self.enc4(xR, xI)
         # xR, xI = self.pool5(xR, xI)
         xR, xI = self.fc6R(xR), self.fc6I(xI)
