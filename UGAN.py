@@ -76,11 +76,11 @@ class DeconvBlock3dC(nn.Module):
         self.conv3 = Deconv3dC(Cin,Cout,(w1,w2),(2*s1,s2),(p1,p2), (op1, op2))
         
     def forward(self, xR, xI):
-        yR, yI = self.conv0(xR, xI)
-        yRp, yIp = self.conv1(yR, yI)
+        yRi, yIi = self.conv0(xR, xI)
+        yRp, yIp = self.conv1(yRi, yIi)
         yRp, yIp = self.conv2(yRp, yIp)
-        yR += yRp
-        yI += yIp
+        yR = yRi + yRp
+        yI = yIi + yIp
         yR, yI = self.conv3(yR, yI)
         return yR, yI
 
