@@ -105,11 +105,11 @@ if __name__=='__main__':
                             train=0,data_dir=data_dir)
     train_loader=data.DataLoader(train_dataset,batch_size=BatchSize,shuffle=True)
     #validation
-    val_dataset=BigImageDataset(round(ValInstances),shape_dset,
-                            train=1,data_dir=data_dir, train_size=TrainInstances)
-    val_loader=data.DataLoader(val_dataset,batch_size=ValBatchSize,shuffle=True)
-    print('Finished loading.\n')
-    log.write('Finished loading.\n\n')
+    # val_dataset=BigImageDataset(round(ValInstances),shape_dset,
+    #                         train=1,data_dir=data_dir, train_size=TrainInstances)
+    # val_loader=data.DataLoader(val_dataset,batch_size=ValBatchSize,shuffle=True)
+    # print('Finished loading.\n')
+    # log.write('Finished loading.\n\n')
 
     # Training
     for learning_rate in lr_list:
@@ -181,6 +181,7 @@ if __name__=='__main__':
                 # Train discriminator on real batch
                 d_optimizer.zero_grad()
                 real_out = discriminator(Sg[None].transpose(0,1))
+                print(real_loss)
                 real_loss = adv_loss(real_out, valid)
                 
                 # Train discriminator on fake batch from generator
