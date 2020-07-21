@@ -55,7 +55,7 @@ if __name__=='__main__':
     seed=1237
     torch.manual_seed(seed)
     #parameters for training
-    TrainInstances = 600 # Size of training dataset
+    TrainInstances = 6000 # Size of training dataset
     ValInstances   = 800
     BatchSize      = 40
     ValBatchSize   = 40
@@ -73,6 +73,7 @@ if __name__=='__main__':
     if loadmodel=='False':
         loadmodel=False
     lr_list = [cfg['lr']]
+    debug = cfg['debug']
     if loadmodel:
         gfile = cfg['gfile']
         dfile = cfg['dfile']
@@ -182,8 +183,6 @@ if __name__=='__main__':
                 d_optimizer.zero_grad()
                 real_out = discriminator(Sg[None].transpose(0,1))
                 real_loss = adv_loss(real_out, valid)
-                print('real loss',real_loss)
-                print('real loss shape',real_loss.shape)
 
                 # Train discriminator on fake batch from generator
                 fake_batch = generator(Dg[None].transpose(0,1))
@@ -202,13 +201,14 @@ if __name__=='__main__':
                 gen_loss.backward()
                 g_optimizer.step()
 
-                print('gen_loss shape', gen_loss.shape)
-                print('gen_loss', gen_loss)
+                if debug:
+                    print('gen_loss', gen_loss)
+                    print('loss_d', loss_d)
                 gen_loss_mean += gen_loss.item()
                 disc_loss_mean += loss_d.item()
 
-            gen_loss_mean /= TrainInstances
-            disc_loss_mean /= TrainInstances
+            gen_loss_mean /= (TrainInstances/BatchSize)
+            disc_loss_mean /= (TrainInstances/BatchSize)
             endtime=time.time()
             g_lossmean_vec[epoch] = gen_loss_mean
             d_lossmean_vec[epoch] = disc_loss_mean
