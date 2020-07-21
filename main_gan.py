@@ -169,7 +169,7 @@ if __name__=='__main__':
             print('Loading and calculating training batches...')
             log.write('Loading and calculating training batches...\n')
             starttime=time.time()
-            torch.autograd.set_detect_anomaly(True)
+            # torch.autograd.set_detect_anomaly(True)
             for _,(_,S,D) in tqdm(enumerate(train_loader)):
                 valid = to_var(torch.ones(BatchSize, 1))
                 valid.requires_grad = False
