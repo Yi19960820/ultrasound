@@ -52,10 +52,10 @@ if __name__=='__main__':
     if not plot:
         plt.ioff()
     #seed
-    seed=1234
+    seed=1237
     torch.manual_seed(seed)
     #parameters for training
-    TrainInstances = 6000 # Size of training dataset
+    TrainInstances = 600 # Size of training dataset
     ValInstances   = 800
     BatchSize      = 40
     ValBatchSize   = 40
@@ -200,6 +200,8 @@ if __name__=='__main__':
                 gen_loss.backward()
                 g_optimizer.step()
 
+                print('gen_loss shape', gen_loss.shape)
+                print('gen_loss', gen_loss)
                 gen_loss_mean += gen_loss.item()
                 disc_loss_mean += loss_d.item()
 
