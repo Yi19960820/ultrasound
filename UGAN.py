@@ -170,7 +170,6 @@ class UDiscriminator(nn.Module):
         self.fc6R = nn.Linear(1280, 1, bias=False)
         self.fc6I = nn.Linear(1280, 1, bias=False)
         self.tanh = nn.Tanh()   # Using tanh because it applies component-wise to complex numbers
-        self.sigmoid = nn.Sigmoid()
     
     def forward(self, x):
         T2=x.shape[-1]
@@ -186,10 +185,11 @@ class UDiscriminator(nn.Module):
         # xR, xI = self.enc4(xR, xI)
         # xR, xI = self.pool5(xR, xI)
         xR, xI = self.fc6R(xR), self.fc6I(xI)
-        # xR, xI = self.tanh(xR), self.tanh(xI)
-        xR, xI = self.sigmoid(xR), self.sigmoid(xI)
-        xO = torch.sqrt(torch.square(xR)+torch.square(xI))
-
+        xR, xI = self.tanh(xR), self.tanh(xI)
+        xR = xR/2 + 0.5
+        xI = xI/2 + 0.5
+        xO = torch.sqrt(torch.square(xR)+torch.square(xI))/np.sqrt(2)
+        
         return xO
 
 # Size of max pool output for dimension
