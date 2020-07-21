@@ -181,9 +181,9 @@ if __name__=='__main__':
                 # Train discriminator on real batch
                 d_optimizer.zero_grad()
                 real_out = discriminator(Sg[None].transpose(0,1))
-                print(real_loss)
                 real_loss = adv_loss(real_out, valid)
-                
+                print(real_loss)
+                                
                 # Train discriminator on fake batch from generator
                 fake_batch = generator(Dg[None].transpose(0,1))
                 fake_out = discriminator(fake_batch.detach())
