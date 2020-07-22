@@ -98,17 +98,6 @@ for i in tqdm.tqdm(range(len(sd_names))):
         for z in (1,2):
             
             # blood_quad, tissue_quad = create_quads(blood, tissue, x, z)
-            blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (m, n)
+            blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (m, n))
 
-            # bw_start = sd_names[i].find('vesselwidth')+12
-            # bw_end = find_2nd(sd_names[i][bw_start:], '_')+bw_start
-            # width_str = sd_names[i][bw_start:bw_end]
-            # width = float(width_str[:width_str.find('_')])
-            # width_unit = width_str[width_str.find('_')+1:]
-            # if width_unit=='mm':
-            #     width *= 0.001
-            # elif width_unit=='mum':
-            #     width *= 1e-6
-
-            np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), \
-                L=tissue_quad, S=blood_quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff)
+            np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue_quad, S=blood_quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff)
