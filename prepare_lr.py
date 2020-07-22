@@ -71,7 +71,7 @@ for the offset. For example, the x=1, z=1 quadrant would be offset from the top 
 
 LR_DIR = '/data/low-rank/'
 SD_DIR = '/data/sim-data-better/'
-cfg = yaml.load(open('resnet.yaml'))
+cfg = yaml.load(open('/data/resnet.yaml'))
 OUT_DIR = cfg['datadir']
 m, n = 40, 40
 NFRAMES = 20
