@@ -18,8 +18,8 @@ class UNet(nn.Module):
         self.enc2 = ConvBlock3dC(c[2], c[3], (w1[3],w2[3]), (p1[3],p2[3]))
         self.enc3 = ConvBlock3dC(c[3], c[4], (w1[4],w2[4]), (p1[4],p2[4]))
         self.dec4 = DeconvBlock3dC(c[4], c[3], (w1[3],w2[3]), (p1[3], p2[3]))
-        self.dec5 = DeconvBlock3dC(c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]))
-        self.dec6 = DeconvBlock3dC(c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]), op=(1,0))
+        self.dec5 = DeconvBlock3dC(c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]), op=(1,0))
+        self.dec6 = DeconvBlock3dC(c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]))
         self.dec7 = DeconvBlock3dC(c[1], c[0], (w1[1],w2[1]), (p1[1], p2[1]))
 
     def forward(self, x):
