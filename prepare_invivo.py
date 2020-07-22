@@ -21,7 +21,7 @@ data_res = data.reshape(n1, n2, n3*n4)
 caso = data_res.reshape((n1*n2, n3*n4))
 U, s, Vh = svd(caso, full_matrices=False)
 caso_red = U[:,rank:]@np.diag(s[rank:])@(Vh[:,rank:].T)
-data_res = caso_red.reshape((n1, n2, n3))
+data_res = caso_red.reshape((n1, n2, n3*n4))
 
 for i in tqdm.tqdm(range(nsamples)):
     z = random.randint(0, n1-m)
