@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from scipy.io import loadmat
 import scipy.linalg as la
+from scipy.signal import filtfilt
 import sys
 from copy import copy
 import os
@@ -188,7 +189,15 @@ def plot_patches(fname):
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec = svt(D, 3)
+    svals, Drec = svt(D, 10)
+    thresh = sv_threshold(svals)
+    svals, Drec = svt(D, thresh)
+    print(thresh)
+    pow_L = np.sum(svals[:thresh])
+    pow_S = np.sum(svals[thresh:])
+    print(f'L power: {pow_L}')
+    print(f'S power: {pow_S}')
+    print(f'L/S: {pow_L/pow_S}')
     S = Drec
 
     ax[0][0].imshow(log_rms(D))
@@ -215,6 +224,14 @@ def plot_patches(fname):
     # print(outputs['rank'][0][0])
     # print(outputs['lsratio'][0][0])
     plt.show()
+
+def sv_threshold(svals):
+    normed = svals/np.max(svals)
+    hflen = 6
+    log_filtered = filtfilt(np.hamming(hflen), np.sum(np.hamming(hflen)), np.log(normed))
+    second_deriv = np.diff(np.diff(log_filtered))
+    sdthresh = 2e-2
+    return np.min(np.argwhere(second_deriv < sdthresh))
 
 def plot_loss():
     losses1 = np.load('/home/sam/Documents/Res3dC_nocon_sim_Res3dC_LossData_Tr2400_epoch20_lr2.00e-03.npz')

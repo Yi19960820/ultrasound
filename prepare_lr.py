@@ -73,9 +73,10 @@ LR_DIR = '/data/low-rank/'
 SD_DIR = '/data/sim-data-better/'
 cfg = yaml.load(open('resnet.yaml'))
 OUT_DIR = cfg['datadir']
-NSV = 7
-TB = 5
+m, n = 40, 40
 NFRAMES = 20
+NSV = NFRAMES
+TB = 5
 sd_names = os.listdir(SD_DIR)
 random.shuffle(sd_names)
 
@@ -97,7 +98,7 @@ for i in tqdm.tqdm(range(len(sd_names))):
         for z in (1,2):
             
             # blood_quad, tissue_quad = create_quads(blood, tissue, x, z)
-            blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (int(n1/2),int(n2/2)))
+            blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (m, n)
 
             # bw_start = sd_names[i].find('vesselwidth')+12
             # bw_end = find_2nd(sd_names[i][bw_start:], '_')+bw_start
