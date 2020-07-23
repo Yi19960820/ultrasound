@@ -174,7 +174,7 @@ if __name__=='__main__':
                     loss_mean+=batch_loss
                     loss.backward()
                 optimizer.step()
-                pbar.set_description("Batch loss: %2.7f" % batch_loss)
+                pbar.set_description("Batch loss: %2.9f" % batch_loss)
                 pbar.update()
             pbar.close()
             loss_mean=loss_mean/TrainInstances
