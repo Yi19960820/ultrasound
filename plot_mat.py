@@ -67,7 +67,7 @@ def plot_metrics(fname):
 def plot_by_rank(fname, diff=False):
     fname = os.path.abspath(fname)
     metric_data = np.load(fname)
-    grid = np.zeros((7,7))
+    grid = np.zeros((7,20))
     grid_sv = np.zeros_like(grid)
     counts = np.zeros_like(grid)
     for i in range(len(metric_data['rn'])):
@@ -246,11 +246,14 @@ def plot_loss():
     plt.legend()
     plt.show()
 
-def svt(D,e1, e2=None):
+def svt(D,e1=None, e2=None):
     n1, n2, n3 = D.shape
-    e1 -= 1     # change 1-indexed e.val number to 0-indexed array index
     caso = D.reshape((n1*n2, n3))
     U, S, Vh = la.svd(caso, full_matrices=False)
+    if e1 is None:
+        e1 = sv_threshold(S)
+    else:
+        e1 -= 1     # change 1-indexed e.val number to 0-indexed array index
     if e2 is None:
         e2 = n3
     casorec = U[:,e1:e2]@np.diag(S[e1:e2])@(Vh[:,e1:e2].T)
