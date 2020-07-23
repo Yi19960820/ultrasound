@@ -7,7 +7,7 @@ from scipy.io import savemat
 sys.path.append('../')
 from CORONA.classes.Player import Player
 from CORONA.classes.Dataset import Converter
-from CORONA.network.ResNet3dC import ResNet3dC
+from UNet import UNet
 from DataSet import BigImageDataset
 import torch.utils.data as data
 import os
@@ -57,7 +57,7 @@ convert=Converter()
 device='cuda:0' if torch.cuda.is_available() else 'cpu'
 # device='cpu'
 if mfile[-3:]=='pkl':
-    model=ResNet3dC(gpu)
+    model=UNet(gpu)
     state_dict=torch.load(mfile,map_location=device)
     model.load_state_dict(state_dict)
 else:
