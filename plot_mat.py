@@ -85,8 +85,8 @@ def plot_by_rank(fname, diff=False):
         label_text = '{:6.2f}'.format(label)
         plt.text(i,j,label_text,ha='center',va='center')
 
-    xticks = np.arange(7)
-    xticklabels = [1,2,3,4,5,6,7]
+    xticks = np.arange(grid.shape[1])
+    xticklabels = np.arange(grid.shape[1])+1
     yticks = np.arange(8)-0.5
     yticklabels = [1,1.5,2,2.5,3,3.5,4]
     plt.xticks(xticks, xticklabels)

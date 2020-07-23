@@ -7,8 +7,8 @@ import tqdm
 from scipy.linalg import svd
 
 DATA_FILE = '/data/dopperiq.mat'
-OUT_DIR = '/data/invivo-samples-pp/'
-m, n, p = 39,39,20
+OUT_DIR = '/data/invivo-samples-pp-40x40/'
+m, n, p = 40,40,20
 nsamples = 300
 rank = 3
 
