@@ -32,7 +32,7 @@ class DownBlock3dC(nn.Module):
         return yR, yI
 
 class UpBlock3dC(nn.Module):
-    def __init__(self, Cin, Cmid, Cout, w, p, op=(0,0)):
+    def __init__(self, Cin, Cmid, Cout, w, p, op=(1,1)):
         super(UpBlock3dC, self).__init__()
         w1, w2 = w
         p1, p2 = p
