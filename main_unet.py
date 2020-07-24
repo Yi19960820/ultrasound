@@ -42,11 +42,8 @@ if __name__=='__main__':
     """Settings"""
     """========================================================================="""
     #Name and choice of training set
-    ProjectName='unet'
     prefix='sim' #invivo,sim_pm,sim
-    #Load model
-    mfile='/results/multi_rank_1_7_sim_UNet_Model_Tr6000_epoch30_lr2.00e-03.pkl'
-
+    
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
     #Whether to plot predictions during training and frequency
@@ -58,8 +55,6 @@ if __name__=='__main__':
     seed=1237
     torch.manual_seed(seed)
     #parameters for training
-    TrainInstances = 6000 # Size of training dataset
-    ValInstances   = 800
     BatchSize      = 40
     ValBatchSize   = 40
     num_epochs     = 30
@@ -79,6 +74,9 @@ if __name__=='__main__':
     if loadmodel:
         mfile = cfg['mfile']
     print(loadmodel)
+    TrainInstances = cfg['ntrain'] # Size of training dataset
+    ValInstances   = cfg['nval']
+    ProjectName = cfg['ProjectName']
     """========================================================================="""
 
     #Dataset, converter and player

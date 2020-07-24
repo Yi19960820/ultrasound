@@ -189,15 +189,13 @@ def plot_patches(fname):
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec = svt(D, 10)
-    thresh = sv_threshold(svals)
-    svals, Drec = svt(D, thresh)
-    print(thresh)
+    svals, Drec, thresh = svt(D, ret_thresh=True)
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')
     print(f'S power: {pow_S}')
     print(f'L/S: {pow_L/pow_S}')
+    print(f'Thresh: {thresh}')
     S = Drec
 
     ax[0][0].imshow(log_rms(D))
@@ -246,7 +244,7 @@ def plot_loss():
     plt.legend()
     plt.show()
 
-def svt(D,e1=None, e2=None):
+def svt(D,e1=None, e2=None, ret_thresh=False):
     n1, n2, n3 = D.shape
     caso = D.reshape((n1*n2, n3))
     U, S, Vh = la.svd(caso, full_matrices=False)
@@ -258,6 +256,8 @@ def svt(D,e1=None, e2=None):
         e2 = n3
     casorec = U[:,e1:e2]@np.diag(S[e1:e2])@(Vh[:,e1:e2].T)
     Drec = casorec.reshape(D.shape)
+    if ret_thresh:
+        return S, Drec, e1
     return S, Drec
 
 if __name__=='__main__':

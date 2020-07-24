@@ -82,7 +82,7 @@ random.shuffle(sd_names)
 
 for i in tqdm.tqdm(range(len(sd_names))):
     mats = loadmat(os.path.join(SD_DIR, sd_names[i]))
-    coeff = random.choice([1,1.5,2,2.5,3,3.5,4])
+    coeff = random.choice([1,2,3,4,5,6,7])
     blood = mats['blood'][:,:,:NFRAMES]*TB/coeff
     tissue = mats['L'][:,:,:NFRAMES]
     angle = mats['a']
@@ -99,5 +99,10 @@ for i in tqdm.tqdm(range(len(sd_names))):
             
             # blood_quad, tissue_quad = create_quads(blood, tissue, x, z)
             blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (m, n))
-
-            np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue_quad, S=blood_quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff)
+            quad = blood_quad+tissue_quad
+            quad_caso = quad.reshape(m*n, NFRAMES)
+            U, s, Vh = svd(quad_caso, full_matrices=False)
+            quad_caso_red = U[:,3:]@np.diag(s[3:])@(Vh[:,3:].T)
+            quad = quad_caso_red.reshape(m, n, NFRAMES)
+            np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue_quad, S=blood_quad, \
+                D=quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff)
