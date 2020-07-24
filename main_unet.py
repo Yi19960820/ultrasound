@@ -172,7 +172,7 @@ if __name__=='__main__':
                 pbar.set_description("Batch loss: %2.9f" % batch_loss)
                 pbar.update()
             pbar.close()
-            loss_mean=loss_mean/TrainInstances
+            loss_mean=loss_mean/len(train_loader)
             endtime=time.time()
             print('Training time is %f'%(endtime-starttime))
             log.write('Training time is %f\n'%(endtime-starttime))
@@ -190,7 +190,7 @@ if __name__=='__main__':
                         outputs_Sv=net(inputsv[None,None])  # Forward
                         loss_val=floss(outputs_Sv.squeeze(),targets_Sv)  # Current loss
                         loss_val_mean+=loss_val.item()
-            loss_val_mean=loss_val_mean/ValInstances
+            loss_val_mean=loss_val_mean/len(val_loader)
             endtime=time.time()
             print('Test time is %f'%(endtime-starttime))
             log.write('Test time is %f\n'%(endtime-starttime))
