@@ -32,7 +32,7 @@ class DownBlock3dC(nn.Module):
         return yR, yI
 
 class UpBlock3dC(nn.Module):
-    def __init__(self, Cin, Cmid, Cout, w, p, op=(1,1)):
+    def __init__(self, Cin, Cmid, Cout, w, p, op=(0,0)):
         super(UpBlock3dC, self).__init__()
         w1, w2 = w
         p1, p2 = p
@@ -137,4 +137,4 @@ class UNet(nn.Module):
 
 if __name__=='__main__':
     model = UNet()
-    summary(model, torch.zeros([1,1,40,40,40]))
+    summary(model, torch.zeros([1,1, 48, 48,40]))
