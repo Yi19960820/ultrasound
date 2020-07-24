@@ -80,7 +80,6 @@ if __name__=='__main__':
     #Dataset, converter and player
     data_dir={'invivo':d_invivo,'sim_pm':d_simpm,'sim':d_sim}[prefix]
     conter=Converter()
-    player=Player()
     formshow={'pre':'concat','shape':(m,n,p)}
     formlist=[]
     for i in range(6):

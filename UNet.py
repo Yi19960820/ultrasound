@@ -41,7 +41,6 @@ class UpBlock3dC(nn.Module):
 
         self.conv0 = Conv3dC(Cin,Cmid,(w1,w2),(s1,s2),(p1,p2))
         self.conv1 = Conv3dC(Cmid,Cmid,(w1,w2),(s1,s2),(p1,p2))
-        self.conv2 = Conv3dC(Cmid,Cmid,(w1, w2),(s1,s2),(p1,p2))
         self.up = Deconv3dC(Cmid, Cout, (2,1), (2,1))
         self.bn = nn.BatchNorm3d(Cout)
         self.tanh = nn.Tanh()
@@ -49,7 +48,7 @@ class UpBlock3dC(nn.Module):
     def forward(self, xR, xI):
         yR, yI = self.conv0(xR, xI)
         yR, yI = self.conv1(yR, yI)
-        yR, yI = self.conv2(yR, yI)
+        yR, yI = self.up(yR, yI)
         yR = self.bn(yR)
         yI = self.bn(yI)
         yR = self.tanh(yR)
