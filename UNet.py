@@ -19,7 +19,7 @@ class DownBlock3dC(nn.Module):
         self.conv1 = Conv3dC(Cout,Cout,(w1,w2),(s1,s2),(p1,p2))
         self.conv2 = Conv3dC(Cout,Cout,(w1,w2),(s1,s2),(p1,p2))
         self.bn = nn.BatchNorm3d(Cout)
-        self.tanh = nn.Tanh()
+        self.relu = nn.ReLU()
         
     def forward(self, xR, xI):
         yR, yI = self.conv0(xR, xI)
@@ -27,8 +27,8 @@ class DownBlock3dC(nn.Module):
         yR, yI = self.conv2(yR, yI)
         yR = self.bn(yR)
         yI = self.bn(yI)
-        yR = self.tanh(yR)
-        yI = self.tanh(yI)
+        yR = self.relu(yR)
+        yI = self.relu(yI)
         return yR, yI
 
 class UpBlock3dC(nn.Module):
@@ -43,7 +43,7 @@ class UpBlock3dC(nn.Module):
         self.conv1 = Conv3dC(Cmid,Cmid,(w1,w2),(s1,s2),(p1,p2))
         self.up = Deconv3dC(Cmid, Cout, (2,1), (2,1), op=(op1, op2))
         self.bn = nn.BatchNorm3d(Cout)
-        self.tanh = nn.Tanh()
+        self.relu = nn.ReLU()
 
     def forward(self, xR, xI):
         yR, yI = self.conv0(xR, xI)
@@ -51,8 +51,8 @@ class UpBlock3dC(nn.Module):
         yR, yI = self.up(yR, yI)
         yR = self.bn(yR)
         yI = self.bn(yI)
-        yR = self.tanh(yR)
-        yI = self.tanh(yI)
+        yR = self.relu(yR)
+        yI = self.relu(yI)
         return yR, yI
 
 class OutputBlock3dC(nn.Module):
@@ -67,7 +67,7 @@ class OutputBlock3dC(nn.Module):
         self.conv1 = Conv3dC(Cmid,Cmid,(w1,w2),(s1,s2),(p1,p2))
         self.conv2 = Conv3dC(Cmid,Cout,(w1,w2),(s1,s2),(p1,p2))
         self.tanh = nn.Tanh()
-    
+
     def forward(self, xR, xI):
         yR, yI = self.conv0(xR, xI)
         yR, yI = self.conv1(yR, yI)
@@ -99,7 +99,6 @@ class UNet(nn.Module):
         self.dec5 = UpBlock3dC(c[3]*2, c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]))
         self.dec6 = UpBlock3dC(c[2]*2, c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]))
         self.output = OutputBlock3dC(c[1]*2, c[1], c[0])
-        self.tanh = nn.Tanh()
 
     def concat(self, up, skip):
         return torch.cat((up, skip), dim=1)
@@ -127,8 +126,6 @@ class UNet(nn.Module):
         yR, yI = self.dec6(yR, yI)
         yR, yI = self.concat(yR, yR0), self.concat(yI, yI0)
         yR, yI = self.output(yR, yI)
-        yR = self.tanh(yR)
-        yI = self.tanh(yI)
 
         y=torch.cat((yR,yI),-1)
         return y
