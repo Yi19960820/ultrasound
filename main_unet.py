@@ -53,7 +53,7 @@ if __name__=='__main__':
     BatchSize      = 40
     ValBatchSize   = 40
     num_epochs     = 30
-    m, n, p = (40,40,20)
+    m, n, p = (48,48,26)
     frame=10
     #directory of datasets
     d_invivo='/data/Invivo/' 

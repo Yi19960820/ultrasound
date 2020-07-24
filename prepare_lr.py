@@ -73,8 +73,8 @@ LR_DIR = '/data/low-rank/'
 SD_DIR = '/data/sim-data-better/'
 cfg = yaml.load(open('/data/resnet.yaml'))
 OUT_DIR = cfg['datadir']
-m, n = 40, 40
-NFRAMES = 20
+m, n = 48, 48
+NFRAMES = 26
 NSV = NFRAMES
 TB = 5
 sd_names = os.listdir(SD_DIR)
@@ -83,8 +83,8 @@ random.shuffle(sd_names)
 for i in tqdm.tqdm(range(len(sd_names))):
     mats = loadmat(os.path.join(SD_DIR, sd_names[i]))
     coeff = random.choice([1,2,3,4,5,6,7])
-    blood = mats['blood'][:,:,:NFRAMES]*TB/coeff
-    tissue = mats['L'][:,:,:NFRAMES]
+    blood = mats['blood'][:,:,1:NFRAMES+1]*TB/coeff     # start from second frame because the first is weird sometimes
+    tissue = mats['L'][:,:,1:NFRAMES+1]
     angle = mats['a']
     width = mats['b']
 
