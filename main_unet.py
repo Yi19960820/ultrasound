@@ -46,9 +46,9 @@ if __name__=='__main__':
     plotT=1
     if not plot:
         plt.ioff()
-    #seed
-    seed=1237
-    torch.manual_seed(seed)
+    # #seed
+    # seed=1237
+    # torch.manual_seed(seed)
     #parameters for training
     BatchSize      = 40
     ValBatchSize   = 40
