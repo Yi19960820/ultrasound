@@ -77,6 +77,9 @@ if __name__=='__main__':
     TrainInstances = cfg['ntrain'] # Size of training dataset
     ValInstances   = cfg['nval']
     ProjectName = cfg['ProjectName']
+    out_dir = f'/results/{ProjectName}'
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
     """========================================================================="""
 
     #Dataset, converter and player
@@ -89,8 +92,8 @@ if __name__=='__main__':
         formlist.append(formshow)
     minloss=np.inf
     #Logs
-    log=open('/results/%s_%s_UNet_Log_Tr%s_epoch%s_lr%.2e.txt'\
-        %(ProjectName,prefix,TrainInstances,num_epochs,lr_list[0]),'a')
+    log=open('%s/%s_UNet_Log_Tr%s_epoch%s_lr%.2e.txt'\
+        %(out_dir,prefix,TrainInstances,num_epochs,lr_list[0]),'a')
 
     print('Project Name: %s\n'%ProjectName)
     log.write('Project Name: %s\n\n'%ProjectName)
@@ -204,8 +207,8 @@ if __name__=='__main__':
                 log.write('saved at [epoch%d/%d]\n'\
                     %(epoch+1,num_epochs))
                 torch.save(net.state_dict(), 
-                        "/results/%s_%s_UNet_Model_Tr%s_epoch%s_lr%.2e.pkl"\
-                        %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
+                        "%s/%s_UNet_Model_Tr%s_epoch%s_lr%.2e.pkl"\
+                        %(out_dir,prefix,TrainInstances,num_epochs,learning_rate))
                 minloss=min(loss_val_mean,minloss)
         
             # Print loss
@@ -234,8 +237,8 @@ if __name__=='__main__':
             lossmean_vec[epoch]=loss_mean
             lossmean_val_vec[epoch]=loss_val_mean
 
-            np.savez('/results/%s_%s_UNet_LossData_Tr%s_epoch%s_lr%.2e'\
-                %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
+            np.savez('%s/%s_UNet_LossData_Tr%s_epoch%s_lr%.2e'\
+                %(out_dir,prefix,TrainInstances,num_epochs,learning_rate),
                 lossmean_vec,lossmean_val_vec)
 
         """Save logs, prediction, loss figure, loss data, model and settings """
@@ -248,8 +251,8 @@ if __name__=='__main__':
                     xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
                         tit=['xtr','ytr','ptr','xval','yval','pval'],
                         supt='Epoch{%d/%d}'%(epoch+1,num_epochs),ion=False)
-        plt.savefig('/results/%s_%s_UNet_Pred_Tr%s_epoch%s_lr%.2e.png'\
-                    %(ProjectName,prefix,TrainInstances,
+        plt.savefig('%s/%s_UNet_Pred_Tr%s_epoch%s_lr%.2e.png'\
+                    %(out_dir,prefix,TrainInstances,
                     num_epochs,learning_rate),ion=False)
 
         #MSE
@@ -263,13 +266,13 @@ if __name__=='__main__':
         plt.title("MSE")
         plt.legend()
         #Save png, pickle, data of MSE
-        plt.savefig('/results/%s_%s_UNet_LossPng_Tr%s_epoch%s_lr%.2e.png'\
-                    %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
-        pickle.dump(fig,open("/results/%s_%s_UNet_LossFig_Tr%s_epoch%s_lr%.2e.fig.pickle"\
-                            %(ProjectName,prefix,TrainInstances,
+        plt.savefig('%s/%s_UNet_LossPng_Tr%s_epoch%s_lr%.2e.png'\
+                    %(out_dir,prefix,TrainInstances,num_epochs,learning_rate))
+        pickle.dump(fig,open("%s/%s_UNet_LossFig_Tr%s_epoch%s_lr%.2e.fig.pickle"\
+                            %(out_dir,prefix,TrainInstances,
                             num_epochs,learning_rate),'wb'))
-        np.savez('/results/%s_%s_UNet_LossData_Tr%s_epoch%s_lr%.2e'\
-                %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
+        np.savez('%s/%s_UNet_LossData_Tr%s_epoch%s_lr%.2e'\
+                %(out_dir,prefix,TrainInstances,num_epochs,learning_rate),
                 lossmean_vec,lossmean_val_vec)
         
         #Save settings of training
@@ -286,8 +289,8 @@ if __name__=='__main__':
                 'ValBatchSize':ValBatchSize,
                 'num_epochs':num_epochs,
                 'frame':frame}
-        file=open('/results/%s_%s_UNet_Settings_Tr%s_epoch%s_lr%.2e.txt'\
-                %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),'w')
+        file=open('%s/%s_UNet_Settings_Tr%s_epoch%s_lr%.2e.txt'\
+                %(out_dir,prefix,TrainInstances,num_epochs,learning_rate),'w')
         file.write('Training Settings:\n\t')
         for k,v in params.items():
             file.write(k+'='+str(v)+'\n')

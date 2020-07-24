@@ -24,6 +24,7 @@ class ConvBlock3dC(nn.Module):
         self.conv1 = Conv3dC(Cout,Cout,(w1,w2),(s1,s2),(p1,p2))
         self.conv2 = Conv3dC(Cout,Cout,(w1,w2),(s1,s2),(p1,p2))
         self.conv3 = Conv3dC(Cout,Cout,(w1,w2),(s1,s2),(p1,p2))
+        self.bn = nn.BatchNorm3d(Cout)
         
     def forward(self, xR, xI):
         yR, yI = self.conv0(xR, xI)
@@ -32,13 +33,15 @@ class ConvBlock3dC(nn.Module):
         yR = yR + yRp
         yI = yI + yIp
         yR, yI = self.conv3(yR, yI)
+        yR = self.bn(yR)
+        yI = self.bn(yI)
         return yR, yI
 
 class Deconv3dC(nn.Module):
     """
     Conv block for 3d complex computation
     """
-    def __init__(self,Cin,Cout,kernel,stride,padding, op=(0,0)):
+    def __init__(self,Cin,Cout,kernel,stride,padding=(0,0), op=(0,0)):
         """
         Args:
             Cin: number of input panes
@@ -74,7 +77,8 @@ class DeconvBlock3dC(nn.Module):
         self.conv1 = Deconv3dC(Cin,Cin,(w1,w2),(s1,s2),(p1,p2))
         self.conv2 = Deconv3dC(Cin,Cin,(w1, w2),(s1,s2),(p1,p2))
         self.conv3 = Deconv3dC(Cin,Cout,(w1,w2),(2*s1,s2),(p1,p2), (op1, op2))
-        
+        self.bn = nn.BatchNorm3d(Cout)
+
     def forward(self, xR, xI):
         yRi, yIi = self.conv0(xR, xI)
         yRp, yIp = self.conv1(yRi, yIi)
@@ -82,10 +86,12 @@ class DeconvBlock3dC(nn.Module):
         yR = yRi + yRp
         yI = yIi + yIp
         yR, yI = self.conv3(yR, yI)
+        yR = self.bn(yR)
+        yI = self.bn(yI)
         return yR, yI
 
 class MaxPool3dC(nn.Module):
-    def __init__(self, w, s, p, d=1):
+    def __init__(self, w, s, p=(0,0), d=1):
         super(MaxPool3dC, self).__init__()
 
         w1, w2 = w
