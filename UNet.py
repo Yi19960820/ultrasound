@@ -119,8 +119,6 @@ class UNet(nn.Module):
         yR3, yI3 = self.enc3(yR, yI)
         yR, yI = self.mp3(yR3, yI3)
         yR, yI = self.bottom(yR, yI)
-        print('yR', yR.shape)
-        print('yR3', yR3.shape)
         yR, yI = self.concat(yR, yR3), self.concat(yI, yI3)
         yR, yI = self.dec4(yR, yI)
         yR, yI = self.concat(yR, yR2), self.concat(yI, yI2)
