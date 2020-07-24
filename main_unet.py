@@ -6,10 +6,6 @@ Modified on Fri Jun 12 2020 by Sam Ehrenstein
 @author: Yi Zhang
 @author: Sam Ehrenstein
 """
-
-import matplotlib 
-matplotlib.use('Agg')
-
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -23,7 +19,6 @@ import os
 from DataSet import BigImageDataset
 from UNet import UNet
 from CORONA.classes.Dataset import Converter
-from CORONA.classes.Player import Player
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -223,17 +218,6 @@ if __name__=='__main__':
                     log.write('hitbadrut\n')
                     break
             
-            #Observe results
-            if plot and ((epoch+1)%plotT==0 or epoch==0):
-                [xtr,ytr,ptr,xval,yval,pval]=conter.torch2np([D[ii],S[ii],outputs_S,
-                                                            Dv[jj],Sv[jj],outputs_Sv],
-                                                            formlist)
-                # player.plotmat([xtr[:,:,frame],ytr[:,:,frame],ptr[:,:,frame],
-                #             xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
-                #                 tit=['xtr','ytr','ptr','xval','yval','pval'],
-                #                 supt='Epoch{%d/%d}'%(epoch+1,num_epochs))
-                plt.pause(0.1)
-            
             lossmean_vec[epoch]=loss_mean
             lossmean_val_vec[epoch]=loss_val_mean
 
@@ -242,35 +226,6 @@ if __name__=='__main__':
                 lossmean_vec,lossmean_val_vec)
 
         """Save logs, prediction, loss figure, loss data, model and settings """
-        #Graphs
-        #Save the prediction figure
-        [xtr,ytr,ptr,xval,yval,pval]=conter.torch2np([D[ii],S[ii],outputs_S,
-                                                    Dv[jj],Sv[jj],outputs_Sv],
-                                                    formlist)
-        player.plotmat([xtr[:,:,frame],ytr[:,:,frame],ptr[:,:,frame],
-                    xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
-                        tit=['xtr','ytr','ptr','xval','yval','pval'],
-                        supt='Epoch{%d/%d}'%(epoch+1,num_epochs),ion=False)
-        plt.savefig('%s/%s_UNet_Pred_Tr%s_epoch%s_lr%.2e.png'\
-                    %(out_dir,prefix,TrainInstances,
-                    num_epochs,learning_rate),ion=False)
-
-        #MSE
-        fig=plt.figure()
-        epochs_vec=np.arange(0, num_epochs, 1)
-        plt.semilogy(epochs_vec,lossmean_vec,'-*',label='loss')
-        plt.semilogy(epochs_vec,lossmean_val_vec,'-*',label='loss_val')
-        plt.xlabel('epoch')
-        plt.ylabel('Loss')
-        plt.ylim(ymin=0)
-        plt.title("MSE")
-        plt.legend()
-        #Save png, pickle, data of MSE
-        plt.savefig('%s/%s_UNet_LossPng_Tr%s_epoch%s_lr%.2e.png'\
-                    %(out_dir,prefix,TrainInstances,num_epochs,learning_rate))
-        pickle.dump(fig,open("%s/%s_UNet_LossFig_Tr%s_epoch%s_lr%.2e.fig.pickle"\
-                            %(out_dir,prefix,TrainInstances,
-                            num_epochs,learning_rate),'wb'))
         np.savez('%s/%s_UNet_LossData_Tr%s_epoch%s_lr%.2e'\
                 %(out_dir,prefix,TrainInstances,num_epochs,learning_rate),
                 lossmean_vec,lossmean_val_vec)

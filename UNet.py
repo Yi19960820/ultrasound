@@ -115,7 +115,7 @@ class UNet(nn.Module):
         yR, yI = self.mp0(yR0, yI0)
         yR1, yI1 = self.enc1(yR, yI)
         yR, yI = self.mp1(yR1, yI1)
-        yR2, yI2 = self.enc2(xR, xI)
+        yR2, yI2 = self.enc2(yR, yI)
         yR, yI = self.mp2(yR2, yI2)
         yR3, yI3 = self.enc3(yR, yI)
         yR, yI = self.mp3(yR3, yI3)
