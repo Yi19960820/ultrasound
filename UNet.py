@@ -135,4 +135,4 @@ class UNet(nn.Module):
 
 if __name__=='__main__':
     model = UNet()
-    summary(model, torch.zeros([1,1,40,40,20]))
+    summary(model, torch.zeros([1,1,40,40,40]))
