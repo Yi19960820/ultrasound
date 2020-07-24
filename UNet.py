@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
+from torchsummary import summary
 from UGAN import MaxPool3dC, Conv3dC, Deconv3dC
 
 class DownBlock3dC(nn.Module):
@@ -41,7 +42,7 @@ class UpBlock3dC(nn.Module):
         self.conv0 = Conv3dC(Cin,Cmid,(w1,w2),(s1,s2),(p1,p2))
         self.conv1 = Conv3dC(Cmid,Cmid,(w1,w2),(s1,s2),(p1,p2))
         self.conv2 = Conv3dC(Cmid,Cmid,(w1, w2),(s1,s2),(p1,p2))
-        self.up = Deconv3dC(Cmid, Cout, (2,2,1), (2,2,1))
+        self.up = Deconv3dC(Cmid, Cout, (2,1), (2,1))
         self.bn = nn.BatchNorm3d(Cout)
         self.tanh = nn.Tanh()
 
@@ -87,13 +88,13 @@ class UNet(nn.Module):
         p2 = [0, 1, 1,  1,  1, 1]
 
         self.enc0 = DownBlock3dC(c[0], c[1], (w1[1],w2[1]), (p1[1],p2[1]))
-        self.mp0 = MaxPool3dC((2,2,1), (2,2,1))
+        self.mp0 = MaxPool3dC((2,1), (2,1))
         self.enc1 = DownBlock3dC(c[1], c[2], (w1[2],w2[2]), (p1[2],p2[2]))
-        self.mp1 = MaxPool3dC((2,2,1), (2,2,1))
+        self.mp1 = MaxPool3dC((2,1), (2,1))
         self.enc2 = DownBlock3dC(c[2], c[3], (w1[3],w2[3]), (p1[3],p2[3]))
-        self.mp2 = MaxPool3dC((2,2,1), (2,2,1))
+        self.mp2 = MaxPool3dC((2,1), (2,1))
         self.enc3 = DownBlock3dC(c[3], c[4], (w1[4],w2[4]), (p1[4],p2[4]))
-        self.mp3 = MaxPool3dC((2,2,1), (2,2,1))
+        self.mp3 = MaxPool3dC((2,1), (2,1))
         self.bottom = UpBlock3dC(c[4], c[5], c[4], (w1[4], w2[4]), (p1[4], p2[4]))
         self.dec4 = UpBlock3dC(c[4]*2, c[4], c[3], (w1[3],w2[3]), (p1[3], p2[3]))
         self.dec5 = UpBlock3dC(c[3]*2, c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]))
@@ -132,3 +133,7 @@ class UNet(nn.Module):
 
         y=torch.cat((yR,yI),-1)
         return y
+
+if __name__=='__main__':
+    model = UNet()
+    summary(model, torch.zeros([1,1,40,40,20]))
