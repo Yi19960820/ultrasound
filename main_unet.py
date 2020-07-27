@@ -21,7 +21,6 @@ from UNet import UNet
 from CORONA.classes.Dataset import Converter
 
 import numpy as np
-import matplotlib.pyplot as plt
 import time
 import datetime
 import pickle
@@ -41,11 +40,7 @@ if __name__=='__main__':
     
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
-    #Whether to plot predictions during training and frequency
-    plot=True
-    plotT=1
-    if not plot:
-        plt.ioff()
+
     # #seed
     # seed=1237
     # torch.manual_seed(seed)

@@ -9,10 +9,8 @@ import numpy as np
 import sys
 import time
 import torch
-import matplotlib.pyplot as plt
 from scipy.io import savemat
 sys.path.append('../')
-from CORONA.classes.Player import Player
 from CORONA.classes.Dataset import Converter
 from UNet import UNet
 from DataSet import BigImageDataset
