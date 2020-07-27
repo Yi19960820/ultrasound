@@ -45,7 +45,6 @@ if __name__=='__main__':
     # seed=1237
     # torch.manual_seed(seed)
     #parameters for training
-    BatchSize      = 40
     ValBatchSize   = 40
     num_epochs     = 30
     m, n, p = (48,48,26)
@@ -74,6 +73,10 @@ if __name__=='__main__':
         wd = cfg['weight_decay']
     else:
         wd = 0
+    if 'batchsize' in cfg.keys():
+        BatchSize = cfg['batchsize']
+    else:
+        BatchSize      = 80
     """========================================================================="""
 
     #Dataset, converter and player

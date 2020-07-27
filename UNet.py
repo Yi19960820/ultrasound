@@ -237,6 +237,6 @@ class UNet(nn.Module):
         return y
 
 if __name__=='__main__':
-    model = ResUNet()
+    model = UNet()
     x = torch.zeros([1,1, 48, 48,52])
     summary(model, x)
