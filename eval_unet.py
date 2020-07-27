@@ -47,15 +47,14 @@ data_dir = cfg['datadir']
 TestInstances = cfg['ntest']
 saveMat = cfg['saveMat']
 mfile = cfg['mfile']
+TrainInstances = cfg['ntrain']
+ValInstances = cfg['nval']
 """========================================================================="""
 
 #Converter
 form_in={'pre':'concat','shape':[-1,1,m,n,p*2]}
 form_out={'pre':'concat','shape':[m,n,p]}
 convert=Converter()
-
-TrainInstances = 6000
-ValInstances = 800
 
 # with open('eval_resnet.yml') as f:
 #     config = yaml.load(f)

@@ -75,6 +75,10 @@ if __name__=='__main__':
     out_dir = f'/results/{ProjectName}'
     if not os.path.isdir(out_dir):
         os.mkdir(out_dir)
+    if 'weight_decay' in cfg.keys():
+        wd = cfg['weight_decay']
+    else:
+        wd = 0
     """========================================================================="""
 
     #Dataset, converter and player
@@ -128,7 +132,7 @@ if __name__=='__main__':
 
         #Loss and optimizer
         floss=nn.MSELoss()
-        optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate)
+        optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=wd)
 
         #Array for recording data
         outputs_S = to_var(torch.zeros([1,1,m,m,p*2]))
