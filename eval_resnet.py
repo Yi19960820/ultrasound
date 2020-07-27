@@ -32,7 +32,7 @@ import yaml
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-m,n,p=39,39,20 #size of data
+m,n,p=48,48,26 #size of data
 #Save gif
 saveGif=True
 save_gif_dir='/results/gifs'

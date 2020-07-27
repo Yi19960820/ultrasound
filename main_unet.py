@@ -164,11 +164,11 @@ if __name__=='__main__':
 
                     outputs_S=net(inputs[None,None])  # Forward
                     loss=floss(outputs_S.squeeze(), targets_S)  # Current loss
-                    batch_loss = loss.item()
+                    batch_loss = np.log10(loss.item())
                     loss_mean+=batch_loss
                     loss.backward()
                 optimizer.step()
-                pbar.set_description("Batch loss: %2.9f" % batch_loss)
+                pbar.set_description("Batch loss: %2.9f" % 10**batch_loss)
                 pbar.update()
             pbar.close()
             loss_mean=loss_mean/len(train_loader)
@@ -188,7 +188,7 @@ if __name__=='__main__':
         
                         outputs_Sv=net(inputsv[None,None])  # Forward
                         loss_val=floss(outputs_Sv.squeeze(),targets_Sv)  # Current loss
-                        loss_val_mean+=loss_val.item()
+                        loss_val_mean+=np.log10(loss_val.item())
             loss_val_mean=loss_val_mean/len(val_loader)
             endtime=time.time()
             print('Test time is %f'%(endtime-starttime))
@@ -206,9 +206,9 @@ if __name__=='__main__':
         
             # Print loss
             if (epoch + 1)%1==0:    # % 10
-                print('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e'\
+                print('Epoch [%d/%d], Log lossmean: %.5e, Validation lossmean: %.5e'\
                     %(epoch+1,num_epochs,loss_mean,loss_val_mean))
-                log.write('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e\n'\
+                log.write('Epoch [%d/%d], Log lossmean: %.5e, Validation lossmean: %.5e\n'\
                     %(epoch+1,num_epochs,loss_mean,loss_val_mean))
 
                 if loss.item() > 100:

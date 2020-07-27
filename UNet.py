@@ -4,12 +4,29 @@ import torch.nn as nn
 from torchsummary import summary
 from UGAN import MaxPool3dC, Conv3dC, Deconv3dC
 
+
 class ResBlock3dC(nn.Module):
-    def __init__(self, Cin, Cout):
+    def __init__(self, Cin, Cmid, Cout):
         super(ResBlock3dC, self).__init__()
 
-        self.conv0 = Conv3dC(Cin, Cin, (3,3), (1,1), (1,1))
-        self.conv1 = Conv3dC(Cin, Cout, (3,3), (1,1), (1,1))
+        self.conv0 = Conv3dC(Cin, Cmid, (3,3), (1,1), (1,1))
+        self.conv1 = Conv3dC(Cmid, Cmid, (3,3), (1,1), (1,1))
+        self.conv2 = Conv3dC(Cmid, Cmid, (3, 3), (1,1), (1,1))
+        self.conv3 = Conv3dC(Cmid, Cout, (3,3), (1,1), (1,1))
+        self.bn1 = nn.BatchNorm3d(Cmid)
+        self.bn2 = nn.BatchNorm3d(Cmid)
+        self.relu = nn.ReLU()
+    
+    def forward(self, xR, xI):
+        yRp, yIp = self.conv0(xR, xI)
+        yR, yI = self.conv1(yRp, yIp)
+        yR, yI = self.bn1(yR), self.bn1(yI)
+        yR, yI = self.relu(yR), self.relu(yI)
+        yR, yI = self.conv2(yRp, yIp)
+        yR, yI = self.bn2(yR), self.bn2(yI)
+        yR, yI = self.relu(yR), self.relu(yI)
+        yR, yI = self.conv3(yR+yRp, yI+yIp)
+        return yR, yI
 
 class DownBlock3dC(nn.Module):
     '''
@@ -88,15 +105,81 @@ class OutputBlock3dC(nn.Module):
         self.conv0 = Conv3dC(Cin,Cmid,(w1,w2),(s1,s2),(p1,p2))
         self.conv1 = Conv3dC(Cmid,Cmid,(w1,w2),(s1,s2),(p1,p2))
         self.conv2 = Conv3dC(Cmid,Cout,(w1,w2),(s1,s2),(p1,p2))
+        self.bn1 = nn.BatchNorm3d(Cmid)
+        self.bn2 = nn.BatchNorm3d(Cmid)
+        self.bn3 = nn.BatchNorm3d(Cout)
+        self.relu = nn.ReLU()
         self.tanh = nn.Tanh()
 
     def forward(self, xR, xI):
         yR, yI = self.conv0(xR, xI)
+        yR = self.bn1(yR)
+        yI = self.bn1(yI)
+        yR, yI = self.relu(yR), self.relu(yI)
         yR, yI = self.conv1(yR, yI)
+        yR = self.bn2(yR)
+        yI = self.bn2(yI)
+        yR, yI = self.relu(yR), self.relu(yI)
         yR, yI = self.conv2(yR, yI)
+        yR = self.bn3(yR)
+        yI = self.bn3(yI)
         yR = self.tanh(yR)
         yI = self.tanh(yI)
         return yR, yI
+
+class ResUNet(nn.Module):
+    def __init__(self, gpu=True):
+        super(ResUNet, self).__init__()
+
+        c  = [1, 8, 16, 32, 64, 128]
+        w1 = [0 ,3, 3,  3,  3, 3]
+        w2 = [0 ,3, 3,  3,  3, 3]
+        p1 = [0, 1, 1,  1,  1, 1]
+        p2 = [0, 1, 1,  1,  1, 1]
+
+        self.enc0 = ResBlock3dC(c[0], c[1], c[1])
+        self.mp0 = MaxPool3dC((2,1), (2,1))
+        self.enc1 = ResBlock3dC(c[1], c[2], c[2])
+        self.mp1 = MaxPool3dC((2,1), (2,1))
+        self.enc2 = ResBlock3dC(c[2], c[3], c[3])
+        self.mp2 = MaxPool3dC((2,1), (2,1))
+        self.enc3 = ResBlock3dC(c[3], c[4], c[4])
+        self.mp3 = MaxPool3dC((2,1), (2,1))
+        self.bottom = UpBlock3dC(c[4], c[5], c[4], (w1[4], w2[4]), (p1[4], p2[4]))
+        self.dec4 = UpBlock3dC(c[4]*2, c[4], c[3], (w1[3],w2[3]), (p1[3], p2[3]))
+        self.dec5 = UpBlock3dC(c[3]*2, c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]))
+        self.dec6 = UpBlock3dC(c[2]*2, c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]))
+        self.output = OutputBlock3dC(c[1]*2, c[1], c[0])
+
+    def concat(self, up, skip):
+        return torch.cat((up, skip), dim=1)
+
+    def forward(self, x):
+        T2=x.shape[-1]
+        T=int(T2/2)
+        xR=x[:,:,:,:,0:T]
+        xI=x[:,:,:,:,T:T2]
+
+        yR0, yI0 = self.enc0(xR, xI)
+        yR, yI = self.mp0(yR0, yI0)
+        yR1, yI1 = self.enc1(yR, yI)
+        yR, yI = self.mp1(yR1, yI1)
+        yR2, yI2 = self.enc2(yR, yI)
+        yR, yI = self.mp2(yR2, yI2)
+        yR3, yI3 = self.enc3(yR, yI)
+        yR, yI = self.mp3(yR3, yI3)
+        yR, yI = self.bottom(yR, yI)
+        yR, yI = self.concat(yR, yR3), self.concat(yI, yI3)
+        yR, yI = self.dec4(yR, yI)
+        yR, yI = self.concat(yR, yR2), self.concat(yI, yI2)
+        yR, yI = self.dec5(yR, yI)
+        yR, yI = self.concat(yR, yR1), self.concat(yI, yI1)
+        yR, yI = self.dec6(yR, yI)
+        yR, yI = self.concat(yR, yR0), self.concat(yI, yI0)
+        yR, yI = self.output(yR, yI)
+
+        y=torch.cat((yR,yI),-1)
+        return y
 
 class UNet(nn.Module):
     def __init__(self, gpu=True):
@@ -153,5 +236,6 @@ class UNet(nn.Module):
         return y
 
 if __name__=='__main__':
-    model = UNet()
-    summary(model, torch.zeros([1,1, 48, 48,40]))
+    model = ResUNet()
+    x = torch.zeros([1,1, 48, 48,52])
+    summary(model, x)

@@ -77,6 +77,7 @@ m, n = 48, 48
 NFRAMES = 26
 NSV = NFRAMES
 TB = 5
+noise = False
 sd_names = os.listdir(SD_DIR)
 random.shuffle(sd_names)
 
@@ -104,5 +105,13 @@ for i in tqdm.tqdm(range(len(sd_names))):
             U, s, Vh = svd(quad_caso, full_matrices=False)
             quad_caso_red = U[:,3:]@np.diag(s[3:])@(Vh[:,3:].T)
             quad = quad_caso_red.reshape(m, n, NFRAMES)
+
+            if noise:
+                avg_mag = np.mean(np.abs(tissue_quad))/10
+                radius = np.random.randn(*tissue_quad.shape)
+                angle = np.random.rand(*tissue_quad.shape)*2*np.pi
+                noise_quad = radius*(np.cos(angle)+np.sin(angle)*1j)
+                quad += noise_quad
+
             np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue_quad, S=blood_quad, \
                 D=quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff)
