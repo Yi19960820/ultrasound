@@ -74,9 +74,10 @@ if __name__=='__main__':
     else:
         wd = 0
     if 'batchsize' in cfg.keys():
+        print(cfg['batchsize'])
         BatchSize = cfg['batchsize']
     else:
-        BatchSize      = 80
+        BatchSize = 80
     """========================================================================="""
 
     #Dataset, converter and player
