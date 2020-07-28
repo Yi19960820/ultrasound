@@ -157,12 +157,14 @@ if __name__=='__main__':
             for _,(_,S,D) in enumerate(train_loader):
                 # set the gradients to zero at the beginning of each epoch
                 optimizer.zero_grad()  
+                batch_loss = 0
                 for ii in range(BatchSize):
                     inputs=to_var(D[ii])   # "ii"th picture
                     targets_S=to_var(S[ii])
 
                     outputs_S=net(inputs[None,None])  # Forward
                     loss=floss(outputs_S.squeeze(), targets_S)  # Current loss
+                    batch_loss += loss.item()
                     loss_mean+=loss.item()
                     loss.backward()
                 optimizer.step()
