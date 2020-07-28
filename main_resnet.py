@@ -153,8 +153,8 @@ if __name__=='__main__':
             print('Loading and calculating training batches...')
             log.write('Loading and calculating training batches...\n')
             starttime=time.time()
-            
-            for _,(_,S,D) in tqdm(enumerate(train_loader)):
+            pbar = tqdm(range(int(TrainInstances/BatchSize)))
+            for _,(_,S,D) in enumerate(train_loader):
                 # set the gradients to zero at the beginning of each epoch
                 optimizer.zero_grad()  
                 for ii in range(BatchSize):
@@ -166,6 +166,9 @@ if __name__=='__main__':
                     loss_mean+=loss.item()
                     loss.backward()
                 optimizer.step()
+                pbar.set_description("Batch loss: %2.9f" % (batch_loss/BatchSize))
+                pbar.update()
+            pbar.close()
             loss_mean=loss_mean/TrainInstances
             endtime=time.time()
             print('Training time is %f'%(endtime-starttime))
