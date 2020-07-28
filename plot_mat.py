@@ -67,15 +67,16 @@ def plot_metrics(fname):
 def plot_by_rank(fname, diff=False):
     fname = os.path.abspath(fname)
     metric_data = np.load(fname)
-    grid = np.zeros((7,20))
+    grid = np.zeros((7,26))
     grid_sv = np.zeros_like(grid)
     counts = np.zeros_like(grid)
     for i in range(len(metric_data['rn'])):
         ls = metric_data['lsratios'][i]
         rank = metric_data['ranks'][i]
-        counts[int(ls*2)-2][rank-1] += 1
-        grid[int(ls*2)-2][rank-1] += metric_data['rn'][i]
-        grid_sv[int(ls*2)-2][rank-1] += metric_data['sv'][i]
+        print(rank)
+        counts[int(ls-1)][rank-1] += 1
+        grid[int(ls-1)][rank-1] += metric_data['rn'][i]
+        grid_sv[int(ls-1)][rank-1] += metric_data['sv'][i]
     if diff:
         grid -= grid_sv
     grid /= counts

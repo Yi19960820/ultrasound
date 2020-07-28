@@ -20,7 +20,7 @@ from DataSet import BigImageDataset
 import torch.utils.data as data
 import os
 from main_resnet import to_var
-from plot_mat import psnr, svt
+from plot_mat import psnr, svt, sv_threshold
 from tqdm import tqdm
 import yaml
 #from tools.mat2gif import mat2gif
@@ -141,7 +141,7 @@ with torch.no_grad():
             for jj in range(len(D)):
                 [Dg, Sg] = convert.torch2np([D[jj], S[jj]], [form_out, form_out])
                 svt_start = time.time()
-                _, St = svt(Dg, 8)
+                _, St = svt(Dg)
                 svt_time += (time.time()-svt_start)
                 svt_list.append(psnr(Sg, St))
         svt_time /=TestInstances
