@@ -159,10 +159,10 @@ if __name__=='__main__':
             starttime=time.time()
             
             pbar = tqdm(range(int(TrainInstances/BatchSize)))
-            batch_loss = 0
             for i,(_,S,D) in enumerate(train_loader):
                 # set the gradients to zero at the beginning of each epoch
-                optimizer.zero_grad()  
+                optimizer.zero_grad()
+                batch_loss = 0 
                 for ii in range(BatchSize):
                     inputs=to_var(D[ii])   # "ii"th picture
                     targets_S=to_var(S[ii])
