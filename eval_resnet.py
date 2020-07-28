@@ -14,7 +14,8 @@ from scipy.io import savemat
 sys.path.append('../')
 from CORONA.classes.Player import Player
 from CORONA.classes.Dataset import Converter
-from CORONA.network.ResNet3dC import ResNet3dC
+# from CORONA.network.ResNet3dC import ResNet3dC
+from ResNet3dC import ResNet3dC
 from DataSet import BigImageDataset
 import torch.utils.data as data
 import os
@@ -48,7 +49,9 @@ mfile = cfg['mfile']
 TrainInstances = cfg['ntrain']
 ValInstances = cfg['nval']
 TestInstances = cfg['ntest']
-save_mat_dir=f'/results/{cfg["ProjectName"]}'
+save_mat_dir=f'/results/{cfg["ProjectName"]}/mats'
+if not os.path.isdir(save_mat_dir):
+    os.mkdir(save_mat_dir)
 """========================================================================="""
 
 #Converter
