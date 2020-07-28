@@ -50,8 +50,8 @@ class DownBlock3dC(nn.Module):
         yR, yI = self.conv0(xR, xI)
         yR = self.bn1(yR)
         yI = self.bn1(yI)
-        yR = self.relu(yR)
-        yI = self.relu(yI)
+        # yR = self.relu(yR)
+        # yI = self.relu(yI)
         yR, yI = self.conv1(yR, yI)
         # yR, yI = self.conv2(yR, yI)
         yR = self.bn2(yR)
@@ -80,13 +80,13 @@ class UpBlock3dC(nn.Module):
         yR, yI = self.conv0(xR, xI)
         yR = self.bn1(yR)
         yI = self.bn1(yI)
-        yR = self.relu(yR)
-        yI = self.relu(yI)
+        # yR = self.relu(yR)
+        # yI = self.relu(yI)
         yR, yI = self.conv1(yR, yI)
         yR = self.bn2(yR)
         yI = self.bn2(yI)
-        yR = self.relu(yR)
-        yI = self.relu(yI)
+        # yR = self.relu(yR)
+        # yI = self.relu(yI)
         yR, yI = self.up(yR, yI)
         yR = self.bn3(yR)
         yI = self.bn3(yI)
@@ -115,11 +115,11 @@ class OutputBlock3dC(nn.Module):
         yR, yI = self.conv0(xR, xI)
         yR = self.bn1(yR)
         yI = self.bn1(yI)
-        yR, yI = self.relu(yR), self.relu(yI)
+        # yR, yI = self.relu(yR), self.relu(yI)
         yR, yI = self.conv1(yR, yI)
         yR = self.bn2(yR)
         yI = self.bn2(yI)
-        yR, yI = self.relu(yR), self.relu(yI)
+        # yR, yI = self.relu(yR), self.relu(yI)
         yR, yI = self.conv2(yR, yI)
         yR = self.bn3(yR)
         yI = self.bn3(yI)
@@ -146,14 +146,14 @@ class ResUNet(nn.Module):
         self.enc3 = ResBlock3dC(c[3], c[4], c[4])
         self.mp3 = MaxPool3dC((2,1), (2,1))
         self.bottom = UpBlock3dC(c[4], c[5], c[4], (w1[4], w2[4]), (p1[4], p2[4]))
-        self.dec4 = UpBlock3dC(c[4], c[4], c[3], (w1[3],w2[3]), (p1[3], p2[3]))
-        self.dec5 = UpBlock3dC(c[3], c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]))
-        self.dec6 = UpBlock3dC(c[2], c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]))
+        self.dec4 = UpBlock3dC(c[4]*2, c[4], c[3], (w1[3],w2[3]), (p1[3], p2[3]))
+        self.dec5 = UpBlock3dC(c[3]*2, c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]))
+        self.dec6 = UpBlock3dC(c[2]*2, c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]))
         self.output = OutputBlock3dC(c[1], c[1], c[0])
 
     def concat(self, up, skip):
-        # return torch.cat((up, skip), dim=1)
-        return up+skip
+        return torch.cat((up, skip), dim=1)
+        # return up+skip
 
     def forward(self, x):
         T2=x.shape[-1]
@@ -201,13 +201,14 @@ class UNet(nn.Module):
         self.enc3 = DownBlock3dC(c[3], c[4], (w1[4],w2[4]), (p1[4],p2[4]))
         self.mp3 = MaxPool3dC((2,1), (2,1))
         self.bottom = UpBlock3dC(c[4], c[5], c[4], (w1[4], w2[4]), (p1[4], p2[4]))
-        self.dec4 = UpBlock3dC(c[4]*2, c[4], c[3], (w1[3],w2[3]), (p1[3], p2[3]))
-        self.dec5 = UpBlock3dC(c[3]*2, c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]))
-        self.dec6 = UpBlock3dC(c[2]*2, c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]))
-        self.output = OutputBlock3dC(c[1]*2, c[1], c[0])
+        self.dec4 = UpBlock3dC(c[4], c[4], c[3], (w1[3],w2[3]), (p1[3], p2[3]))
+        self.dec5 = UpBlock3dC(c[3], c[3], c[2], (w1[2],w2[2]), (p1[2], p2[2]))
+        self.dec6 = UpBlock3dC(c[2], c[2], c[1], (w1[1],w2[1]), (p1[1], p2[1]))
+        self.output = OutputBlock3dC(c[1], c[1], c[0])
 
     def concat(self, up, skip):
-        return torch.cat((up, skip), dim=1)
+        # return torch.cat((up, skip), dim=1)
+        return up+skip
 
     def forward(self, x):
         T2=x.shape[-1]
