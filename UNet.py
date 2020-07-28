@@ -44,20 +44,21 @@ class DownBlock3dC(nn.Module):
         # self.conv2 = Conv3dC(Cout,Cout,(w1,w2),(s1,s2),(p1,p2))
         self.bn1 = nn.BatchNorm3d(Cout)
         self.bn2 = nn.BatchNorm3d(Cout)
-        self.relu = nn.ReLU()
+        # self.relu = nn.ReLU()
+        self.relu = nn.LeakyReLU()
         
     def forward(self, xR, xI):
         yR, yI = self.conv0(xR, xI)
         yR = self.bn1(yR)
         yI = self.bn1(yI)
-        # yR = self.relu(yR)
-        # yI = self.relu(yI)
+        yR = self.relu(yR)
+        yI = self.relu(yI)
         yR, yI = self.conv1(yR, yI)
         # yR, yI = self.conv2(yR, yI)
         yR = self.bn2(yR)
         yI = self.bn2(yI)
-        # yR = self.relu(yR)
-        # yI = self.relu(yI)
+        yR = self.relu(yR)
+        yI = self.relu(yI)
         return yR, yI
 
 class UpBlock3dC(nn.Module):
@@ -74,24 +75,25 @@ class UpBlock3dC(nn.Module):
         self.bn1 = nn.BatchNorm3d(Cmid)
         self.bn2 = nn.BatchNorm3d(Cmid)
         self.bn3 = nn.BatchNorm3d(Cout)
-        self.relu = nn.ReLU()
+        # self.relu = nn.ReLU()
+        self.relu = nn.LeakyReLU()
 
     def forward(self, xR, xI):
         yR, yI = self.conv0(xR, xI)
         yR = self.bn1(yR)
         yI = self.bn1(yI)
-        # yR = self.relu(yR)
-        # yI = self.relu(yI)
+        yR = self.relu(yR)
+        yI = self.relu(yI)
         yR, yI = self.conv1(yR, yI)
         yR = self.bn2(yR)
         yI = self.bn2(yI)
-        # yR = self.relu(yR)
-        # yI = self.relu(yI)
+        yR = self.relu(yR)
+        yI = self.relu(yI)
         yR, yI = self.up(yR, yI)
         yR = self.bn3(yR)
         yI = self.bn3(yI)
-        # yR = self.relu(yR)
-        # yI = self.relu(yI)
+        yR = self.relu(yR)
+        yI = self.relu(yI)
         return yR, yI
 
 class OutputBlock3dC(nn.Module):
@@ -186,7 +188,7 @@ class UNet(nn.Module):
     def __init__(self, gpu=True):
         super(UNet, self).__init__()
 
-        c  = [1, 8, 16, 32, 64, 128]
+        c  = [1, 8, 16, 16, 32, 64]
         w1 = [0 ,3, 3,  3,  3, 3]
         w2 = [0 ,3, 3,  3,  3, 3]
         p1 = [0, 1, 1,  1,  1, 1]
