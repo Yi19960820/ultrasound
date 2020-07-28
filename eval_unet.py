@@ -38,7 +38,6 @@ cmap='hot'
 note='abs'
 #Save matrix
 saveMetadata=True
-save_mat_dir='/results/mats'
 
 cfg = yaml.load(open('/data/unet.yaml'))
 data_dir = cfg['datadir']
@@ -47,6 +46,7 @@ saveMat = cfg['saveMat']
 mfile = cfg['mfile']
 TrainInstances = cfg['ntrain']
 ValInstances = cfg['nval']
+save_mat_dir=f'/results/{cfg["ProjectName"]}'
 """========================================================================="""
 
 #Converter

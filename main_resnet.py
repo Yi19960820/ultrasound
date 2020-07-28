@@ -69,7 +69,7 @@ if __name__=='__main__':
     if loadmodel:
         mfile = cfg['mfile']
     TrainInstances = cfg['ntrain']
-    ValInstances   = cfg['ntest']
+    ValInstances   = cfg['nval']
     out_dir = f'/results/{ProjectName}'
     if not os.path.isdir(out_dir):
         os.mkdir(out_dir)

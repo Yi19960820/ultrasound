@@ -40,22 +40,21 @@ cmap='hot'
 note='abs'
 #Save matrix
 saveMetadata=True
-save_mat_dir='/results/mats'
 
 cfg = yaml.load(open('/data/resnet.yaml'))
 data_dir = cfg['datadir']
-TestInstances = cfg['ntest']
 saveMat = cfg['saveMat']
 mfile = cfg['mfile']
+TrainInstances = cfg['ntrain']
+ValInstances = cfg['nval']
+TestInstances = cfg['ntest']
+save_mat_dir=f'/results/{cfg["ProjectName"]}'
 """========================================================================="""
 
 #Converter
 form_in={'pre':'concat','shape':[-1,1,m,n,p*2]}
 form_out={'pre':'concat','shape':[m,n,p]}
 convert=Converter()
-
-TrainInstances = 6000
-ValInstances = 800
 
 # with open('eval_resnet.yml') as f:
 #     config = yaml.load(f)
@@ -151,5 +150,5 @@ print(f'SVT average time per instance: {svt_time}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)} dB')
     print(f'SVT mean PSNR: {np.mean(svt_list)} dB')
-    np.savez_compressed(os.path.join(save_mat_dir, f'multi_rank_1_7_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
+    np.savez_compressed(os.path.join(save_mat_dir, f'{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
         lsratios=coeffs, ranks=ranks, ntime=net_time, stime=svt_time)
