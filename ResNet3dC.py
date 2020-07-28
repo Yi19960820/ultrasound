@@ -65,8 +65,8 @@ class ResBlock3dC(nn.Module):
         yR,yI=self.convR2(yR)-self.convI2(yI),self.convR2(yI)+self.convI2(yR)
         yR=self.bn2(yR)
         yI=self.bn2(yI)
-        yR+=xR
-        yI+=xI
+        yR = yR+xR
+        yI = yI+xI
         
         return self.relu(yR),self.relu(yI)
 

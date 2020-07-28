@@ -7,9 +7,6 @@ Modified on Fri Jun 12 2020 by Sam Ehrenstein
 @author: Sam Ehrenstein
 """
 
-import matplotlib 
-matplotlib.use('Agg')
-
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -24,10 +21,8 @@ from DataSet import BigImageDataset
 # from CORONA.network.ResNet3dC import ResNet3dC
 from ResNet3dC import ResNet3dC
 from CORONA.classes.Dataset import Converter
-from CORONA.classes.Player import Player
 
 import numpy as np
-import matplotlib.pyplot as plt
 import time
 import datetime
 import pickle
@@ -43,28 +38,21 @@ if __name__=='__main__':
     """Settings"""
     """========================================================================="""
     #Name and choice of training set
-    ProjectName='deep_1_7'
     prefix='sim' #invivo,sim_pm,sim
     #Load model
     mfile='/results/multi_rank_1_7_sim_Res3dC_Model_Tr6000_epoch30_lr2.00e-03.pkl'
 
     """Network Settings: Remember to change the parameters when you change model!"""
     gpu=True #if gpu=True, the ResNet will use more parameters
-    #Whether to plot predictions during training and frequency
-    plot=True
-    plotT=1
-    if not plot:
-        plt.ioff()
+
     #seed
-    seed=1237
-    torch.manual_seed(seed)
+    # seed=1237
+    # torch.manual_seed(seed)
     #parameters for training
-    TrainInstances = 600 # Size of training dataset
-    ValInstances   = 800
     BatchSize      = 40
     ValBatchSize   = 40
     num_epochs     = 30
-    m, n, p = (39,39,20)
+    m, n, p = (48,48,26)
     frame=10
     #directory of datasets
     d_invivo='/data/Invivo/' 
@@ -72,6 +60,7 @@ if __name__=='__main__':
 
     # Load settings from config file
     cfg = yaml.load(open('/data/resnet.yaml'))
+    ProjectName=cfg['ProjectName']
     d_sim = cfg['datadir']
     loadmodel = cfg['loadmodel']
     if loadmodel=='False':
@@ -79,20 +68,24 @@ if __name__=='__main__':
     lr_list = [cfg['lr']]
     if loadmodel:
         mfile = cfg['mfile']
+    TrainInstances = cfg['ntrain']
+    ValInstances   = cfg['ntest']
+    out_dir = f'/results/{ProjectName}'
+    if not os.path.isdir(out_dir):
+        os.mkdir(out_dir)
     print(loadmodel)
     """========================================================================="""
 
     #Dataset, converter and player
     data_dir={'invivo':d_invivo,'sim_pm':d_simpm,'sim':d_sim}[prefix]
     conter=Converter()
-    player=Player()
     formshow={'pre':'concat','shape':(m,n,p)}
     formlist=[]
     for i in range(6):
         formlist.append(formshow)
     minloss=np.inf
     #Logs
-    log=open('/results/%s_%s_Res3dC_Log_Tr%s_epoch%s_lr%.2e.txt'\
+    log=open('/results/%s/%s_Res3dC_Log_Tr%s_epoch%s_lr%.2e.txt'\
         %(ProjectName,prefix,TrainInstances,num_epochs,lr_list[0]),'a')
 
     print('Project Name: %s\n'%ProjectName)
@@ -202,7 +195,7 @@ if __name__=='__main__':
                 log.write('saved at [epoch%d/%d]\n'\
                     %(epoch+1,num_epochs))
                 torch.save(net.state_dict(), 
-                        "/results/%s_%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
+                        "/results/%s/%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
                         %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
                 minloss=min(loss_val_mean,minloss)
         
@@ -218,55 +211,15 @@ if __name__=='__main__':
                     log.write('hitbadrut\n')
                     break
             
-            #Observe results
-            if plot and ((epoch+1)%plotT==0 or epoch==0):
-                [xtr,ytr,ptr,xval,yval,pval]=conter.torch2np([D[ii],S[ii],outputs_S,
-                                                            Dv[jj],Sv[jj],outputs_Sv],
-                                                            formlist)
-                # player.plotmat([xtr[:,:,frame],ytr[:,:,frame],ptr[:,:,frame],
-                #             xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
-                #                 tit=['xtr','ytr','ptr','xval','yval','pval'],
-                #                 supt='Epoch{%d/%d}'%(epoch+1,num_epochs))
-                plt.pause(0.1)
-            
             lossmean_vec[epoch]=loss_mean
             lossmean_val_vec[epoch]=loss_val_mean
 
-            np.savez('/results/%s_%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
+            np.savez('/results/%s/%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
                 %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
                 lossmean_vec,lossmean_val_vec)
 
         """Save logs, prediction, loss figure, loss data, model and settings """
-        #Graphs
-        #Save the prediction figure
-        [xtr,ytr,ptr,xval,yval,pval]=conter.torch2np([D[ii],S[ii],outputs_S,
-                                                    Dv[jj],Sv[jj],outputs_Sv],
-                                                    formlist)
-        player.plotmat([xtr[:,:,frame],ytr[:,:,frame],ptr[:,:,frame],
-                    xval[:,:,frame],yval[:,:,frame],pval[:,:,frame]],
-                        tit=['xtr','ytr','ptr','xval','yval','pval'],
-                        supt='Epoch{%d/%d}'%(epoch+1,num_epochs),ion=False)
-        plt.savefig('/results/%s_%s_Res3dC_Pred_Tr%s_epoch%s_lr%.2e.png'\
-                    %(ProjectName,prefix,TrainInstances,
-                    num_epochs,learning_rate),ion=False)
-
-        #MSE
-        fig=plt.figure()
-        epochs_vec=np.arange(0, num_epochs, 1)
-        plt.semilogy(epochs_vec,lossmean_vec,'-*',label='loss')
-        plt.semilogy(epochs_vec,lossmean_val_vec,'-*',label='loss_val')
-        plt.xlabel('epoch')
-        plt.ylabel('Loss')
-        plt.ylim(ymin=0)
-        plt.title("MSE")
-        plt.legend()
-        #Save png, pickle, data of MSE
-        plt.savefig('/results/%s_%s_Res3dC_LossPng_Tr%s_epoch%s_lr%.2e.png'\
-                    %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
-        pickle.dump(fig,open("/results/%s_%s_Res3dC_LossFig_Tr%s_epoch%s_lr%.2e.fig.pickle"\
-                            %(ProjectName,prefix,TrainInstances,
-                            num_epochs,learning_rate),'wb'))
-        np.savez('/results/%s_%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
+        np.savez('/results/%s/%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
                 %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
                 lossmean_vec,lossmean_val_vec)
         
@@ -284,7 +237,7 @@ if __name__=='__main__':
                 'ValBatchSize':ValBatchSize,
                 'num_epochs':num_epochs,
                 'frame':frame}
-        file=open('/results/%s_%s_Res3dC_Settings_Tr%s_epoch%s_lr%.2e.txt'\
+        file=open('/results/%s/%s_Res3dC_Settings_Tr%s_epoch%s_lr%.2e.txt'\
                 %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),'w')
         file.write('Training Settings:\n\t')
         for k,v in params.items():
