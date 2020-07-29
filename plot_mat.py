@@ -167,9 +167,10 @@ def plot_patches(fname):
     # D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
-    _,S = svt(S, 3)
+    # _,S = svt(S, 3)
     D = S+Sp
-    # _, D = svt(D, 2)
+    # D=S
+    # _, D = svt(D, 4)
     # width = outputs['width'][0][0]
     # angle = outputs['angle'][0][0]
     # q = outputs['quad']
@@ -193,7 +194,7 @@ def plot_patches(fname):
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec, thresh = svt(D, ret_thresh=True)
+    svals, Drec, thresh = svt(D, 7, ret_thresh=True)
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')

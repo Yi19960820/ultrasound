@@ -109,7 +109,7 @@ with torch.no_grad():
     svt_list = []
     net_start = time.time()
     net_time = 0
-    for i,(_,S,D) in tqdm(enumerate(test_loader)):
+    for i,(L,S,D) in tqdm(enumerate(test_loader)):
         for jj in range(len(D)):
             inputs = to_var(D[jj])
             targets = to_var(S[jj])
@@ -119,7 +119,7 @@ with torch.no_grad():
             net_time += (time.time()-net_start)
             loss = floss(out_S.squeeze(), targets).item()
             loss_mean += loss
-            [Sp, Dg, Sg]=convert.torch2np([out_S, D[jj], S[jj]],[form_out, form_out, form_out])
+            [Sp, Dg, Sg, L]=convert.torch2np([out_S, D[jj], S[jj], L[jj]],[form_out, form_out, form_out, form_out])
 
             #Save gif
             # if saveGif:
@@ -128,7 +128,7 @@ with torch.no_grad():
 
             #Save matrix
             if saveMat:
-                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, \
+                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, 'L':L, \
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
