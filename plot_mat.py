@@ -166,13 +166,9 @@ def plot_patches(fname):
     w = 39
     D = outputs['D']
     Sp = outputs['Sp']
-    Sp /= np.max(np.abs(Sp))
     S = outputs['S']
-    S /= np.max(np.abs(S))
-    # _,S = svt(S, 3)
-    # D = S+Sp
-    # D=S
-    # _, D = svt(D, 4)
+    # L = outputs['L']
+
     # width = outputs['width'][0][0]
     # angle = outputs['angle'][0][0]
     # q = outputs['quad']
@@ -196,7 +192,7 @@ def plot_patches(fname):
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec, thresh = svt(D, 7, ret_thresh=True)
+    svals, Drec, thresh = svt(D, ret_thresh=True)
     print(psnr(S, Sp))
     print(np.mean(np.abs(S)))
     print(np.mean(np.abs(Sp)))
@@ -228,7 +224,7 @@ def plot_patches(fname):
     # ax[1][1].add_patch(copies[2])
 
     # print(angle*180/np.pi)
-    # print(outputs['rank'][0][0])
+    print(outputs['rank'][0][0])
     # print(outputs['lsratio'][0][0])
     plt.show()
 
