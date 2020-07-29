@@ -47,6 +47,10 @@ mfile = cfg['mfile']
 TrainInstances = cfg['ntrain']
 ValInstances = cfg['nval']
 save_mat_dir=f'/results/{cfg["ProjectName"]}'
+if sys.argv[1]:
+    file_prefix = sys.argv[1]
+else:
+    file_prefix = cfg['ProjectName']
 """========================================================================="""
 
 #Converter
@@ -143,10 +147,10 @@ with torch.no_grad():
 
 loss_mean /= len(test_data)
 print(f'Mean loss: {loss_mean}')
-print(f'ResNet average time per instance: {net_time}')
+print(f'UNet average time per instance: {net_time}')
 print(f'SVT average time per instance: {svt_time}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)} dB')
     print(f'SVT mean PSNR: {np.mean(svt_list)} dB')
-    np.savez_compressed(os.path.join(save_mat_dir, f'unet_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
+    np.savez_compressed(os.path.join(save_mat_dir, f'{file_prefix}_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
         lsratios=coeffs, ranks=ranks, ntime=net_time, stime=svt_time)

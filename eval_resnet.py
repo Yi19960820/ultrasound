@@ -50,6 +50,10 @@ TrainInstances = cfg['ntrain']
 ValInstances = cfg['nval']
 TestInstances = cfg['ntest']
 save_mat_dir=f'/results/{cfg["ProjectName"]}/mats'
+if sys.argv[1]:
+    file_prefix = sys.argv[1]
+else:
+    file_prefix = cfg['ProjectName']
 if not os.path.isdir(save_mat_dir):
     os.mkdir(save_mat_dir)
 """========================================================================="""
@@ -153,5 +157,5 @@ print(f'SVT average time per instance: {svt_time}')
 if not saveMat:
     print(f'ResNet mean PSNR: {np.mean(resnet_list)} dB')
     print(f'SVT mean PSNR: {np.mean(svt_list)} dB')
-    np.savez_compressed(os.path.join(save_mat_dir, f'{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
+    np.savez_compressed(os.path.join(save_mat_dir, f'{file_prefix}_{TrainInstances}.npz'), rn=resnet_list, sv=svt_list,\
         lsratios=coeffs, ranks=ranks, ntime=net_time, stime=svt_time)
