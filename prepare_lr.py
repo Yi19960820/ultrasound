@@ -71,13 +71,16 @@ for the offset. For example, the x=1, z=1 quadrant would be offset from the top 
 
 LR_DIR = '/data/low-rank/'
 SD_DIR = '/data/sim-data-better/'
-cfg = yaml.load(open('/data/resnet.yaml'))
+cfg = yaml.load(open('/data/prepare.yaml'))
 OUT_DIR = cfg['datadir']
-m, n = 48, 48
-NFRAMES = 26
-NSV = NFRAMES
-TB = 5
-noise = False
+if not os.path.isdir(OUT_DIR):
+    os.mkdir(OUT_DIR)
+m = cfg['m']
+n = cfg['n']
+NFRAMES = cfg['nframes']
+NSV = cfg['nsv']
+TB = cfg['tb']
+noise = cfg['noise']
 sd_names = os.listdir(SD_DIR)
 random.shuffle(sd_names)
 
