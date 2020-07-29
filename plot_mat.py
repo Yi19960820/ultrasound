@@ -164,8 +164,12 @@ def plot_patches(fname):
     fname = os.path.abspath(fname)
     outputs = loadmat(fname)
     w = 39
-    D = outputs['D']
+    # D = outputs['D']
     Sp = outputs['Sp']
+    S = outputs['S']
+    _,S = svt(S, 3)
+    D = S+Sp
+    # _, D = svt(D, 2)
     # width = outputs['width'][0][0]
     # angle = outputs['angle'][0][0]
     # q = outputs['quad']
@@ -196,14 +200,13 @@ def plot_patches(fname):
     print(f'S power: {pow_S}')
     print(f'L/S: {pow_L/pow_S}')
     print(f'Thresh: {thresh}')
-    S = Drec
 
     ax[0][0].imshow(log_rms(D))
     ax[0][0].set_title('Input')
     # ax[0][0].add_patch(bbox)
 
-    # ax[0][1].imshow(log_rms(S))
-    # ax[0][1].set_title('Ground truth S')
+    ax[0][1].imshow(log_rms(S))
+    ax[0][1].set_title('Ground truth S')
     # ax[0][1].add_patch(copies[0])
 
     ax[0][2].imshow(log_rms(Sp))

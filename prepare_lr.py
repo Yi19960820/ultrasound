@@ -101,10 +101,10 @@ for i in tqdm.tqdm(range(len(sd_names))):
             # blood_quad, tissue_quad = create_quads(blood, tissue, x, z)
             blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (m, n))
             quad = blood_quad+tissue_quad
-            quad_caso = quad.reshape(m*n, NFRAMES)
-            U, s, Vh = svd(quad_caso, full_matrices=False)
-            quad_caso_red = U[:,3:]@np.diag(s[3:])@(Vh[:,3:].T)
-            quad = quad_caso_red.reshape(m, n, NFRAMES)
+            # quad_caso = quad.reshape(m*n, NFRAMES)
+            # U, s, Vh = svd(quad_caso, full_matrices=False)
+            # quad_caso_red = U[:,3:]@np.diag(s[3:])@(Vh[:,3:].T)
+            # quad = quad_caso_red.reshape(m, n, NFRAMES)
 
             if noise:
                 avg_mag = np.mean(np.abs(tissue_quad))/10
