@@ -50,7 +50,7 @@ save_summary_dir=f'/results/{cfg["ProjectName"]}'
 save_mat_dir = f'{save_summary_dir}/mats'
 if not os.path.isdir(save_mat_dir):
     os.mkdir(save_mat_dir)
-if sys.argv[1]:
+if len(sys.argv) > 1:
     file_prefix = sys.argv[1]
 else:
     file_prefix = cfg['ProjectName']

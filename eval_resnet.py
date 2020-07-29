@@ -33,7 +33,7 @@ import yaml
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-m,n,p=40,40,20 #size of data
+m,n,p=48,48,26 #size of data
 #Save gif
 saveGif=True
 save_gif_dir='/results/gifs'
@@ -50,7 +50,7 @@ TrainInstances = cfg['ntrain']
 ValInstances = cfg['nval']
 TestInstances = cfg['ntest']
 save_mat_dir=f'/results/{cfg["ProjectName"]}/mats'
-if sys.argv[1]:
+if len(sys.argv) > 1:
     file_prefix = sys.argv[1]
 else:
     file_prefix = cfg['ProjectName']

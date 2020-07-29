@@ -194,8 +194,9 @@ def plot_patches(fname):
 
     svals, Drec, thresh = svt(D, ret_thresh=True)
     print(psnr(S, Sp))
-    print(np.mean(np.abs(S)))
-    print(np.mean(np.abs(Sp)))
+    # print(np.mean(np.abs(S)))
+    # print(np.mean(np.abs(Sp)))
+    print(psnr(S, np.zeros_like(S)))
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')
