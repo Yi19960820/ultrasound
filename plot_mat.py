@@ -164,11 +164,13 @@ def plot_patches(fname):
     fname = os.path.abspath(fname)
     outputs = loadmat(fname)
     w = 39
-    # D = outputs['D']
+    D = outputs['D']
     Sp = outputs['Sp']
+    Sp /= np.max(np.abs(Sp))
     S = outputs['S']
+    S /= np.max(np.abs(S))
     # _,S = svt(S, 3)
-    D = S+Sp
+    # D = S+Sp
     # D=S
     # _, D = svt(D, 4)
     # width = outputs['width'][0][0]
@@ -195,6 +197,9 @@ def plot_patches(fname):
     plt.set_cmap('hot')
 
     svals, Drec, thresh = svt(D, 7, ret_thresh=True)
+    print(psnr(S, Sp))
+    print(np.mean(np.abs(S)))
+    print(np.mean(np.abs(Sp)))
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')

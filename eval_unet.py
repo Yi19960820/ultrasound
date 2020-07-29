@@ -119,7 +119,7 @@ with torch.no_grad():
             net_time += (time.time()-net_start)
             loss = floss(out_S.squeeze(), targets).item()
             loss_mean += loss
-            [Sp, Dg, Sg, L]=convert.torch2np([out_S, D[jj], S[jj], L[jj]],[form_out, form_out, form_out, form_out])
+            [Sp, Dg, Sg, Lg]=convert.torch2np([out_S, D[jj], S[jj], L[jj]],[form_out, form_out, form_out, form_out])
 
             #Save gif
             # if saveGif:
@@ -128,7 +128,7 @@ with torch.no_grad():
 
             #Save matrix
             if saveMat:
-                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, 'L':L, \
+                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, 'L':Lg, \
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
