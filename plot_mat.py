@@ -73,7 +73,6 @@ def plot_by_rank(fname, diff=False):
     for i in range(len(metric_data['rn'])):
         ls = metric_data['lsratios'][i]
         rank = metric_data['ranks'][i]
-        print(rank)
         counts[int(ls-1)][rank-1] += 1
         grid[int(ls-1)][rank-1] += metric_data['rn'][i]
         grid_sv[int(ls-1)][rank-1] += metric_data['sv'][i]
