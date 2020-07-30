@@ -140,7 +140,7 @@ with torch.no_grad():
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
-                resnet_list.append(psnr(Sg, Sp))
+                resnet_list.append(psnr(Sg[:,:,1:], Sp[:,:,1:]))
 
             nx += 1
     net_time /= TestInstances
