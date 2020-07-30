@@ -73,6 +73,8 @@ if __name__=='__main__':
     out_dir = f'/results/{ProjectName}'
     if not os.path.isdir(out_dir):
         os.mkdir(out_dir)
+    if 'batchsize' in cfg.keys():
+        BatchSize = cfg['batchsize']
     print(loadmodel)
     """========================================================================="""
 
