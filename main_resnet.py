@@ -184,7 +184,7 @@ if __name__=='__main__':
             starttime=time.time()
             with torch.no_grad():
                 for _,(_,Sv,Dv) in enumerate(val_loader): 
-                    for jj in range(BatchSize):
+                    for jj in range(ValBatchSize):
                         inputsv=to_var(Dv[jj])   # "jj"th picture
                         targets_Sv=to_var(Sv[jj])
         
