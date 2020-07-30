@@ -14,8 +14,6 @@ from scipy.io import savemat
 sys.path.append('../')
 from CORONA.classes.Player import Player
 from CORONA.classes.Dataset import Converter
-# from CORONA.network.ResNet3dC import ResNet3dC
-from ResNet3dC import ResNet3dC
 from DataSet import BigImageDataset
 import torch.utils.data as data
 import os
@@ -33,7 +31,6 @@ import yaml
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-m,n,p=48,48,26 #size of data
 #Save gif
 saveGif=True
 save_gif_dir='/results/gifs'
@@ -56,6 +53,15 @@ else:
     file_prefix = cfg['ProjectName']
 if not os.path.isdir(save_mat_dir):
     os.mkdir(save_mat_dir)
+
+m = cfg['m']
+n = cfg['n']
+p = cfg['nframes']
+
+if not cfg['custom']:
+    from CORONA.network.ResNet3dC import ResNet3dC
+else: 
+    from ResNet3dC import ResNet3dC
 """========================================================================="""
 
 #Converter
