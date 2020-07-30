@@ -188,7 +188,7 @@ class UNet(nn.Module):
     def __init__(self, gpu=True):
         super(UNet, self).__init__()
 
-        c  = [1, 8, 16, 16, 32, 64]
+        c  = [1, 8, 16, 32, 64, 128]
         w1 = [0 ,3, 3,  3,  3, 3]
         w2 = [0 ,3, 3,  3,  3, 3]
         p1 = [0, 1, 1,  1,  1, 1]

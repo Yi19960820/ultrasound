@@ -31,13 +31,15 @@ def psnr_per_frame(S, Sp):
     return psnr(S, Sp)/S.shape[-1]
 
 def ssim(S, Sp):
+    S = np.abs(S)
+    Sp = np.abs(Sp)
     c1 = (0.01*2)**2
     c2 = (0.03*2)**2
     mu_x = np.mean(S)
     mu_y = np.mean(Sp)
     var_x = np.mean(np.abs(S)**2)-np.abs(np.mean(S))**2
     var_y = np.mean(np.abs(Sp)**2)-np.abs(np.mean(Sp))**2
-    cov = np.mean(S*np.conj(Sp))-np.mean(S)*np.mean(np.conj(Sp))
+    cov = np.mean((S-mu_x)*(Sp-mu_y))
 
     return np.abs((2*mu_x*mu_y+c1)*(2*cov+c2)/((mu_x**2+mu_y**2+c1)*(var_x+var_y+c2)))
 
@@ -193,10 +195,9 @@ def plot_patches(fname):
     plt.set_cmap('hot')
 
     svals, Drec, thresh = svt(D, ret_thresh=True)
-    print(psnr(S, Sp))
     # print(np.mean(np.abs(S)))
     # print(np.mean(np.abs(Sp)))
-    print(psnr(S, np.zeros_like(S)))
+    print(ssim(S, Drec))
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')
