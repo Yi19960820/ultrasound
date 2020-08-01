@@ -70,9 +70,9 @@ for the offset. For example, the x=1, z=1 quadrant would be offset from the top 
     return blood_quad, tissue_quad
 
 LR_DIR = '/data/low-rank/'
-SD_DIR = '/data/sim-data-better/'
-cfg = yaml.load(open('/data/prepare.yaml'))
+cfg = yaml.safe_load(open('/data/prepare.yaml'))
 OUT_DIR = cfg['datadir']
+SD_DIR = cfg['sd_dir']
 if not os.path.isdir(OUT_DIR):
     os.mkdir(OUT_DIR)
 m = cfg['m']
@@ -92,23 +92,24 @@ for i in tqdm.tqdm(range(len(sd_names))):
     angle = mats['a']
     width = mats['b']
 
-    rank = random.randint(1,NSV)
     n1, n2, n3 = tissue.shape
     caso = tissue.reshape((n1*n2, n3))
     U, s, Vh = svd(caso, full_matrices=False)
-    caso_red = U[:,:rank]@np.diag(s[:rank])@(Vh[:,:rank].T)
-    tissue = caso_red.reshape((n1, n2, n3))
     for x in (1,2):
         for z in (1,2):
-            
-            # blood_quad, tissue_quad = create_quads(blood, tissue, x, z)
-            blood_quad, tissue_quad = create_random_quads(blood, tissue, x, z, 10, (m, n))
+            rank = random.randint(1,NSV)
+            caso_red = U[:,:rank]@np.diag(s[:rank])@(Vh[:,:rank].T)
+            tissue_red = caso_red.reshape((n1, n2, n3))            
+            blood_quad, tissue_quad = create_random_quads(blood, tissue_red, x, z, 10, (m, n))
             quad = blood_quad+tissue_quad
+
+            # # Preprocess with SVT
             # quad_caso = quad.reshape(m*n, NFRAMES)
             # U, s, Vh = svd(quad_caso, full_matrices=False)
             # quad_caso_red = U[:,3:]@np.diag(s[3:])@(Vh[:,3:].T)
             # quad = quad_caso_red.reshape(m, n, NFRAMES)
 
+            # Add Gaussian noise
             if noise:
                 avg_mag = np.mean(np.abs(tissue_quad))/10
                 radius = np.random.randn(*tissue_quad.shape)
