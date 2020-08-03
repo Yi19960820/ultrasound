@@ -143,7 +143,7 @@ with torch.no_grad():
                 ps = psnr(Sg[:,:,1:], Sp[:,:,1:])
                 if ps > 40 or ps < -40:
                     print(len(resnet_list))
-                resnet_list.append(psnr(Sg[:,:,1:], Sp[:,:,1:]))
+                resnet_list.append(psnr(Sg[:,:,4:], Sp[:,:,4:]))
 
             nx += 1
     net_time /= TestInstances
