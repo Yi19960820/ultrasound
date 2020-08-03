@@ -140,6 +140,9 @@ with torch.no_grad():
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
+                ps = psnr(Sg[:,:,1:], Sp[:,:,1:])
+                if ps > 40 or ps < -40:
+                    print(len(resnet_list))
                 resnet_list.append(psnr(Sg[:,:,1:], Sp[:,:,1:]))
 
             nx += 1
