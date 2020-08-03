@@ -86,7 +86,7 @@ random.shuffle(sd_names)
 
 for i in tqdm.tqdm(range(len(sd_names))):
     mats = loadmat(os.path.join(SD_DIR, sd_names[i]))
-    coeff = random.choice([1,2,3,4])
+    coeff = random.choice([1,2,3,4,5,6,7])
     blood = mats['blood'][:,:,1:NFRAMES+1]*TB/coeff     # start from second frame because the first is weird sometimes
     tissue = mats['L'][:,:,1:NFRAMES+1]
     angle = mats['a']

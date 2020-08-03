@@ -69,7 +69,7 @@ def plot_metrics(fname):
 def plot_by_rank(fname, diff=False):
     fname = os.path.abspath(fname)
     metric_data = np.load(fname)
-    grid = np.zeros((7,26))
+    grid = np.zeros((4,10))
     grid_sv = np.zeros_like(grid)
     counts = np.zeros_like(grid)
     for i in range(len(metric_data['rn'])):
@@ -89,8 +89,10 @@ def plot_by_rank(fname, diff=False):
 
     xticks = np.arange(grid.shape[1])
     xticklabels = np.arange(grid.shape[1])+1
-    yticks = np.arange(8)-0.5
-    yticklabels = [1,1.5,2,2.5,3,3.5,4]
+    # yticks = np.arange(8)-0.5
+    yticks = np.arange(grid.shape[0]+1)-0.5
+    # yticklabels = [1,1.5,2,2.5,3,3.5,4]
+    yticklabels = [1,2,3,4]
     plt.xticks(xticks, xticklabels)
     plt.yticks(yticks, yticklabels)
 
@@ -197,7 +199,8 @@ def plot_patches(fname):
     svals, Drec, thresh = svt(D, ret_thresh=True)
     # print(np.mean(np.abs(S)))
     # print(np.mean(np.abs(Sp)))
-    print(ssim(S, Drec))
+    # print(ssim(S, Drec))
+    print(f'PSNR: {psnr(S[:,:,4:], Sp[:,:,4:])}')
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')
@@ -227,7 +230,7 @@ def plot_patches(fname):
 
     # print(angle*180/np.pi)
     print(outputs['rank'][0][0])
-    # print(outputs['lsratio'][0][0])
+    print(outputs['lsratio'][0][0])
     plt.show()
 
 def sv_threshold(svals):
