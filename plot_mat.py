@@ -200,7 +200,7 @@ def plot_patches(fname):
     # print(np.mean(np.abs(S)))
     # print(np.mean(np.abs(Sp)))
     # print(ssim(S, Drec))
-    print(f'PSNR: {psnr(S[:,:,4:], Sp[:,:,4:])}')
+    print(f'PSNR: {psnr(S[:,:,10:], Sp[:,:,10:])}')
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')

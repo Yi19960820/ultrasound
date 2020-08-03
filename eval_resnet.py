@@ -57,6 +57,7 @@ if not os.path.isdir(save_mat_dir):
 m = cfg['m']
 n = cfg['n']
 p = cfg['nframes']
+sf = cfg['startframe']
 
 if not cfg['custom']:
     from CORONA.network.ResNet3dC import ResNet3dC
@@ -143,7 +144,7 @@ with torch.no_grad():
                 ps = psnr(Sg[:,:,1:], Sp[:,:,1:])
                 if ps > 40 or ps < -40:
                     print(len(resnet_list))
-                resnet_list.append(psnr(Sg[:,:,4:], Sp[:,:,4:]))
+                resnet_list.append(psnr(Sg[:,:,sf:], Sp[:,:,sf:]))
 
             nx += 1
     net_time /= TestInstances
