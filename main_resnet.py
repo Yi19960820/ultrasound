@@ -18,8 +18,6 @@ import sys
 import os
 
 from DataSet import BigImageDataset
-# from CORONA.network.ResNet3dC import ResNet3dC
-from ResNet3dC import ResNet3dC
 from CORONA.classes.Dataset import Converter
 
 import numpy as np
@@ -77,6 +75,10 @@ if __name__=='__main__':
     m = cfg['m']
     n = cfg['n']
     p = cfg['nframes']
+    if cfg['custom']:
+        from ResNet3dC import ResNet3dC
+    else:
+        from CORONA.network.ResNet3dC import ResNet3dC
     print(loadmodel)
     """========================================================================="""
 
@@ -99,6 +101,8 @@ if __name__=='__main__':
     print('----------------')
     log.write('Loading phase...\n')
     log.write('----------------\n')
+    print(f'Data directory: {d_sim}')
+    log.write(f'Data directory: {d_sim}')
     shape_dset=(m,n,p*2)    # The last dimension is 2*the number of frames (for real and imaginary)
     #training
     train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
@@ -143,6 +147,13 @@ if __name__=='__main__':
             %(TrainInstances,learning_rate))
         log.write('Training the model over %d samples, with learning rate %.6f\n\n'\
             %(TrainInstances,learning_rate))
+        print(f'Load model: {loadmodel}')
+        log.write(f'Load model: {loadmodel}')
+        if loadmodel:
+            print(f'Loading from {mfile}')
+            log.write(f'Loading from {mfile}')
+        print(f'Train batch size: {BatchSize}')
+        log.write(f'Train batch size: {BatchSize}')
         # Run over each epoch
         for epoch in range(num_epochs):
             #print time
