@@ -130,9 +130,10 @@ for i in tqdm.tqdm(range(len(sd_names))):
 
             # Add Gaussian noise
             if noise:
-                signal_power = 20*np.log10(np.mean(np.abs(tissue_quad)))
-                noise_power = 10**((signal_power-snr)/10)
-                noise_rms = noise_power**2
+                snr_raw = 10**(snr/10)   # SNR not in dB, defining as ratio of powers
+                signal_power = np.mean(np.abs(tissue_quad)**2)  # power is square of RMS amplitude
+                noise_power = signal_power/snr_raw
+                noise_rms = np.sqrt(noise_power)
                 radius = np.random.randn(*tissue_quad.shape)*noise_rms
                 angle = np.random.rand(*tissue_quad.shape)*2*np.pi
                 noise_quad = radius*(np.cos(angle)+np.sin(angle)*1j)
