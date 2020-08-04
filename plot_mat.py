@@ -171,7 +171,7 @@ def plot_patches(fname):
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
-    L = outputs['L']
+    # L = outputs['L']
 
     # width = outputs['width'][0][0]
     # angle = outputs['angle'][0][0]
@@ -193,10 +193,10 @@ def plot_patches(fname):
     # copies = [copy(bbox) for _ in range(3)]
 
 
-    fig, ax = plt.subplots(2,3, figsize=(9,6))
+    fig, ax = plt.subplots(2,3, figsize=(4,6))
     plt.set_cmap('hot')
 
-    svals, Drec, thresh = svt(D, ret_thresh=True)
+    svals, Drec, thresh = svt(D, 3, ret_thresh=True)
     # print(np.mean(np.abs(S)))
     # print(np.mean(np.abs(Sp)))
     # print(ssim(S, Drec))
@@ -218,6 +218,8 @@ def plot_patches(fname):
 
     ax[0][2].imshow(log_rms(Sp[:,:,10:]))
     ax[0][2].set_title('Reconstructed S (second half)')
+    # ax[0][2].imshow(log_rms(Sp))
+    # ax[0][2].set_title('Reconstructed S')
     # ax[0][2].add_patch(copies[1])
 
 
@@ -230,7 +232,7 @@ def plot_patches(fname):
 
     # print(angle*180/np.pi)
     print(outputs['rank'][0][0])
-    print(outputs['lsratio'][0][0])
+    print(f'L/S: {outputs["lsratio"][0][0]}')
     plt.show()
 
 def sv_threshold(svals):

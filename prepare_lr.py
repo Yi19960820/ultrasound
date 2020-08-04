@@ -121,6 +121,9 @@ for i in tqdm.tqdm(range(len(sd_names))):
             tissue_red = caso_red.reshape((n1, n2, n3))            
             blood_quad, tissue_quad = create_random_quads(blood, tissue_red, x, z, 10, (m, n))
             quad = blood_quad+tissue_quad
+            padding = np.ones(quad.shape[0], quad.shape[1], 10, dtype=quad.dtype)
+            padding = padding*np.mean(quad)
+            quad = np.concatenate(padding, quad, axis=2)
 
             # # Preprocess with SVT
             # quad_caso = quad.reshape(m*n, NFRAMES)
