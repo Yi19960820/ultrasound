@@ -69,7 +69,7 @@ def plot_metrics(fname):
 def plot_by_rank(fname, diff=False):
     fname = os.path.abspath(fname)
     metric_data = np.load(fname)
-    grid = np.zeros((7,10))
+    grid = np.zeros((10,10))
     grid_sv = np.zeros_like(grid)
     counts = np.zeros_like(grid)
     for i in range(len(metric_data['rn'])):

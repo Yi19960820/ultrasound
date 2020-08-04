@@ -52,7 +52,6 @@ if __name__=='__main__':
     BatchSize      = 40
     ValBatchSize   = 40
     num_epochs     = 30
-    m, n, p = (48,48,26)
     frame=10
     #directory of datasets
     d_invivo='/data/Invivo/' 
@@ -75,6 +74,9 @@ if __name__=='__main__':
         os.mkdir(out_dir)
     if 'batchsize' in cfg.keys():
         BatchSize = cfg['batchsize']
+    m = cfg['m']
+    n = cfg['n']
+    p = cfg['nframes']
     print(loadmodel)
     """========================================================================="""
 
