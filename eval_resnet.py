@@ -138,11 +138,11 @@ with torch.no_grad():
 
             #Save matrix
             if saveMat:
-                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, \
+                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg[:,:,sf:],'S':Sg[:,:,sf:],'Sp':Sp[:,:,sf:], \
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:
-                ps = psnr(Sg[:,:,1:], Sp[:,:,1:])
+                ps = psnr(Sg[:,:,sf:], Sp[:,:,sf:])
                 if ps > 40 or ps < -40:
                     print(len(resnet_list))
                 resnet_list.append(psnr(Sg[:,:,sf:], Sp[:,:,sf:]))
@@ -155,6 +155,8 @@ with torch.no_grad():
         for i, (_,S,D) in enumerate(test_loader):
             for jj in range(len(D)):
                 [Dg, Sg] = convert.torch2np([D[jj], S[jj]], [form_out, form_out])
+                Dg = Dg[:,:,sf:]
+                Sg = [:,:,sf:]
                 svt_start = time.time()
                 _, St = svt(Dg)
                 svt_time += (time.time()-svt_start)
