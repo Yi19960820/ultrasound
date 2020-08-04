@@ -69,10 +69,16 @@ for the offset. For example, the x=1, z=1 quadrant would be offset from the top 
     tissue_quad = tissue[zl:zr, xl:xr]
     return blood_quad, tissue_quad
 
-LR_DIR = '/data/low-rank/'
 cfg = yaml.safe_load(open('/data/prepare.yaml'))
 OUT_DIR = cfg['datadir']
 SD_DIR = cfg['sd_dir']
+merge = cfg['merge']
+if 'nsamples' in cfg.keys():
+    nsamples = cfg['nsamples']
+else:
+    nsamples = np.inf
+if merge:
+    TISSUE_DIR = cfg['tissue_dir']
 if not os.path.isdir(OUT_DIR):
     os.mkdir(OUT_DIR)
 m = cfg['m']
@@ -82,13 +88,24 @@ NSV = cfg['nsv']
 TB = cfg['tb']
 noise = cfg['noise']
 sd_names = os.listdir(SD_DIR)
+if merge:
+    l_names = os.listdir(TISSUE_DIR)
 random.shuffle(sd_names)
+if merge:
+    random.shuffle(l_names)
 
 for i in tqdm.tqdm(range(len(sd_names))):
+    if i >= nsamples:
+        break
+    
     mats = loadmat(os.path.join(SD_DIR, sd_names[i]))
     coeff = random.choice([1,2,3,4,5,6,7,8,9,10])
     blood = mats['blood'][:,:,1:NFRAMES+1]*TB/coeff     # start from second frame because the first is weird sometimes
-    tissue = mats['L'][:,:,1:NFRAMES+1]
+    if merge:
+        tmats = loadmat(os.path.join(TISSUE_DIR, l_names[i]))
+        tissue = tmats['L'][:,:,1:NFRAMES+1]
+    else:
+        tissue = mats['L'][:,:,1:NFRAMES+1]
     angle = mats['a']
     width = mats['b']
 
@@ -115,7 +132,7 @@ for i in tqdm.tqdm(range(len(sd_names))):
                 radius = np.random.randn(*tissue_quad.shape)
                 angle = np.random.rand(*tissue_quad.shape)*2*np.pi
                 noise_quad = radius*(np.cos(angle)+np.sin(angle)*1j)
-                quad += noise_quad
+                quad = quad + noise_quad
 
             np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue_quad, S=blood_quad, \
                 D=quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff)
