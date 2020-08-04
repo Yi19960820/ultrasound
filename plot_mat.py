@@ -168,6 +168,7 @@ def plot_patches(fname):
     fname = os.path.abspath(fname)
     outputs = loadmat(fname)
     w = 39
+    sf=10
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
@@ -193,10 +194,10 @@ def plot_patches(fname):
     # copies = [copy(bbox) for _ in range(3)]
 
 
-    fig, ax = plt.subplots(2,3, figsize=(4,6))
+    fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec, thresh = svt(D, 3, ret_thresh=True)
+    svals, Drec, thresh = svt(D[:,:,sf:], ret_thresh=True)
     # print(np.mean(np.abs(S)))
     # print(np.mean(np.abs(Sp)))
     # print(ssim(S, Drec))
