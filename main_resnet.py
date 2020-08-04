@@ -72,6 +72,8 @@ if __name__=='__main__':
         os.mkdir(out_dir)
     if 'batchsize' in cfg.keys():
         BatchSize = cfg['batchsize']
+    if 'epochs' in cfg.keys():
+        num_epochs = cfg['epochs']
     m = cfg['m']
     n = cfg['n']
     p = cfg['nframes']
@@ -239,8 +241,9 @@ if __name__=='__main__':
                 log.write('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e\n'\
                     %(epoch+1,num_epochs,loss_mean,loss_val_mean))
             if epoch > 0:
+                # Improvement ratio
                 print('Epoch [%d/%d], Train imprv. factor: %.5e, Val imprv. factor: %.5e'\
-                    %(epoch+1,num_epochs,loss_mean/lossmean_vec[epoch-1],loss_val_mean/lossmean_val_vec[epoch-1]))
+                    %(epoch+1,num_epochs,lossmean_vec[epoch-1]/loss_mean,lossmean_val_vec[epoch-1]/loss_val_mean))
                 log.write('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f'\
                     %(epoch+1,num_epochs,loss_mean/lossmean_vec[epoch-1],loss_val_mean/lossmean_val_vec[epoch-1]))
 
