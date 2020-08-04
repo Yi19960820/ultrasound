@@ -10,7 +10,7 @@ import yaml
 
 def add_padding(arr, length):
     n1, n2, n3 = arr.shape
-    padding = np.ones(n1, n2, length, dtype=arr.dtype)*np.mean(arr)
+    padding = np.ones((n1, n2, length))*np.mean(arr)
     return np.concatenate(arr, padding)
 
 def find_2nd(string, substring):
