@@ -79,7 +79,16 @@ if __name__=='__main__':
         from ResNet3dC import ResNet3dC
     else:
         from CORONA.network.ResNet3dC import ResNet3dC
-    print(loadmodel)
+    
+    if 'weight_decay' in cfg.keys():
+        wd = cfg['weight_decay']
+    else:
+        wd = 0
+
+    if 'stop_early' in cfg.keys():
+        stop_early = cfg['stop_early']
+    else:
+        stop_early = False
     """========================================================================="""
 
     #Dataset, converter and player
@@ -135,7 +144,7 @@ if __name__=='__main__':
 
         #Loss and optimizer
         floss=nn.MSELoss()
-        optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate)
+        optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=wd)
 
         #Array for recording data
         outputs_S = to_var(torch.zeros([1,1,m,m,p*2]))
@@ -143,10 +152,10 @@ if __name__=='__main__':
         lossmean_val_vec=np.zeros((num_epochs,))
         
         #Training
-        print('Training the model over %d samples, with learning rate %.6f\n'\
-            %(TrainInstances,learning_rate))
-        log.write('Training the model over %d samples, with learning rate %.6f\n\n'\
-            %(TrainInstances,learning_rate))
+        print('Training the model over %d samples, with learning rate %.6f and weight decay %.6f\n'\
+            %(TrainInstances,learning_rate, wd))
+        log.write('Training the model over %d samples, with learning rate %.6f and weight decay %.6f\n'\
+            %(TrainInstances,learning_rate, wd))
         print(f'Load model: {loadmodel}')
         log.write(f'Load model: {loadmodel}')
         if loadmodel:
@@ -209,13 +218,17 @@ if __name__=='__main__':
             print('Test time is %f'%(endtime-starttime))
             log.write('Test time is %f\n'%(endtime-starttime))
 
-            #Save model in each epoch
-            if True or loss_val_mean<minloss:
-                print('saved at [epoch%d/%d]'%(epoch+1,num_epochs))
-                log.write('saved at [epoch%d/%d]\n'\
+            torch.save(net.state_dict(), 
+                    "/results/%s/%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
+                    %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
+            minloss=min(loss_val_mean,minloss)
+
+            if loss_val_mean<minloss:
+                print('Best saved at [epoch%d/%d]'%(epoch+1,num_epochs))
+                log.write('Best saved at [epoch%d/%d]\n'\
                     %(epoch+1,num_epochs))
                 torch.save(net.state_dict(), 
-                        "/results/%s/%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
+                        "/results/%s/%s_Res3dC_Best_Model_Tr%s_epoch%s_lr%.2e.pkl"\
                         %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
                 minloss=min(loss_val_mean,minloss)
         
@@ -237,6 +250,10 @@ if __name__=='__main__':
             np.savez('/results/%s/%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
                 %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
                 lossmean_vec,lossmean_val_vec)
+            if epoch >= 2 and stop_early and (lossmean_val_vec[epoch] > 1.5*lossmean_val_vec[epoch-1]):
+                print(f'Stopping early at epoch {epoch+1}')
+                log.write(f'Stopping early at epoch {epoch+1}')
+                break
 
         """Save logs, prediction, loss figure, loss data, model and settings """
         np.savez('/results/%s/%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
