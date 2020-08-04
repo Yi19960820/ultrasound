@@ -39,7 +39,8 @@ note='abs'
 #Save matrix
 saveMetadata=True
 
-cfg = yaml.load(open('/data/resnet.yaml'))
+cfg_file = sys.argv[1]
+cfg = yaml.load(open(cfg_file))
 data_dir = cfg['datadir']
 saveMat = cfg['saveMat']
 mfile = cfg['mfile']
