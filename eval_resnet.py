@@ -48,8 +48,8 @@ TrainInstances = cfg['ntrain']
 ValInstances = cfg['nval']
 TestInstances = cfg['ntest']
 save_mat_dir=f'/results/{cfg["ProjectName"]}/mats'
-if len(sys.argv) > 1:
-    file_prefix = sys.argv[1]
+if len(sys.argv) > 2:
+    file_prefix = sys.argv[2]
 else:
     file_prefix = cfg['ProjectName']
 if not os.path.isdir(save_mat_dir):
