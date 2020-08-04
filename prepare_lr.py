@@ -8,6 +8,11 @@ import tqdm
 from scipy.linalg import svd
 import yaml
 
+def add_padding(arr, length):
+    n1, n2, n3 = arr.shape
+    padding = np.ones(n1, n2, length)*np.mean(arr)
+    return np.concatenate(arr, padding)
+
 def find_2nd(string, substring):
     '''
     Finds the start index of the second instance of `substring` in `string`.
@@ -92,6 +97,10 @@ if noise:
 sd_names = os.listdir(SD_DIR)
 if merge:
     l_names = os.listdir(TISSUE_DIR)
+if 'padding' in cfg.keys():
+    padding = cfg['padding']
+else:
+    padding = 0
 random.shuffle(sd_names)
 if merge:
     random.shuffle(l_names)
@@ -121,9 +130,6 @@ for i in tqdm.tqdm(range(len(sd_names))):
             tissue_red = caso_red.reshape((n1, n2, n3))            
             blood_quad, tissue_quad = create_random_quads(blood, tissue_red, x, z, 10, (m, n))
             quad = blood_quad+tissue_quad
-            padding = np.ones(quad.shape[0], quad.shape[1], 10, dtype=quad.dtype)
-            padding = padding*np.mean(quad)
-            quad = np.concatenate(padding, quad, axis=2)
 
             # # Preprocess with SVT
             # quad_caso = quad.reshape(m*n, NFRAMES)
@@ -141,6 +147,11 @@ for i in tqdm.tqdm(range(len(sd_names))):
                 angle = np.random.rand(*tissue_quad.shape)*2*np.pi
                 noise_quad = radius*(np.cos(angle)+np.sin(angle)*1j)
                 quad = quad + noise_quad
+            
+            if padding > 0:
+                tissue_quad = add_padding(tissue_quad, padding)
+                blood_quad = add_padding(blood_quad, padding)
+                quad = add_padding(quad, padding)
 
             np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue_quad, S=blood_quad, \
-                D=quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff)
+                D=quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff, padded=(padded>0))
