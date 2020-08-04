@@ -154,4 +154,4 @@ for i in tqdm.tqdm(range(len(sd_names))):
                 quad = add_padding(quad, padding)
 
             np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue_quad, S=blood_quad, \
-                D=quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff, padded=(padded>0))
+                D=quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff, padded=(padding>0))
