@@ -197,7 +197,7 @@ def plot_patches(fname):
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec, thresh = svt(D[:,:,sf:], ret_thresh=True)
+    svals, Drec, thresh = svt(D, ret_thresh=True)
     # print(np.mean(np.abs(S)))
     # print(np.mean(np.abs(Sp)))
     # print(ssim(S, Drec))

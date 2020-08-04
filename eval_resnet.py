@@ -156,7 +156,7 @@ with torch.no_grad():
             for jj in range(len(D)):
                 [Dg, Sg] = convert.torch2np([D[jj], S[jj]], [form_out, form_out])
                 Dg = Dg[:,:,sf:]
-                Sg = [:,:,sf:]
+                Sg = Sg[:,:,sf:]
                 svt_start = time.time()
                 _, St = svt(Dg)
                 svt_time += (time.time()-svt_start)
