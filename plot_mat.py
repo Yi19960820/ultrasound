@@ -69,7 +69,7 @@ def plot_metrics(fname):
 def plot_by_rank(fname, diff=False):
     fname = os.path.abspath(fname)
     metric_data = np.load(fname)
-    grid = np.zeros((4,10))
+    grid = np.zeros((7,10))
     grid_sv = np.zeros_like(grid)
     counts = np.zeros_like(grid)
     for i in range(len(metric_data['rn'])):
@@ -92,7 +92,7 @@ def plot_by_rank(fname, diff=False):
     # yticks = np.arange(8)-0.5
     yticks = np.arange(grid.shape[0]+1)-0.5
     # yticklabels = [1,1.5,2,2.5,3,3.5,4]
-    yticklabels = [1,2,3,4]
+    yticklabels = np.arange(grid.shape[0])+1
     plt.xticks(xticks, xticklabels)
     plt.yticks(yticks, yticklabels)
 
