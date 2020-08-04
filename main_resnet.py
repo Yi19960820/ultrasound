@@ -238,11 +238,16 @@ if __name__=='__main__':
                     %(epoch+1,num_epochs,loss_mean,loss_val_mean))
                 log.write('Epoch [%d/%d], Lossmean: %.5e, Validation lossmean: %.5e\n'\
                     %(epoch+1,num_epochs,loss_mean,loss_val_mean))
+            if epoch > 0:
+                print('Epoch [%d/%d], Train imprv. factor: %.5e, Val imprv. factor: %.5e'\
+                    %(epoch+1,num_epochs,loss_mean/lossmean_vec[epoch-1],loss_val_mean/lossmean_val_vec[epoch-1]))
+                log.write('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f'\
+                    %(epoch+1,num_epochs,loss_mean/lossmean_vec[epoch-1],loss_val_mean/lossmean_val_vec[epoch-1]))
 
-                if loss.item() > 100:
-                    print('hitbadrut')
-                    log.write('hitbadrut\n')
-                    break
+            if loss.item() > 100:
+                print('hitbadrut')
+                log.write('hitbadrut\n')
+                break
             
             lossmean_vec[epoch]=loss_mean
             lossmean_val_vec[epoch]=loss_val_mean
