@@ -171,7 +171,7 @@ def plot_patches(fname):
     D = outputs['D']
     Sp = outputs['Sp']
     S = outputs['S']
-    # L = outputs['L']
+    L = outputs['L']
 
     # width = outputs['width'][0][0]
     # angle = outputs['angle'][0][0]
@@ -216,8 +216,8 @@ def plot_patches(fname):
     ax[0][1].set_title('Ground truth S')
     # ax[0][1].add_patch(copies[0])
 
-    ax[0][2].imshow(log_rms(Sp))
-    ax[0][2].set_title('Reconstructed S')
+    ax[0][2].imshow(log_rms(Sp[:,:,10:]))
+    ax[0][2].set_title('Reconstructed S (second half)')
     # ax[0][2].add_patch(copies[1])
 
 

@@ -87,6 +87,8 @@ NFRAMES = cfg['nframes']
 NSV = cfg['nsv']
 TB = cfg['tb']
 noise = cfg['noise']
+if noise:
+    snr = cfg['snr']
 sd_names = os.listdir(SD_DIR)
 if merge:
     l_names = os.listdir(TISSUE_DIR)
@@ -97,7 +99,7 @@ if merge:
 for i in tqdm.tqdm(range(len(sd_names))):
     if i >= nsamples:
         break
-    
+
     mats = loadmat(os.path.join(SD_DIR, sd_names[i]))
     coeff = random.choice([1,2,3,4,5,6,7,8,9,10])
     blood = mats['blood'][:,:,1:NFRAMES+1]*TB/coeff     # start from second frame because the first is weird sometimes
@@ -128,8 +130,10 @@ for i in tqdm.tqdm(range(len(sd_names))):
 
             # Add Gaussian noise
             if noise:
-                avg_mag = np.mean(np.abs(tissue_quad))/10
-                radius = np.random.randn(*tissue_quad.shape)
+                signal_power = 20*np.log10(np.mean(np.abs(tissue_quad)))
+                noise_power = 10**((signal_power-snr)/10)
+                noise_rms = noise_power**2
+                radius = np.random.randn(*tissue_quad.shape)*noise_rms
                 angle = np.random.rand(*tissue_quad.shape)*2*np.pi
                 noise_quad = radius*(np.cos(angle)+np.sin(angle)*1j)
                 quad = quad + noise_quad

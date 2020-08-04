@@ -40,7 +40,7 @@ note='abs'
 saveMetadata=True
 
 cfg_file = sys.argv[1]
-cfg = yaml.load(open(cfg_file))
+cfg = yaml.safe_load(open(cfg_file))
 data_dir = cfg['datadir']
 saveMat = cfg['saveMat']
 mfile = cfg['mfile']
