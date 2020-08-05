@@ -243,7 +243,7 @@ if __name__=='__main__':
                     %(epoch+1,num_epochs,loss_mean,loss_val_mean))
             if epoch > 0:
                 # Improvement ratio
-                print('Epoch [%d/%d], Train imprv. factor: %.5e, Val imprv. factor: %.5e'\
+                print('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f'\
                     %(epoch+1,num_epochs,lossmean_vec[epoch-1]/loss_mean,lossmean_val_vec[epoch-1]/loss_val_mean))
                 log.write('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f'\
                     %(epoch+1,num_epochs,loss_mean/lossmean_vec[epoch-1],loss_val_mean/lossmean_val_vec[epoch-1]))

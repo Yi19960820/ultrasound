@@ -117,7 +117,7 @@ with torch.no_grad():
 
     resnet_list = []
     svt_list = []
-    net_start = time.time()
+    net_start = time.time() 
     net_time = 0
     for i,(_,S,D) in tqdm(enumerate(test_loader)):
         for jj in range(len(D)):
@@ -137,8 +137,9 @@ with torch.no_grad():
             #             note=note,cmap=cmap,tit=['Input','Prediction','Ground Truth'])
 
             #Save matrix
+            
             if saveMat:
-                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg[:,:,sf:],'S':Sg[:,:,sf:],'Sp':Sp[:,:,sf:], \
+                savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg,'S':Sg,'Sp':Sp, \
                     'width':widths[4*i+jj], 'angle':angles[4*i+jj], 'quad':quads[4*i+jj], \
                     'lsratio':coeffs[4*i+jj], 'rank':ranks[4*i+jj]})
             else:

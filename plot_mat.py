@@ -130,21 +130,21 @@ def metrics():
 def plot_column(fname, col=11):
     outputs = loadmat(os.path.abspath(fname))
     w = 39
-    D = outputs['D']
-    Sp = outputs['Sp']
-    # S = outputs['S']
+    D = outputs['D'][:,:,10:]
+    Sp = outputs['Sp'][:,:,10:]
+    S = outputs['S'][:,:,10:]
     svals, St = svt(D, 6)
     # width = outputs['width'][0][0]
     # width_px = w/.0025*width
 
-    fig, ax = plt.subplots(2, 2, figsize=(9,6))
+    fig, ax = plt.subplots(3, 2, figsize=(9,6))
     plt.set_cmap('hot')
-    # ax[0][1].imshow(10*np.log10(np.abs(S[:,col])**2), aspect='auto')
-    # ax[0][1].set_title(f'Column {col} per frame')
-    # ax[0][0].imshow(log_rms(S))
-    # rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
-    # ax[0][0].add_patch(rect)
-    # ax[0][0].set_title('Ground truth S')
+    ax[2][1].imshow(10*np.log10(np.abs(S[:,col])**2), aspect='auto')
+    ax[2][1].set_title(f'Column {col} per frame')
+    ax[2][0].imshow(log_rms(S))
+    rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
+    ax[0][0].add_patch(rect)
+    ax[2][0].set_title('Ground truth S')
     ax[0][1].imshow(10*np.log10(np.abs(Sp[:,col])**2), aspect='auto')
     ax[0][0].set_title('Reconstructed S')
     ax[0][0].imshow(log_rms(Sp))
@@ -161,7 +161,7 @@ def plot_column(fname, col=11):
     # print(f'ResNet PSNR: {psnr(S, Sp)}')
     # print(f'SVT PSNR: {psnr(S, St)}')
     # print(f"Rank: {outputs['rank'][0][0]}")
-    # print(f"L/S: {outputs['lsratio'][0][0]}")
+    print(f"L/S: {outputs['lsratio'][0][0]}")
     plt.show()
 
 def plot_patches(fname):
@@ -201,7 +201,7 @@ def plot_patches(fname):
     # print(np.mean(np.abs(S)))
     # print(np.mean(np.abs(Sp)))
     # print(ssim(S, Drec))
-    print(f'PSNR: {psnr(S[:,:,10:], Sp[:,:,10:])}')
+    print(f'PSNR: {psnr(S[:,:,5:], Sp[:,:,5:])}')
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')
