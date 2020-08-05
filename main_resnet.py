@@ -243,10 +243,10 @@ if __name__=='__main__':
                     %(epoch+1,num_epochs,loss_mean,loss_val_mean))
             if epoch > 0:
                 # Improvement ratio
-                print('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f'\
+                print('Epoch [%d/%d], Train imprv. factor: %.6fsim_Res3dC_LossData_Tr3200_epoch30_lr9.00e-04.npz, Val imprv. factor: %.6f'\
                     %(epoch+1,num_epochs,lossmean_vec[epoch-1]/loss_mean,lossmean_val_vec[epoch-1]/loss_val_mean))
                 log.write('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f'\
-                    %(epoch+1,num_epochs,loss_mean/lossmean_vec[epoch-1],loss_val_mean/lossmean_val_vec[epoch-1]))
+                    %(epoch+1,num_epochs,lossmean_vec[epoch-1]/loss_mean,lossmean_val_vec[epoch-1]/loss_val_mean))
 
             if loss.item() > 100:
                 print('hitbadrut')

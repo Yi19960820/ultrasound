@@ -130,9 +130,9 @@ def metrics():
 def plot_column(fname, col=11):
     outputs = loadmat(os.path.abspath(fname))
     w = 39
-    D = outputs['D'][:,:,10:]
-    Sp = outputs['Sp'][:,:,10:]
-    S = outputs['S'][:,:,10:]
+    D = outputs['D']
+    Sp = outputs['Sp']
+    S = outputs['S']
     svals, St = svt(D, 6)
     # width = outputs['width'][0][0]
     # width_px = w/.0025*width
