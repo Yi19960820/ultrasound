@@ -133,6 +133,8 @@ if __name__=='__main__':
 
     if torch.cuda.is_available():
         net=net.cuda()
+    print('Configured.')
+    log.write('Configured.\n')
 
     train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
                             train=0,data_dir=data_dir)
@@ -226,7 +228,6 @@ if __name__=='__main__':
             torch.save(net.state_dict(), 
                     "/results/%s/%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
                     %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
-            minloss=min(loss_val_mean,minloss)
 
             if loss_val_mean<minloss:
                 print('Best saved at [epoch%d/%d]'%(epoch+1,num_epochs))
@@ -235,7 +236,8 @@ if __name__=='__main__':
                 torch.save(net.state_dict(), 
                         "/results/%s/%s_Res3dC_Best_Model_Tr%s_epoch%s_lr%.2e.pkl"\
                         %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
-                minloss=min(loss_val_mean,minloss)
+            minloss=min(loss_val_mean,minloss)
+
         
             # Print loss
             if (epoch + 1)%1==0:    # % 10
@@ -247,7 +249,7 @@ if __name__=='__main__':
                 # Improvement ratio
                 print('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f'\
                     %(epoch+1,num_epochs,lossmean_vec[epoch-1]/loss_mean,lossmean_val_vec[epoch-1]/loss_val_mean))
-                log.write('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f'\
+                log.write('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f\n'\
                     %(epoch+1,num_epochs,lossmean_vec[epoch-1]/loss_mean,lossmean_val_vec[epoch-1]/loss_val_mean))
 
             if loss.item() > 100:
