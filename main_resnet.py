@@ -117,6 +117,23 @@ if __name__=='__main__':
     log.write(f'Data directory: {d_sim}')
     shape_dset=(m,n,p*2)    # The last dimension is 2*the number of frames (for real and imaginary)
     #training
+
+    #Construct network
+    print('Configuring network...')
+    log.write('Configuring network...\n')
+    if not loadmodel:
+        net=ResNet3dC(gpu)
+    else:
+        if mfile[-3:]=='pkl':
+            net=ResNet3dC(gpu)
+            state_dict=torch.load(mfile, map_location='cuda:0')
+            net.load_state_dict(state_dict)
+        else:
+            net=torch.load(mfile)
+
+    if torch.cuda.is_available():
+        net=net.cuda()
+
     train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
                             train=0,data_dir=data_dir)
     train_loader=data.DataLoader(train_dataset,batch_size=BatchSize,shuffle=True)
@@ -129,21 +146,6 @@ if __name__=='__main__':
 
     # Training
     for learning_rate in lr_list:
-        #Construct network
-        print('Configuring network...')
-        log.write('Configuring network...\n')
-        if not loadmodel:
-            net=ResNet3dC(gpu)
-        else:
-            if mfile[-3:]=='pkl':
-                net=ResNet3dC(gpu)
-                state_dict=torch.load(mfile, map_location='cuda:0')
-                net.load_state_dict(state_dict)
-            else:
-                net=torch.load(mfile)
-
-        if torch.cuda.is_available():
-            net=net.cuda()
 
         #Loss and optimizer
         floss=nn.MSELoss()
