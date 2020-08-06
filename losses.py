@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-data1 = np.load(os.path.abspath('../sim_Res3dC_LossData_Tr3200_epoch30_lr9.00e-04.npz'))
+data1 = np.load(os.path.abspath('../sim_Res3dC_LossData_Tr4000_epoch30_lr5.00e-03.npz'))
 train = data1['arr_0']
 val = data1['arr_1']
 plt.semilogy(range(len(train)), train, label='Train loss')

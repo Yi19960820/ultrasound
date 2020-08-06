@@ -42,7 +42,7 @@ note='abs'
 saveMetadata=True
 save_mat_dir='/results/mats-invivo'
 
-cfg = yaml.load(open('/data/resnet.yaml'))
+cfg = yaml.load(open(sys.argv[1]))
 data_dir = cfg['datadir']
 TestInstances = cfg['ntest']
 saveMat = cfg['saveMat']

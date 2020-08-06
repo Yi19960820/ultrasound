@@ -127,12 +127,12 @@ def metrics():
     plt.legend()
     plt.show()
 
-def plot_column(fname, col=11):
+def plot_column(fname, col=11, sf=15):
     outputs = loadmat(os.path.abspath(fname))
-    w = 39
-    D = outputs['D']
-    Sp = outputs['Sp']
-    S = outputs['S']
+    w = 40
+    D = outputs['D'][:,:,sf:]
+    Sp = outputs['Sp'][:,:,sf:]
+    S = outputs['S'][:,:,sf:]
     svals, St = svt(D, 6)
     # width = outputs['width'][0][0]
     # width_px = w/.0025*width
@@ -158,7 +158,7 @@ def plot_column(fname, col=11):
     ax[1][1].set_title(f'Column {col} per frame')
     ax[1][1].imshow(10*np.log10(np.abs(St[:,col])**2), aspect='auto')
 
-    # print(f'ResNet PSNR: {psnr(S, Sp)}')
+    print(f'ResNet PSNR: {psnr(S, Sp)}')
     # print(f'SVT PSNR: {psnr(S, St)}')
     # print(f"Rank: {outputs['rank'][0][0]}")
     print(f"L/S: {outputs['lsratio'][0][0]}")
