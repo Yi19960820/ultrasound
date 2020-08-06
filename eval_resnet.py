@@ -117,7 +117,7 @@ with torch.no_grad():
 
     resnet_list = []
     svt_list = []
-    net_start = time.time() 
+    net_start = time.time()
     net_time = 0
     for i,(_,S,D) in tqdm(enumerate(test_loader)):
         for jj in range(len(D)):
