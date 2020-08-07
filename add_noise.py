@@ -3,6 +3,7 @@ from scipy.io import loadmat
 import sys
 import os
 import yaml
+from tqdm import tqdm
 
 if __name__=='__main__':
     cfg = yaml.safe_load(open('/data/prepare.yaml'))
@@ -12,7 +13,7 @@ if __name__=='__main__':
         os.mkdir(out_dir)
     snr = cfg['snr']
     files = os.listdir(data_dir)
-    for f in files:
+    for f in tqdm(files):
         sample = np.load(os.path.join(data_dir, f))
         tissue_quad = sample['L']
         blood_quad = sample['S']
