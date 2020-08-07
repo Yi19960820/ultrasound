@@ -19,7 +19,7 @@ if __name__=='__main__':
         quad = sample['D']
         width = sample['width']
         angle = sample['angle']
-        rank = sample['rank']
+        rank = sample['nsv']
         x = sample['x']
         z = sample['z']
         coeff = sample['coeff']
