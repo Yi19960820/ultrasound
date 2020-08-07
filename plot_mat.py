@@ -81,6 +81,7 @@ def plot_by_rank(fname, diff=False):
     if diff:
         grid -= grid_sv
     grid /= counts
+    plt.figure(figsize=(8,8))
     plt.imshow(grid)
 
     for (j,i),label in np.ndenumerate(grid):
@@ -127,13 +128,13 @@ def metrics():
     plt.legend()
     plt.show()
 
-def plot_column(fname, col=11, sf=15):
+def plot_column(fname, col=11, sf=0):
     outputs = loadmat(os.path.abspath(fname))
     w = 40
     D = outputs['D'][:,:,sf:]
     Sp = outputs['Sp'][:,:,sf:]
     S = outputs['S'][:,:,sf:]
-    svals, St = svt(D, 6)
+    svals, St = svt(D, 3)
     # width = outputs['width'][0][0]
     # width_px = w/.0025*width
 
