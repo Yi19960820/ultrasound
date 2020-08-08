@@ -36,7 +36,7 @@ for i in tqdm.tqdm(range(nsamples)):
     resized_r = np.zeros((m,n,p))
     resized_i = np.zeros((m,n,p))
     for k in range(p):
-        resized_r[:,:,k] = np.array(Image.fromarray(patch.real[:,:,k]).resize((m,n)), Image.BICUBIC)
-        resized_i[:,:,k] = np.array(Image.fromarray(patch.imag[:,:,k]).resize((m,n)), Image.BICUBIC)
+        resized_r[:,:,k] = np.array(Image.fromarray(patch.real[:,:,k]).resize((m,n), Image.BICUBIC))
+        resized_i[:,:,k] = np.array(Image.fromarray(patch.imag[:,:,k]).resize((m,n), Image.BICUBIC))
     patch = resized_r+1j*resized_i
     np.savez_compressed(os.path.join(OUT_DIR, f'{i}.npz'), patch=patch, z=z, x=x)
