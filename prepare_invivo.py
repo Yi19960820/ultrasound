@@ -11,9 +11,11 @@ from scipy.ndimage import zoom
 cfg = yaml.safe_load(open('/data/prepare.yaml'))
 DATA_FILE = '/data/dopperiq.mat'
 OUT_DIR = cfg['datadir']
+if not os.path.isdir(OUT_DIR):
+    os.mkdir(OUT_DIR)
 m, n, p = 40,40,13
 nsamples = 300
-rank = 7
+rank = 3
 
 # data = loadmat(DATA_FILE)
 datafile = h5py.File(DATA_FILE, 'r')
