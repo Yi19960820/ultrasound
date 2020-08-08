@@ -10,7 +10,7 @@ from scipy.ndimage import zoom
 
 cfg = yaml.safe_load(open('/data/prepare.yaml'))
 DATA_FILE = '/data/dopperiq.mat'
-OUT_DIR = '/data/invivo-samples-pp-40x40/'
+OUT_DIR = cfg['datadir']
 m, n, p = 40,40,13
 nsamples = 300
 rank = 7
