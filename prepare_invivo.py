@@ -31,7 +31,7 @@ for i in tqdm.tqdm(range(nsamples)):
     x = random.randint(0, n2-20)
     patch = data_res[z:z+20, x:x+20, 0:p]
     zoomed_real = np.zeros((60, 60, p))
-    zoomed_imag = np.zeros(*zoomed_real.shape)
+    zoomed_imag = np.zeros((60,60,p))
     for k in range(p):
         zoomed_real[:,:,k] = zoom(patch.real[:,:,k], 3)
         zoomed_imag[:,:,k] = zoom(patch.imag[:,:,k], 3)
