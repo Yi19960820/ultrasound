@@ -7,6 +7,7 @@ import tqdm
 import yaml
 from scipy.linalg import svd
 from scipy.ndimage import zoom
+from PIL import Image
 
 cfg = yaml.safe_load(open('/data/prepare.yaml'))
 DATA_FILE = '/data/dopperiq.mat'
@@ -29,16 +30,13 @@ caso_red = U[:,rank:]@np.diag(s[rank:])@(Vh[:,rank:].T)
 data_res = caso_red.reshape((n1, n2, n3*n4))
 
 for i in tqdm.tqdm(range(nsamples)):
-    z = random.randint(0, n1-20)
-    x = random.randint(0, n2-20)
-    patch = data_res[z:z+20, x:x+20, 0:p]
-    zoomed_real = np.zeros((60, 60, p))
-    zoomed_imag = np.zeros((60,60,p))
+    z = random.randint(0, n1-m*3)
+    x = random.randint(0, n2-n*3)
+    patch = data_res[z:z+m*3, x:x+n*3, 0:p]
+    resized_r = np.zeros(m,n,p)
+    resized_i = np.zeros(m,n,p)
     for k in range(p):
-        zoomed_real[:,:,k] = zoom(patch.real[:,:,k], 3)
-        zoomed_imag[:,:,k] = zoom(patch.imag[:,:,k], 3)
-    patch = zoomed_real+1j*zoomed_imag
-    cx = patch.shape[1]//2
-    cz = patch.shape[0]//2
-    patch = patch[cz-(m//2):cz+(m//2),cx-(n//2):cx+(n//2)]
+        resized_r[:,:,k] = np.array(Image.fromarray(patch.real[:,:,k]).resize((m,n)))
+        resized_i[:,:,k] = np.array(Image.fromarray(patch.imag[:,:,k]).resize((m,n)))
+    patch = resized_r+1j*resized_i
     np.savez_compressed(os.path.join(OUT_DIR, f'{i}.npz'), patch=patch, z=z, x=x)

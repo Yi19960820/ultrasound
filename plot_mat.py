@@ -176,7 +176,10 @@ def plot_patches(fname):
         S = outputs['S']
     else:
         S = np.ones_like(Sp)
-    rank = outputs["rank"][0][0]
+    if 'rank' in outputs.keys():
+        rank = outputs["rank"][0][0]
+    else:
+        rank = 0
     # L = outputs['L']
 
     # width = outputs['width'][0][0]
@@ -206,7 +209,7 @@ def plot_patches(fname):
     # print(np.mean(np.abs(S)))
     # print(np.mean(np.abs(Sp)))
     # print(ssim(S, Drec))
-    print(f'PSNR: {psnr(S[:,:,5:], Sp[:,:,5:])}')
+    print(f'PSNR: {psnr(S, Sp)}')
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')
@@ -222,7 +225,7 @@ def plot_patches(fname):
     ax[0][1].set_title('Ground truth S')
     # ax[0][1].add_patch(copies[0])
 
-    ax[0][2].imshow(log_rms(Sp[:,:,10:]))
+    ax[0][2].imshow(log_rms(Sp))
     ax[0][2].imshow(log_rms(Sp))
     ax[0][2].set_title('Reconstructed S')
     # ax[0][2].add_patch(copies[1])
@@ -238,15 +241,15 @@ def plot_patches(fname):
 
     # print(angle*180/np.pi)
     print(f'Rank: {rank}')
-    print(f'L/S: {outputs["lsratio"][0][0]}')
+    # print(f'L/S: {outputs["lsratio"][0][0]}')
     plt.show()
 
 def sv_threshold(svals):
     normed = svals/np.max(svals)
-    hflen = 6
+    hflen = 4
     log_filtered = filtfilt(np.hamming(hflen), np.sum(np.hamming(hflen)), np.log(normed))
     second_deriv = np.diff(np.diff(log_filtered))
-    sdthresh = 0.2
+    sdthresh = 0.1
     return np.min(np.argwhere(second_deriv < sdthresh))
 
 def plot_loss():
