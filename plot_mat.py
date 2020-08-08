@@ -134,17 +134,17 @@ def plot_column(fname, col=11, sf=0):
     D = outputs['D'][:,:,sf:]
     Sp = outputs['Sp'][:,:,sf:]
     S = outputs['S'][:,:,sf:]
-    svals, St = svt(D, 3)
+    svals, St = svt(D)
     # width = outputs['width'][0][0]
     # width_px = w/.0025*width
 
-    fig, ax = plt.subplots(3, 2, figsize=(9,6))
+    fig, ax = plt.subplots(3, 2, figsize=(7,12))
     plt.set_cmap('hot')
     ax[2][1].imshow(10*np.log10(np.abs(S[:,col])**2), aspect='auto')
     ax[2][1].set_title(f'Column {col} per frame')
     ax[2][0].imshow(log_rms(S))
     rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
-    ax[0][0].add_patch(rect)
+    ax[2][0].add_patch(rect)
     ax[2][0].set_title('Ground truth S')
     ax[0][1].imshow(10*np.log10(np.abs(Sp[:,col])**2), aspect='auto')
     ax[0][0].set_title('Reconstructed S')
@@ -159,8 +159,8 @@ def plot_column(fname, col=11, sf=0):
     ax[1][1].set_title(f'Column {col} per frame')
     ax[1][1].imshow(10*np.log10(np.abs(St[:,col])**2), aspect='auto')
 
-    print(f'ResNet PSNR: {psnr(S, Sp)}')
-    # print(f'SVT PSNR: {psnr(S, St)}')
+    print(f'ResNet PSNR: {psnr(S, Sp)} dB')
+    print(f'SVT PSNR: {psnr(S, St)} dB')
     # print(f"Rank: {outputs['rank'][0][0]}")
     print(f"L/S: {outputs['lsratio'][0][0]}")
     plt.show()
@@ -169,10 +169,14 @@ def plot_patches(fname):
     fname = os.path.abspath(fname)
     outputs = loadmat(fname)
     w = 39
-    sf=10
+    sf=0
     D = outputs['D']
     Sp = outputs['Sp']
-    S = outputs['S']
+    if 'S' in outputs.keys():
+        S = outputs['S']
+    else:
+        S = np.ones_like(Sp)
+    rank = outputs["rank"][0][0]
     # L = outputs['L']
 
     # width = outputs['width'][0][0]
@@ -219,21 +223,21 @@ def plot_patches(fname):
     # ax[0][1].add_patch(copies[0])
 
     ax[0][2].imshow(log_rms(Sp[:,:,10:]))
-    ax[0][2].set_title('Reconstructed S (second half)')
-    # ax[0][2].imshow(log_rms(Sp))
-    # ax[0][2].set_title('Reconstructed S')
+    ax[0][2].imshow(log_rms(Sp))
+    ax[0][2].set_title('Reconstructed S')
     # ax[0][2].add_patch(copies[1])
 
 
     ax[1][0].semilogy(range(1, len(svals)+1), svals)
     ax[1][0].set_title('Singular values')
+    ax[1][0].vlines(thresh, ymin=np.min(svals), ymax=np.max(svals))
 
     ax[1][1].imshow(log_rms(Drec))
     ax[1][1].set_title('SVT')
     # ax[1][1].add_patch(copies[2])
 
     # print(angle*180/np.pi)
-    print(outputs['rank'][0][0])
+    print(f'Rank: {rank}')
     print(f'L/S: {outputs["lsratio"][0][0]}')
     plt.show()
 
@@ -242,7 +246,7 @@ def sv_threshold(svals):
     hflen = 6
     log_filtered = filtfilt(np.hamming(hflen), np.sum(np.hamming(hflen)), np.log(normed))
     second_deriv = np.diff(np.diff(log_filtered))
-    sdthresh = 2e-2
+    sdthresh = 0.2
     return np.min(np.argwhere(second_deriv < sdthresh))
 
 def plot_loss():
