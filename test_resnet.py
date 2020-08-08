@@ -32,7 +32,7 @@ import yaml
 """Network Settings: Remember to change the parameters when you change model!"""
 gpu=True #if gpu=True, the ResNet will use more parameters
 #Directory of input data and its size
-m,n,p=39,39,20 #size of data
+m,n,p=40,40,20 #size of data
 #Save gif
 saveGif=True
 save_gif_dir='/results/gifs'
@@ -42,7 +42,7 @@ note='abs'
 saveMetadata=True
 save_mat_dir='/results/mats-invivo'
 
-cfg = yaml.load(open(sys.argv[1]))
+cfg = yaml.safe_load(open(sys.argv[1]))
 data_dir = cfg['datadir']
 TestInstances = cfg['ntest']
 saveMat = cfg['saveMat']
