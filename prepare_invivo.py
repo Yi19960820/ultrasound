@@ -15,8 +15,8 @@ OUT_DIR = cfg['datadir']
 if not os.path.isdir(OUT_DIR):
     os.mkdir(OUT_DIR)
 m, n, p = 40,40,13
-nsamples = 300
-rank = 3
+nsamples = cfg['nsamples']
+rank = cfg['threshrank']
 
 # data = loadmat(DATA_FILE)
 datafile = h5py.File(DATA_FILE, 'r')

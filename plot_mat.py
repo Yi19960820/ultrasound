@@ -133,19 +133,25 @@ def plot_column(fname, col=11, sf=0):
     w = 40
     D = outputs['D'][:,:,sf:]
     Sp = outputs['Sp'][:,:,sf:]
-    S = outputs['S'][:,:,sf:]
+    if 'S' in outputs.keys():
+        S = outputs['S'][:,:,sf:]
+    else:
+        S = D
     svals, St = svt(D)
     # width = outputs['width'][0][0]
     # width_px = w/.0025*width
 
     fig, ax = plt.subplots(3, 2, figsize=(7,12))
     plt.set_cmap('hot')
+    if 'S' in outputs.keys():
+        ax[2][0].set_title('Ground truth S')
+    else:
+        ax[2][0].set_title('Input')
     ax[2][1].imshow(10*np.log10(np.abs(S[:,col])**2), aspect='auto')
     ax[2][1].set_title(f'Column {col} per frame')
     ax[2][0].imshow(log_rms(S))
     rect = Rectangle((col, -1), 1, w+1, fill=False, color='green')
-    ax[2][0].add_patch(rect)
-    ax[2][0].set_title('Ground truth S')
+    ax[2][0].add_patch(rect)        
     ax[0][1].imshow(10*np.log10(np.abs(Sp[:,col])**2), aspect='auto')
     ax[0][0].set_title('Reconstructed S')
     ax[0][0].imshow(log_rms(Sp))
@@ -159,13 +165,14 @@ def plot_column(fname, col=11, sf=0):
     ax[1][1].set_title(f'Column {col} per frame')
     ax[1][1].imshow(10*np.log10(np.abs(St[:,col])**2), aspect='auto')
 
-    print(f'ResNet PSNR: {psnr(S, Sp)} dB')
-    print(f'SVT PSNR: {psnr(S, St)} dB')
-    # print(f"Rank: {outputs['rank'][0][0]}")
-    print(f"L/S: {outputs['lsratio'][0][0]}")
+    if 'S' in outputs.keys():
+        print(f'ResNet PSNR: {psnr(S, Sp)} dB')
+        print(f'SVT PSNR: {psnr(S, St)} dB')
+        # print(f"Rank: {outputs['rank'][0][0]}")
+        print(f"L/S: {outputs['lsratio'][0][0]}")
     plt.show()
 
-def plot_patches(fname):
+def plot_patches(fname, th=None):
     fname = os.path.abspath(fname)
     outputs = loadmat(fname)
     w = 39
@@ -205,7 +212,11 @@ def plot_patches(fname):
     fig, ax = plt.subplots(2,3, figsize=(9,6))
     plt.set_cmap('hot')
 
-    svals, Drec, thresh = svt(D, ret_thresh=True)
+    if th:
+        svals, Drec = svt(D, th)
+        thresh = th
+    else:
+        svals, Drec, thresh = svt(D, ret_thresh=True)
     # print(np.mean(np.abs(S)))
     # print(np.mean(np.abs(Sp)))
     # print(ssim(S, Drec))
@@ -249,7 +260,7 @@ def sv_threshold(svals):
     hflen = 4
     log_filtered = filtfilt(np.hamming(hflen), np.sum(np.hamming(hflen)), np.log(normed))
     second_deriv = np.diff(np.diff(log_filtered))
-    sdthresh = 0.1
+    sdthresh = 0.001
     return np.min(np.argwhere(second_deriv < sdthresh))
 
 def plot_loss():
@@ -294,10 +305,11 @@ if __name__=='__main__':
     parser.add_argument('--rank', type=int)
     parser.add_argument('--ls', type=float)
     parser.add_argument('--diff', action='store_true')
+    parser.add_argument('-t', '--thresh', type=int)
     args = parser.parse_args()
 
     if args.patches:
-        plot_patches(args.fname)
+        plot_patches(args.fname, args.thresh)
     elif args.column:
         plot_column(args.fname, args.col)
     elif args.metrics:

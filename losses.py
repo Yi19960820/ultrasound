@@ -28,7 +28,7 @@ if __name__ == "__main__":
         val.extend(val1)
     train = np.array(train)
     val = np.array(val)
-    # np.savez_compressed(os.path.join(os.path.abspath('../rps-results'), 'lossdata_135.npz'), train=train, val=val)
+    np.savez_compressed(os.path.join(os.path.abspath('../rps-results'), f'lossdata_{len(train)}.npz'), train=train, val=val)
     plt.semilogy(range(len(train)), train, label='Train loss')
     plt.semilogy(range(len(val)), val, label='Val loss')
     plt.title('ResNet train and val losses')

@@ -111,12 +111,12 @@ for i in tqdm.tqdm(range(len(sd_names))):
 
     mats = loadmat(os.path.join(SD_DIR, sd_names[i]))
     coeff = random.choice([1,2,3,4,5,6,7,8,9,10])
-    blood = mats['blood'][30:110,30:110,1:NFRAMES+1]*TB/coeff     # start from second frame because the first is weird sometimes
+    blood = mats['blood'][:,:,1:NFRAMES+1]*TB/coeff     # start from second frame because the first is weird sometimes
     if merge:
         tmats = loadmat(os.path.join(TISSUE_DIR, l_names[i]))
-        tissue = tmats['L'][30:110,30:110,1:NFRAMES+1]
+        tissue = tmats['L'][:,:,1:NFRAMES+1]
     else:
-        tissue = mats['L'][30:110,30:110,1:NFRAMES+1]
+        tissue = mats['L'][:,:,1:NFRAMES+1]
     angle = mats['a']
     width = mats['b']
 
