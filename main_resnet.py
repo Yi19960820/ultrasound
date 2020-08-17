@@ -152,6 +152,7 @@ if __name__=='__main__':
         #Loss and optimizer
         floss=nn.MSELoss()
         optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=wd)
+        scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer, base_lr=2e-3, max_lr=2e-2, step_size_up=20)
 
         #Array for recording data
         outputs_S = to_var(torch.zeros([1,1,m,m,p*2]))
@@ -198,7 +199,7 @@ if __name__=='__main__':
                     batch_loss += loss.item()
                     loss_mean+=loss.item()
                     loss.backward()
-                optimizer.step()
+                scheduler.step()
                 pbar.set_description("Batch loss: %2.9f" % (batch_loss/BatchSize))
                 pbar.update()
             pbar.close()
