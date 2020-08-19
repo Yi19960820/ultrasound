@@ -152,7 +152,6 @@ if __name__=='__main__':
         #Loss and optimizer
         floss=nn.MSELoss()
         optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=wd)
-        scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer, base_lr=2e-3, max_lr=2e-2, step_size_up=20)
 
         #Array for recording data
         outputs_S = to_var(torch.zeros([1,1,m,m,p*2]))
@@ -199,7 +198,7 @@ if __name__=='__main__':
                     batch_loss += loss.item()
                     loss_mean+=loss.item()
                     loss.backward()
-                scheduler.step()
+                optimizer.step()
                 pbar.set_description("Batch loss: %2.9f" % (batch_loss/BatchSize))
                 pbar.update()
             pbar.close()
@@ -225,10 +224,12 @@ if __name__=='__main__':
             endtime=time.time()
             print('Test time is %f'%(endtime-starttime))
             log.write('Test time is %f\n'%(endtime-starttime))
-
-            torch.save(net.state_dict(), 
-                    "/results/%s/%s_Res3dC_Model_Tr%s_epoch%s_lr%.2e.pkl"\
-                    %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate))
+ 
+            # Save checkpoints
+            if (epoch % 3) ==0:
+                torch.save(net.state_dict(), 
+                    "/results/%s/%s_Res3dC_Model_Tr%s_epoch%s_%s_lr%.2e.pkl"\
+                    %(ProjectName,prefix,TrainInstances,epoch,num_epochs,learning_rate))
 
             if loss_val_mean<minloss:
                 print('Best saved at [epoch%d/%d]'%(epoch+1,num_epochs))
@@ -264,7 +265,7 @@ if __name__=='__main__':
             np.savez('/results/%s/%s_Res3dC_LossData_Tr%s_epoch%s_lr%.2e'\
                 %(ProjectName,prefix,TrainInstances,num_epochs,learning_rate),
                 lossmean_vec,lossmean_val_vec)
-            if epoch >= 2 and stop_early and (lossmean_val_vec[epoch] > 1.5*lossmean_val_vec[epoch-1]):
+            if epoch >= 2 and stop_early and (lossmean_val_vec[epoch] > 1.001*lossmean_val_vec[epoch-1]):
                 print(f'Stopping early at epoch {epoch+1}')
                 log.write(f'Stopping early at epoch {epoch+1}')
                 break
