@@ -29,10 +29,15 @@ U, s, Vh = svd(caso, full_matrices=False)
 caso_red = U[:,rank:]@np.diag(s[rank:])@(Vh[:,rank:].T)
 data_res = caso_red.reshape((n1, n2, n3*n4))
 
+# Invivo pixel size is lambda/2 in z and lambda in x, vs. lambda/4 in both in sim
+# But invivo lambda is 1/3 of sim lambda
+z_width = int(m*1.5)
+x_width = int(m*0.75)
+
 for i in tqdm.tqdm(range(nsamples)):
-    z = random.randint(0, n1-m*3)
-    x = random.randint(0, n2-n*3)
-    patch = data_res[z:z+m*3, x:x+n*3, 0:p]
+    z = random.randint(0, n1-z_width)
+    x = random.randint(0, n2-x_width)
+    patch = data_res[z:z+z_width, x:x+x_width, 0:p]
     resized_r = np.zeros((m,n,p))
     resized_i = np.zeros((m,n,p))
     for k in range(p):

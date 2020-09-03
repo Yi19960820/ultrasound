@@ -78,6 +78,9 @@ if __name__=='__main__':
     m = cfg['m']
     n = cfg['n']
     p = cfg['nframes']
+
+    chk = cfg['checkpoint_every']
+
     if cfg['custom']:
         from ResNet3dC import ResNet3dC
     else:
@@ -225,8 +228,8 @@ if __name__=='__main__':
             print('Test time is %f'%(endtime-starttime))
             log.write('Test time is %f\n'%(endtime-starttime))
  
-            # Save checkpoints
-            if (epoch % 10) ==0:
+            # Save checkpoint every chk epochs
+            if (epoch % chk) ==0:
                 torch.save(net.state_dict(), 
                     "/results/%s/%s_Res3dC_Model_Tr%s_epoch%s_%s_lr%.2e.pkl"\
                     %(ProjectName,prefix,TrainInstances,epoch,num_epochs,learning_rate))

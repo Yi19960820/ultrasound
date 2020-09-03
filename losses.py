@@ -22,15 +22,20 @@ if __name__ == "__main__":
     # val = data1['arr_1']
     train = []
     val = []
+    starts = [0,0,30]
+    ends = [36,32,60]
     for i in range(1, len(sys.argv)):
         train1, val1 = scrape_log(sys.argv[i])
-        train.extend(train1)
-        val.extend(val1)
+        train.extend(train1[starts[i-1]:ends[i-1]])
+        val.extend(val1[starts[i-1]:ends[i-1]])
     train = np.array(train)
     val = np.array(val)
     # np.savez_compressed(os.path.join(os.path.abspath('../rn-rps-real'), f'lossdata_{len(train)}.npz'), train=train, val=val)
     plt.semilogy(range(len(train)), train, label='Train loss')
     plt.semilogy(range(len(val)), val, label='Val loss')
+    n_lr = np.array([ends[i]-starts[i] for i in range(len(starts))])
+    for l in np.cumsum(n_lr)-1:
+        plt.vlines(l, 0, 1)
     plt.title('ResNet train and val losses')
     plt.xlabel('Epoch')
     plt.ylabel('MSE lossmean')
