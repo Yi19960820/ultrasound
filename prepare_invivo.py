@@ -14,7 +14,9 @@ DATA_FILE = '/data/dopperiq.mat'
 OUT_DIR = cfg['datadir']
 if not os.path.isdir(OUT_DIR):
     os.mkdir(OUT_DIR)
-m, n, p = 40,40,13
+m = cfg['m']
+n = cfg['n']
+p = cfg['nframes']
 nsamples = cfg['nsamples']
 rank = cfg['threshrank']
 
