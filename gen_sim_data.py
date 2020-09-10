@@ -13,9 +13,10 @@ import yaml
 import os
 import sys
 import numpy as np
+from tqdm import trange
 
 setname='val'
-numInst=16
+numInst = 4860
 
 Dname,Sname,Lname=['patch_180','patch_180','patch_180']\
                   if setname!='test2' else ['Patch','S_est_f','L_est_f']
@@ -30,28 +31,30 @@ folder = cfg['datadir']
 shape=(cfg['width'],cfg['height'])
 print(shape)
 T=cfg['nframes']
+m = cfg['m']
+n = cfg['n']
 
 params=params_default
 params['shape']=shape
 params['pixel']=(0.043, 0.086)
-rIter=int(shape[0]/32)
-cIter=int(shape[1]/32)
+rIter=int(shape[0]/n)
+cIter=int(shape[1]/m)
 player=Player()
 
 # nIter=int(numInst/shape[0]/shape[1]/T*32*32*20)
-nIter = 2
+nIter = int(numInst/rIter/cIter)
 
 print('total iterations and instances: %d, %d'%(nIter,numInst))
 numf=numstart
-for i in range(nIter):
+for i in trange(nIter):
     print('current iteration: %d, file number: %d to %d'%(i,numf,numf+rIter*cIter))
     simtor=Simulator(params)
     Sum,Bubbles,Tissue=simtor.generate(T)
     for rr in range(rIter):
         for cc in range(cIter):
-            D=Sum[rr*32:(rr+1)*32,cc*32:(cc+1)*32,0:20]
-            S=Bubbles[rr*32:(rr+1)*32,cc*32:(cc+1)*32,0:20]
-            L=Tissue[rr*32:(rr+1)*32,cc*32:(cc+1)*32,0:20]
+            D=Sum[rr*n:(rr+1)*n,cc*m:(cc+1)*m,0:T]
+            S=Bubbles[rr*n:(rr+1)*n,cc*m:(cc+1)*m,0:T]
+            L=Tissue[rr*n:(rr+1)*n,cc*m:(cc+1)*m,0:T]
             np.savez_compressed(os.path.join(folder, f'{i}_{rr}_{cc}.npz'), D=D, L=L, S=S)            
             # savemat(folder+'D_data/%s/D%d.mat'%(setname,numf),{Dname:D.reshape([32*32,20])})
             # savemat(folder+'fista/%s/S_fista%d.mat'%(setname,numf),{Sname:S.reshape([32*32,20])})
