@@ -46,7 +46,8 @@ def create_random_quads(blood, tissue, x, z, maxdist, shape2d):
         tissue : the tissue array, at least 2D
         x, int : the x quadrant index. 1=left, 2=right.
         z, int : the z quadrant index. 1=top, 2=bottom.
-        maxdist, int : the maximum distance, in array entries, to offset from the two sides the quadrant would align with if not\
+        maxdist, int : the
+form_out={'pre':'concat','shape':[m,n,p]} maximum distance, in array entries, to offset from the two sides the quadrant would align with if not\
 for the offset. For example, the x=1, z=1 quadrant would be offset from the top and left by up to maxdist units.
         shape2d, (int, int) : the first two dimensions of blood and tissue.
     
