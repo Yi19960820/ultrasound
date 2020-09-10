@@ -96,7 +96,7 @@ with torch.no_grad():
             net_time += (time.time()-net_start)
             [Sp, Dg, Sg]=convert.torch2np([out_S, D[jj], S[jj]],[form_out, form_out, form_out])
 
-            savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg, 'Sp':Sp, 'S':S, 'L':L})
+            savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg, 'Sp':Sp, 'S':S})
 
             nx += 1
     net_time /= TestInstances
