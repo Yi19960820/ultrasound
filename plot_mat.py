@@ -219,10 +219,8 @@ def plot_patches(fname, th=None):
         thresh = th
     else:
         svals, Drec, thresh = svt(D, ret_thresh=True)
-    # print(np.mean(np.abs(S)))
-    # print(np.mean(np.abs(Sp)))
-    # print(ssim(S, Drec))
-    print(f'PSNR: {psnr(S, Sp)}')
+    # print(S)
+    # print(f'PSNR: {psnr(S, Sp)}')
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')
@@ -234,7 +232,7 @@ def plot_patches(fname, th=None):
     ax[0][0].set_title('Input')
     # ax[0][0].add_patch(bbox)
 
-    ax[0][1].imshow(log_rms(S))
+    # ax[0][1].imshow(log_rms(S))
     ax[0][1].set_title('Ground truth S')
     # ax[0][1].add_patch(copies[0])
 
