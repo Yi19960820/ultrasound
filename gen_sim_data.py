@@ -15,7 +15,7 @@ import sys
 import numpy as np
 
 setname='val'
-numInst=30
+numInst=16
 
 Dname,Sname,Lname=['patch_180','patch_180','patch_180']\
                   if setname!='test2' else ['Patch','S_est_f','L_est_f']
