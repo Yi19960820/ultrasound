@@ -33,9 +33,12 @@ class BigImageDataset(torch.utils.data.Dataset):
         for n in range(NumInstances):
             if np.mod(n, 50) == 0: print('loading train set %s' % (n))
             if gt:
-                D = np.load(os.path.join(data_dir, self.fnames[n]))['D']
-                S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
-                L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
+                try:
+                    D = np.load(os.path.join(data_dir, self.fnames[n]))['D']
+                    S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
+                    L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
+                except ValueError:
+                    print(n)
             else:
                 D = np.load(os.path.join(data_dir, self.fnames[n]))['patch']
                 L  = np.zeros_like(D)
