@@ -8,8 +8,6 @@ Created on Mon Aug 20 13:53:01 2018
 from scipy.io import savemat
 from CORONA.SimPlatform.Simulator import Simulator
 from CORONA.SimPlatform.Parameters import params_default
-import sys
-sys.path.append('../')
 from CORONA.classes.Player import Player
 import yaml
 import os
