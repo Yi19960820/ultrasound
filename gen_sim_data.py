@@ -28,6 +28,7 @@ cfg = yaml.safe_load(open(cfg_file))
 ProjectName=cfg['ProjectName']
 folder = cfg['datadir']
 shape=(cfg['width'],cfg['height'])
+print(shape)
 T=cfg['nframes']
 
 params=params_default
