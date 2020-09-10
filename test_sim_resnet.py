@@ -87,14 +87,14 @@ with torch.no_grad():
 
     net_start = time.time()
     net_time = 0
-    for i,(L,S,D) in tqdm(enumerate(test_loader)):
+    for i,(_,S,D) in tqdm(enumerate(test_loader)):
         for jj in range(len(D)):
             inputs = to_var(D[jj])
 
             net_start = time.time()
             out_S = model(inputs[None, None])
             net_time += (time.time()-net_start)
-            [Sp, Dg, S, L]=convert.torch2np([out_S, D[jj], S[jj], L[jj]],[form_out, form_out, form_out, form_out])
+            [Sp, Dg, Sg]=convert.torch2np([out_S, D[jj], S[jj]],[form_out, form_out, form_out])
 
             savemat(os.path.join(save_mat_dir, f'{nx}.mat'),{'D':Dg, 'Sp':Sp, 'S':S, 'L':L})
 
