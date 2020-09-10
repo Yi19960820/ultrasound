@@ -38,7 +38,8 @@ rIter=int(shape[0]/32)
 cIter=int(shape[1]/32)
 player=Player()
 
-nIter=int(numInst/shape[0]/shape[1]/T*32*32*20)
+# nIter=int(numInst/shape[0]/shape[1]/T*32*32*20)
+nIter = 2
 
 print('total iterations and instances: %d, %d'%(nIter,numInst))
 numf=numstart
