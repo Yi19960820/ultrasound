@@ -165,7 +165,7 @@ def plot_column(fname, col=11, sf=0):
     ax[1][1].set_title(f'Column {col} per frame')
     ax[1][1].imshow(10*np.log10(np.abs(St[:,col])**2), aspect='auto')
 
-    if 'S' in outputs.keys():
+    if 'lsratio' in outputs.keys():
         # print(f'ResNet PSNR: {psnr(S, Sp)} dB')
         # print(f'SVT PSNR: {psnr(S, St)} dB')
         print(f'ResNet SSIM: {ssim(S, Sp)} dB')
@@ -220,7 +220,7 @@ def plot_patches(fname, th=None):
     else:
         svals, Drec, thresh = svt(D, ret_thresh=True)
     # print(S)
-    # print(f'PSNR: {psnr(S, Sp)}')
+    print(f'PSNR: {psnr(S, Sp)}')
     pow_L = np.sum(svals[:thresh])
     pow_S = np.sum(svals[thresh:])
     print(f'L power: {pow_L}')
@@ -232,7 +232,7 @@ def plot_patches(fname, th=None):
     ax[0][0].set_title('Input')
     # ax[0][0].add_patch(bbox)
 
-    # ax[0][1].imshow(log_rms(S))
+    ax[0][1].imshow(log_rms(S))
     ax[0][1].set_title('Ground truth S')
     # ax[0][1].add_patch(copies[0])
 

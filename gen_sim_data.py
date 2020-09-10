@@ -33,7 +33,7 @@ T=cfg['nframes']
 
 params=params_default
 params['shape']=shape
-params['pixel']=(0.1,0.1)
+params['pixel']=(0.043, 0.086)
 rIter=int(shape[0]/32)
 cIter=int(shape[1]/32)
 player=Player()
