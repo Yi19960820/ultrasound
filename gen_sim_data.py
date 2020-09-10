@@ -11,6 +11,7 @@ from CORONA.SimPlatform.Parameters import params_default
 from CORONA.classes.Player import Player
 import yaml
 import os
+import sys
 import numpy as np
 
 setname='val'
