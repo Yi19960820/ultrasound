@@ -46,7 +46,7 @@ class BigImageDataset(torch.utils.data.Dataset):
                 images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
                 images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
             except ValueError:
-                print(i)
+                print(n)
         
         self.transform = transform
 
