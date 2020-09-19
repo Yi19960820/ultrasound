@@ -46,7 +46,8 @@ class ResBlock3dC(nn.Module):
         s1,s2=1,1
         p1,p2=1,1
         
-        self.relu=nn.ReLU()
+        # self.relu=nn.ReLU()
+        self.relu = nn.LeakyReLU()
         self.convR1=nn.Conv3d(Cin,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2),
                               bias=False)
         self.convI1=nn.Conv3d(Cin,Cout,(w1,w1,w2),(s1,s1,s2),(p1,p1,p2),
@@ -82,14 +83,23 @@ class ResNet3dC(nn.Module):
         super(ResNet3dC,self).__init__()
         
         if gpu:
-            #GPU version     
-            c =[ 1, 32, 16, 16, 16, 1]
-            w1=[ 0, 7, 5, 3, 3, 3]
-            w2=[ 0, 5, 5, 3, 3, 3]
+            #GPU version   
+              
+            # c =[ 1, 32, 16, 16, 16, 1]
+            # w1=[ 0, 7, 5, 3, 3, 3]
+            # w2=[ 0, 5, 5, 3, 3, 3]
+            # s1=[ 0, 1, 1, 1, 1, 1]
+            # s2=[ 0, 1, 1, 1, 1, 1]
+            # p1=[ 0, 3, 2, 1, 1, 1]
+            # p2=[ 0, 2, 2, 1, 1, 1]
+            c =[ 1,16, 8, 8, 8, 1]
+            w1=[ 0, 5, 3, 3, 3, 3]
+            w2=[ 0, 5, 3, 3, 3, 3]
             s1=[ 0, 1, 1, 1, 1, 1]
             s2=[ 0, 1, 1, 1, 1, 1]
-            p1=[ 0, 3, 2, 1, 1, 1]
-            p2=[ 0, 2, 2, 1, 1, 1]
+            p1=[ 0, 2, 1, 1, 1, 1]
+            p2=[ 0, 2, 1, 1, 1, 1]
+
 
         else:
             c =[ 1,16, 4, 4, 4, 1]
@@ -100,7 +110,8 @@ class ResNet3dC(nn.Module):
             p1=[ 0, 1, 1, 1, 1, 1]
             p2=[ 0, 1, 1, 1, 1, 1]        
         
-        self.relu=nn.ReLU()
+        # self.relu=nn.ReLU()
+        self.relu = nn.LeakyReLU()
         self.conv1=Conv3dC(c[0],c[1],(w1[1],w2[1]),
                              (s1[1],s2[1]),(p1[1],p2[1]))        
         self.bn1R=nn.BatchNorm3d(c[1])
