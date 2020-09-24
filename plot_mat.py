@@ -252,6 +252,8 @@ def plot_patches(fname, th=None):
 
     # print(angle*180/np.pi)
     print(f'Rank: {rank}')
+    if 'width' in outputs.keys():
+        print(f'Width: {outputs["width"][0][0]}')
     # print(f'L/S: {outputs["lsratio"][0][0]}')
     plt.show()
 
