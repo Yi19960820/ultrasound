@@ -33,8 +33,10 @@ data_res = caso_red.reshape((n1, n2, n3*n4))
 
 # Invivo pixel size is lambda/2 in z and lambda in x, vs. lambda/4 in both in sim
 # But invivo lambda is 1/3 of sim lambda
-z_width = int(m*1.5)
-x_width = int(m*0.75)
+# z_width = int(m*1.5)
+# x_width = int(n*0.75)
+z_width = m
+x_width = n
 
 for i in tqdm.tqdm(range(nsamples)):
     z = random.randint(0, n1-z_width)
