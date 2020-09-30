@@ -2,6 +2,32 @@ import torch
 import torch.nn as nn
 from ResNet3dC import Conv3dC
 from torchsummary import summary
+import numpy as np
+
+# https://github.com/smortezavi/Randomized_SVD_GPU/blob/master/pytorch_randomized_svd.ipynb
+def simple_randomized_torch_svd(Mr, Mi, k=10):
+    Br = torch.tensor(Mr).cuda(0)
+    Bi = torch.tensor(Mr).cuda(0)
+    m, n = Br.size()
+    transpose = False
+    if m < n:
+        transpose = True
+        Br = Br.transpose(0, 1).cuda(0)
+        Bi = Bi.transpose(0, 1).cuda(0)
+        m, n = Br.size()
+    rand_matrix_R = torch.rand((n,k), dtype=torch.double).cuda(0)  # short side by k
+    rand_matrix_I = torch.rand((n,k), dtype=torch.double).cuda(0)
+    Q, _ = torch.qr(B @ rand_matrix)                              # long side by k
+    Q.cuda(0)
+    smaller_matrix = (Q.transpose(0, 1) @ B).cuda(0)             # k by short side
+    U_hat, s, V = torch.svd(smaller_matrix,False)
+    U_hat.cuda(0)
+    U = (Q @ U_hat)
+    
+    if transpose:
+        return V.transpose(0, 1), s, U.transpose(0, 1)
+    else:
+        return U, s, V
 
 class DR2ResBlock(nn.Module):
     '''
@@ -48,6 +74,31 @@ class DR2Net(nn.Module):
         self.rb3 = DR2ResBlock()
         self.rb4 = DR2ResBlock()
     
+    def svtC(self,xR, xI,th):
+        m,n=xR.shape
+
+        # form_out={'pre':'concat','shape':[m,n]}
+        # U,S,V=svd(self.converter.torch2np([x],[form_out])[0], full_matrices=False)
+        # U,S,V=svd(x.cpu().detach().numpy(), full_matrices=False)
+        # # S = np.diag(S)
+        # U = torch.from_numpy(U).reshape((m,n)).cuda()
+        # S = torch.from_numpy(S).reshape((n,)).cuda()
+        # V = torch.from_numpy(V).reshape((n,n)).cuda()
+
+        U,S,V = simple_randomized_torch_svd(xR, xI, k=10)
+        
+        S=self.relu(S-th*S[0])
+
+        US=torch.zeros(m,n)
+        stmp=torch.zeros(n)
+        stmp[0:S.shape[0]]=S
+        # stmp=S
+        minmn=min(m,n)
+        US[:,0:minmn]=U[:,0:minmn]
+
+        x=(US*stmp)@V.t()
+        return x
+
     def forward(self, x):
         T2=x.shape[-1]
         T=int(T2/2)

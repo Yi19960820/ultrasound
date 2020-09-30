@@ -106,6 +106,10 @@ random.shuffle(sd_names)
 if merge:
     random.shuffle(l_names)
 
+pre_svd = False
+if 'pre_svd' in cfg.keys():
+    pre_svd = cfg['pre_svd']
+
 for i in tqdm.tqdm(range(len(sd_names))):
     if i >= nsamples:
         break
@@ -149,6 +153,19 @@ for i in tqdm.tqdm(range(len(sd_names))):
                 noise_quad = radius*(np.cos(angle)+np.sin(angle)*1j)
                 quad = quad + noise_quad
             
+            # Preprocess with random SVD
+            power = 1
+            rank_k = 10
+            L = quad.reshape((m*n, NFRAMES))
+            Y2 = np.random.randn((NFRAMES, rank_k))
+            for i in range(power+1):
+                Y1 = L@Y2
+                Y2 = (L.T)@Y1
+            Q, R = np.linalg.qr(Y2)
+            L_new = (L@Q)@(Q.T)
+            quad_caso = L-L_new
+            quad = quad_caso.reshape((m, n, NFRAMES))
+
             if padding > 0:
                 tissue_quad = add_padding(tissue_quad, padding)
                 blood_quad = add_padding(blood_quad, padding)
