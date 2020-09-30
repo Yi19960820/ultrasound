@@ -157,7 +157,7 @@ for i in tqdm.tqdm(range(len(sd_names))):
             power = 1
             rank_k = 10
             L = quad.reshape((m*n, NFRAMES))
-            Y2 = np.random.randn((NFRAMES, rank_k))
+            Y2 = np.random.randn(NFRAMES, rank_k)
             for i in range(power+1):
                 Y1 = L@Y2
                 Y2 = (L.T)@Y1
