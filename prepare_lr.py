@@ -109,10 +109,11 @@ if merge:
 pre_svd = False
 if 'pre_svd' in cfg.keys():
     pre_svd = cfg['pre_svd']
-    
+
 print(OUT_DIR)
 
 for i in tqdm.tqdm(range(len(sd_names))):
+    print(i)
     if i >= nsamples:
         break
 
