@@ -160,7 +160,7 @@ for i in tqdm.tqdm(range(len(sd_names))):
             rank_k = 10
             L = quad.reshape((m*n, NFRAMES))
             Y2 = np.random.randn(NFRAMES, rank_k)
-            for i in range(power+1):
+            for _ in range(power+1):
                 Y1 = L@Y2
                 Y2 = (L.T)@Y1
             Q, R = np.linalg.qr(Y2)
