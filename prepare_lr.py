@@ -109,6 +109,8 @@ if merge:
 pre_svd = False
 if 'pre_svd' in cfg.keys():
     pre_svd = cfg['pre_svd']
+    
+print(OUT_DIR)
 
 for i in tqdm.tqdm(range(len(sd_names))):
     if i >= nsamples:
@@ -170,6 +172,5 @@ for i in tqdm.tqdm(range(len(sd_names))):
                 tissue_quad = add_padding(tissue_quad, padding)
                 blood_quad = add_padding(blood_quad, padding)
                 quad = add_padding(quad, padding)
-
             np.savez_compressed(os.path.join(OUT_DIR, f'{i}_x{x}_z{z}'), L=tissue_quad, S=blood_quad, \
                 D=quad, width=width, angle=angle, nsv=rank, x=x, z=z, coeff=coeff, padded=(padding>0))
