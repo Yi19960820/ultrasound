@@ -19,6 +19,7 @@ import os
 
 from DataSet import BigImageDataset
 from CORONA.classes.Dataset import Converter
+from DR2Net import DR2Net
 
 import numpy as np
 import time
@@ -81,10 +82,10 @@ if __name__=='__main__':
 
     chk = cfg['checkpoint_every']
 
-    if cfg['custom']:
-        from ResNet3dC import ResNet3dC
-    else:
-        from CORONA.network.ResNet3dC import ResNet3dC
+    # if cfg['custom']:
+    #     from ResNet3dC import ResNet3dC
+    # else:
+    #     from CORONA.network.ResNet3dC import ResNet3dC
     
     if 'weight_decay' in cfg.keys():
         wd = cfg['weight_decay']
@@ -125,10 +126,10 @@ if __name__=='__main__':
     print('Configuring network...')
     log.write('Configuring network...\n')
     if not loadmodel:
-        net=ResNet3dC(gpu)
+        net=DR2Net(gpu)
     else:
         if mfile[-3:]=='pkl':
-            net=ResNet3dC(gpu)
+            net=DR2Net(gpu)
             state_dict=torch.load(mfile, map_location='cuda:0')
             net.load_state_dict(state_dict)
         else:
