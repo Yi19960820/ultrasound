@@ -134,6 +134,7 @@ for i in tqdm.tqdm(range(len(sd_names))):
         for z in (1,2):
             rank = random.randint(1,NSV)
             caso_red = U[:,:rank]@np.diag(s[:rank])@(Vh[:,:rank].T)
+            print(caso_red.shape)
             tissue_red = caso_red.reshape((n1, n2, n3))            
             blood_quad, tissue_quad = create_random_quads(blood, tissue_red, x, z, 10, (m, n))
             quad = blood_quad+tissue_quad
