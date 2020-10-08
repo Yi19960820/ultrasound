@@ -181,6 +181,7 @@ def plot_patches(fname, th=None):
     sf=0
     D = outputs['D']
     Sp = outputs['Sp']
+    # Sp = Sp.real * (Sp.real > 0) + 1j*(Sp.imag * (Sp.imag > 0))
     if 'S' in outputs.keys():
         S = outputs['S']
     else:

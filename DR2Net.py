@@ -107,8 +107,8 @@ class DR2Net(nn.Module):
 
         yR, yI = self.rb1(xR, xI)
         yR, yI = self.rb2(yR, yI)
-        yR, yI = self.rb3(yR, yI)
-        yR, yI = self.rb4(yR, yI)
+        # yR, yI = self.rb3(yR, yI)
+        # yR, yI = self.rb4(yR, yI)
 
         y = torch.cat((yR, yI), -1)
         return y
