@@ -128,6 +128,21 @@ def metrics():
     plt.legend()
     plt.show()
 
+def rsvd(quad):
+    m,n,NFRAMES=quad.shape
+    power = 1
+    rank_k = 10
+    L = quad.reshape((m*n, NFRAMES))
+    Y2 = np.random.randn(NFRAMES, rank_k)
+    for _ in range(power+1):
+        Y1 = L@Y2
+        Y2 = (L.T)@Y1
+    Q, R = la.qr(Y2, mode='economic')
+    L_new = (L@Q)@(Q.T)
+    L3_new = L_new.reshape((m, n, NFRAMES))
+    quad = quad-L3_new
+    return L3_new
+
 def plot_column(fname, col=11, sf=0):
     outputs = loadmat(os.path.abspath(fname))
     w = 40
@@ -137,7 +152,8 @@ def plot_column(fname, col=11, sf=0):
         S = outputs['S'][:,:,sf:]
     else:
         S = D
-    svals, St = svt(D)
+    # svals, St = svt(D)
+    svals, St = np.ones(30), rsvd(D)
     # width = outputs['width'][0][0]
     # width_px = w/.0025*width
 

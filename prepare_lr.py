@@ -139,10 +139,10 @@ for i in tqdm.tqdm(range(len(sd_names))):
             quad = blood_quad+tissue_quad
 
             # # Preprocess with SVT
-            # quad_caso = quad.reshape(m*n, NFRAMES)
-            # U, s, Vh = svd(quad_caso, full_matrices=False)
-            # quad_caso_red = U[:,3:]@np.diag(s[3:])@(Vh[:,3:].T)
-            # quad = quad_caso_red.reshape(m, n, NFRAMES)
+            quad_caso = quad.reshape(m*n, NFRAMES)
+            U, s, Vh = svd(quad_caso, full_matrices=False)
+            quad_caso_red = U[:,5:]@np.diag(s[5:])@(Vh[:,5:].T)
+            quad = quad_caso_red.reshape(m, n, NFRAMES)
 
             # Add Gaussian noise
             if noise:
@@ -156,17 +156,17 @@ for i in tqdm.tqdm(range(len(sd_names))):
                 quad = quad + noise_quad
             
             # Preprocess with random SVD
-            power = 1
-            rank_k = 10
-            L = quad.reshape((m*n, NFRAMES))
-            Y2 = np.random.randn(NFRAMES, rank_k)
-            for _ in range(power+1):
-                Y1 = L@Y2
-                Y2 = (L.T)@Y1
-            Q, R = np.linalg.qr(Y2)
-            L_new = (L@Q)@(Q.T)
-            quad_caso = L-L_new
-            quad = quad_caso.reshape((m, n, NFRAMES))
+            # power = 1
+            # rank_k = 10
+            # L = quad.reshape((m*n, NFRAMES))
+            # Y2 = np.random.randn(NFRAMES, rank_k)
+            # for _ in range(power+1):
+            #     Y1 = L@Y2
+            #     Y2 = (L.T)@Y1
+            # Q, R = np.linalg.qr(Y2)
+            # L_new = (L@Q)@(Q.T)
+            # quad_caso = L-L_new
+            # quad = quad_caso.reshape((m, n, NFRAMES))
 
             if padding > 0:
                 tissue_quad = add_padding(tissue_quad, padding)
