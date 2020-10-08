@@ -139,10 +139,10 @@ for i in tqdm.tqdm(range(len(sd_names))):
             blood_quad, tissue_quad = create_random_quads(blood, tissue_red, x, z, 10, (m, n))
             quad = blood_quad+tissue_quad
 
-            # # Preprocess with SVT
+            # Preprocess with SVT
             quad_caso = quad.reshape(m*n, NFRAMES)
-            U, s, Vh = svd(quad_caso, full_matrices=False)
-            quad_caso_red = U[:,5:]@np.diag(s[5:])@(Vh[:,5:].T)
+            Up, sp, Vhp = svd(quad_caso, full_matrices=False)
+            quad_caso_red = Up[:,5:]@np.diag(sp[5:])@(Vhp[:,5:].T)
             quad = quad_caso_red.reshape(m, n, NFRAMES)
 
             # Add Gaussian noise
