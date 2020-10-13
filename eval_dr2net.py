@@ -60,10 +60,11 @@ n = cfg['n']
 p = cfg['nframes']
 sf = cfg['startframe']
 
-if not cfg['custom']:
-    from CORONA.network.ResNet3dC import ResNet3dC
-else: 
-    from ResNet3dC import ResNet3dC
+# if not cfg['custom']:
+#     from CORONA.network.ResNet3dC import ResNet3dC
+# else: 
+#     from ResNet3dC import ResNet3dC
+from DR2Net import DR2Net
 """========================================================================="""
 
 #Converter
@@ -81,7 +82,7 @@ convert=Converter()
 device='cuda:0' if torch.cuda.is_available() else 'cpu'
 # device='cpu'
 if mfile[-3:]=='pkl':
-    model=ResNet3dC(gpu)
+    model=DR2Net(gpu)
     state_dict=torch.load(mfile,map_location=device)
     model.load_state_dict(state_dict)
 else:
