@@ -35,15 +35,20 @@ class DR2ResBlock(nn.Module):
     '''
     def __init__(self):
         super(DR2ResBlock, self).__init__()
-        c1 = 64
-        c2 = 32
+        # c1 = 64
+        # c2 = 32
+        c1 = 16
+        c2 = 8
         c3 = 1
-        w1 = 11
+        # w1 = 11
+        # w2 = 1
+        # w3 = 7
+        w1 = 7
         w2 = 1
-        w3 = 7
-        p1 = 5
-        p2 = 0
-        p3 = 3
+        w3 = 3
+        p1 = w1//2
+        p2 = w2//2
+        p3 = w3//2
 
         self.relu = nn.ReLU()
         self.bn1 = nn.BatchNorm3d(c1)
