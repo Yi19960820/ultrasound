@@ -106,7 +106,7 @@ random.shuffle(sd_names)
 if merge:
     random.shuffle(l_names)
 
-pre_svd = False
+pre_svd = None
 if 'pre_svd' in cfg.keys():
     pre_svd = cfg['pre_svd']
 
@@ -142,7 +142,7 @@ for i in tqdm.tqdm(range(len(sd_names))):
             # Preprocess with SVT
             quad_caso = quad.reshape(m*n, NFRAMES)
             Up, sp, Vhp = svd(quad_caso, full_matrices=False)
-            quad_caso_red = Up[:,5:]@np.diag(sp[5:])@(Vhp[:,5:].T)
+            quad_caso_red = Up[:,pre_svd:]@np.diag(sp[pre_svd:])@(Vhp[:,pre_svd:].T)
             quad = quad_caso_red.reshape(m, n, NFRAMES)
 
             # Add Gaussian noise
