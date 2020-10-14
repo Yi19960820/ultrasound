@@ -50,7 +50,7 @@ data_dir = cfg['datadir']
 TestInstances = cfg['ntest']
 saveMat = cfg['saveMat']
 mfile = cfg['mfile']
-save_mat_dir=os.path.join('/data',proj_name,'mats')
+save_mat_dir=os.path.join('/results',proj_name,'mats')
 """========================================================================="""
 
 #Converter
