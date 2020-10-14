@@ -9,6 +9,7 @@ from copy import copy
 import os
 from CORONA.Res3dC.DataSet_3dC import preprocess
 import argparse
+from scipy.ndimage import gaussian_filter
 
 def log_rms(mat):
     # TODO make the dynamic ranges the same (I think this is done by default)
@@ -236,6 +237,8 @@ def plot_patches(fname, th=None):
         thresh = th
     else:
         svals, Drec, thresh = svt(D, ret_thresh=True)
+    idx = np.abs(S) < 0.01*np.max(np.abs(S))
+    S[idx] = 0
     # print(S)
     print(f'PSNR: {psnr(S, Sp)}')
     pow_L = np.sum(svals[:thresh])
@@ -267,6 +270,8 @@ def plot_patches(fname, th=None):
     ax[1][1].set_title('SVT')
     # ax[1][1].add_patch(copies[2])
 
+    ax[1][2].imshow(gaussian_filter(log_rms(Drec), sigma=3))
+    print(ssim(Drec, Sp))
     # print(angle*180/np.pi)
     print(f'Rank: {rank}')
     if 'width' in outputs.keys():

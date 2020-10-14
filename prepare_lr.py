@@ -110,6 +110,10 @@ pre_svd = None
 if 'pre_svd' in cfg.keys():
     pre_svd = cfg['pre_svd']
 
+thresh_S = None
+if 'thresh_S' in cfg.keys():
+    thresh_S = cfg['thresh_S']
+
 print(OUT_DIR)
 
 for i in tqdm.tqdm(range(len(sd_names))):
@@ -155,6 +159,11 @@ for i in tqdm.tqdm(range(len(sd_names))):
                 angle = np.random.rand(*tissue_quad.shape)*2*np.pi
                 noise_quad = radius*(np.cos(angle)+np.sin(angle)*1j)
                 quad = quad + noise_quad
+            
+            # Apply soft threshold to S to do a rough deconvolution
+            if thresh_S:
+                idx = np.abs(blood_quad) < thresh_S*np.max(np.abs(blood_quad))
+                blood_quad[idx] = 0
             
             # Preprocess with random SVD
             # power = 1

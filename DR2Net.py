@@ -37,14 +37,20 @@ class DR2ResBlock(nn.Module):
         super(DR2ResBlock, self).__init__()
         # c1 = 64
         # c2 = 32
-        c1 = 16
-        c2 = 8
+
+        # c1 = 32
+        # c2 = 16
+        c1 = 32
+        c2 = 16
         c3 = 1
         # w1 = 11
         # w2 = 1
         # w3 = 7
-        w1 = 7
-        w2 = 1
+        
+        # w1 = 7
+        # w2 = 1
+        w1 = 5
+        w2 = 3
         w3 = 3
         p1 = w1//2
         p2 = w2//2
