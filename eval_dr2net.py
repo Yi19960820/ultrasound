@@ -97,7 +97,7 @@ with torch.no_grad():
     loss_mean = 0
     test_data = BigImageDataset(TestInstances, (m,n,p*2), 2, data_dir=data_dir, \
         train_size=TrainInstances, val_size=ValInstances)
-    test_loader = data.DataLoader(test_data, batch_size=4, shuffle=False)
+    test_loader = data.DataLoader(test_data, batch_size=200, shuffle=False)
     nx = 0
     fnames = os.listdir(data_dir)
     fnames.sort()
