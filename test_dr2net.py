@@ -42,6 +42,7 @@ note='abs'
 saveMetadata=True
 
 cfg = yaml.safe_load(open(sys.argv[1]))
+proj_name = cfg['ProjectName']
 m = cfg['m']
 n = cfg['n']
 p = cfg['nframes']
@@ -49,7 +50,7 @@ data_dir = cfg['datadir']
 TestInstances = cfg['ntest']
 saveMat = cfg['saveMat']
 mfile = cfg['mfile']
-save_mat_dir=cfg['datadir']+'mats'
+save_mat_dir=os.path.join('/data',proj_name,'mats')
 """========================================================================="""
 
 #Converter
