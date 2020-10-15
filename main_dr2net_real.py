@@ -19,7 +19,7 @@ import os
 
 from DataSet import BigImageDataset
 from CORONA.classes.Dataset import Converter
-from DR2Net import RealR2Net
+from DR2Net import RealDR2Net
 
 import numpy as np
 import time
