@@ -154,6 +154,8 @@ def plot_column(fname, col=11, sf=0):
     else:
         S = D
     # svals, St = svt(D)
+    idx = np.abs(S) < 0.01*np.max(np.abs(S))
+    S[idx] = 0
     svals, St = np.ones(30), rsvd(D)
     # width = outputs['width'][0][0]
     # width_px = w/.0025*width
@@ -237,8 +239,9 @@ def plot_patches(fname, th=None):
         thresh = th
     else:
         svals, Drec, thresh = svt(D, ret_thresh=True)
-    idx = np.abs(S) < 0.01*np.max(np.abs(S))
-    S[idx] = 0
+    # idx = np.abs(S) < 0.01*np.max(np.abs(S))
+    # S[idx] = 0
+    svals2, S2 = svt(S, 6)
     # print(S)
     print(f'PSNR: {psnr(S, Sp)}')
     pow_L = np.sum(svals[:thresh])
@@ -270,7 +273,9 @@ def plot_patches(fname, th=None):
     ax[1][1].set_title('SVT')
     # ax[1][1].add_patch(copies[2])
 
-    ax[1][2].imshow(gaussian_filter(log_rms(Drec), sigma=3))
+    # ax[1][2].imshow(gaussian_filter(log_rms(Drec), sigma=3))
+    ax[1][2].imshow(log_rms(S2))
+    ax[1][0].semilogy(range(1, len(svals2)+1), svals2)
     print(ssim(Drec, Sp))
     # print(angle*180/np.pi)
     print(f'Rank: {rank}')

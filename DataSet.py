@@ -5,14 +5,28 @@ import h5py
 import numpy as np
 import os
 
+def preprocess_real(L, S, D):
+    A=max(np.max(np.abs(L)),np.max(np.abs(S)),np.max(np.abs(D)))   
+    if A==0:
+        A=1
+    L=np.abs(L)/A
+    S=np.abs(S)/A
+    D=np.abs(D)/A
+    return L,S,D
+
 class BigImageDataset(torch.utils.data.Dataset):
     DATA_DIR='/data/toy-real/'
 
-    def __init__(self, NumInstances, shape, train, transform=None, data_dir=None, train_size=3200, val_size=800, gt=True):
+    def __init__(self, NumInstances, shape, train, transform=None, data_dir=None, train_size=3200, val_size=800, gt=True, real=False):
         data_dir = self.DATA_DIR if data_dir is None else data_dir
         self.shape=shape
         self.fnames = os.listdir(data_dir)
         self.fnames.sort()
+
+        if real:
+            pp = preprocess
+        else:
+            pp = preprocess_real
 
         # dummy image loader
         images_L = torch.zeros(tuple([NumInstances])+self.shape)
@@ -40,7 +54,7 @@ class BigImageDataset(torch.utils.data.Dataset):
                 D = np.load(os.path.join(data_dir, self.fnames[n]))['patch']
                 L  = np.zeros_like(D)
                 S = np.zeros_like(D)
-            L,S,D=preprocess(L,S,D)
+            L,S,D = pp(L,S,D)
             try:
                 images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
                 images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()

@@ -29,24 +29,99 @@ def simple_randomized_torch_svd(Mr, Mi, k=10):
     else:
         return U, s, V
 
-class DR2ResBlock(nn.Module):
-    '''
-    Res block from DR^2-Net: https://arxiv.org/pdf/1702.05743.pdf
-    '''
+class DR2RealResBlock(nn.Module):
     def __init__(self):
-        super(DR2ResBlock, self).__init__()
+        super(DR2RealResBlock, self).__init__()
+        # Default
         # c1 = 64
         # c2 = 32
 
+        # dr2net-2b-small
         # c1 = 32
         # c2 = 16
+
         c1 = 32
         c2 = 16
         c3 = 1
         # w1 = 11
         # w2 = 1
         # w3 = 7
+
+        # w1 = 7
+        # w2 = 1
+        w1 = 5
+        w2 = 3
+        w3 = 3
+        p1 = w1//2
+        p2 = w2//2
+        p3 = w3//2
+
+        self.relu = nn.ReLU()
+        self.bn1 = nn.BatchNorm3d(c1)
+        self.bn2 = nn.BatchNorm3d(c2)
         
+        self.conv1 = nn.Conv3d(1, c1, w1, 1, p1)
+        self.conv2 = nn.Conv3d(c1, c2, w2, 1, p2)
+        self.conv3 = nn.Conv3d(c2, c3, w3, 1, p3)
+
+    def forward(self, x):
+        y = self.conv1(x)
+        y = self.relu(y)
+        y = self.bn1(y)
+        y = self.conv2(y)
+        y = self.relu(y)
+        y = self.bn2(y)
+        y = self.conv3(y)
+        y = self.relu(y)
+        y = y+x
+
+        return y
+
+class RealDR2Net(nn.Module):
+    def __init__(self, gpu=True):
+        super(RealDR2Net, self).__init__()
+
+        self.rb1 = DR2RealResBlock()
+        self.rb2 = DR2RealResBlock()
+        # self.rb3 = DR2ResBlock()
+        # self.rb4 = DR2ResBlock()
+    
+    def forward(self, x):
+        # T2=x.shape[-1]
+        # T=int(T2/2)
+        # xR=x[:,:,:,:,0:T]
+        # xI=x[:,:,:,:,T:T2]
+
+        y = self.rb1(x)
+        y = self.rb2(y)
+        # yR, yI = self.rb3(yR, yI)
+        # yR, yI = self.rb4(yR, yI)
+
+        # y = torch.cat((yR, yI), -1)
+        return y
+
+
+class DR2ResBlock(nn.Module):
+    '''
+    Res block from DR^2-Net: https://arxiv.org/pdf/1702.05743.pdf
+    '''
+    def __init__(self):
+        super(DR2ResBlock, self).__init__()
+        # Default
+        # c1 = 64
+        # c2 = 32
+
+        # dr2net-2b-small
+        # c1 = 32
+        # c2 = 16
+
+        c1 = 32
+        c2 = 16
+        c3 = 1
+        # w1 = 11
+        # w2 = 1
+        # w3 = 7
+
         # w1 = 7
         # w2 = 1
         w1 = 5
@@ -125,6 +200,6 @@ class DR2Net(nn.Module):
         return y
 
 if __name__=='__main__':
-    model = DR2Net()
+    model = RealDR2Net()
     x = torch.zeros([1,1, 33, 33,40])
     summary(model, x)
