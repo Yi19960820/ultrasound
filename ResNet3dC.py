@@ -7,6 +7,7 @@ Created on Wed Aug  1 23:29:00 2018
 
 import torch
 import torch.nn as nn
+from torchsummary import summary
 
 class Conv3dC(nn.Module):
     """
@@ -71,6 +72,90 @@ class ResBlock3dC(nn.Module):
         
         return self.relu(yR),self.relu(yI)
 
+class ResBlock3d(nn.Module):
+    def __init__(self,Cin,Cout):
+        super(ResBlock3d,self).__init__()
+        
+        w1,w2=3,3
+        s1,s2=1,1
+        p1,p2=1,1
+        
+        self.relu=nn.ReLU()
+        # self.relu = nn.LeakyReLU()
+        self.conv1=nn.Conv3d(Cin,Cout,w1,s1,p1)
+        self.bn1=nn.BatchNorm3d(Cout)
+        self.conv2=nn.Conv3d(Cout,Cout,w1,s1,p1)
+        self.bn2=nn.BatchNorm3d(Cout)
+            
+    def forward(self,x):
+        y=self.conv1(x)
+        y=self.relu(y)
+        y=self.bn1(y)
+        y=self.conv2(y)
+        y=self.bn2(y)
+        y=self.relu(y)
+        y = y+x
+        return y
+
+class ResNet3d(nn.Module):
+    def __init__(self,gpu=True):
+        super(ResNet3d,self).__init__()
+        
+        if gpu:
+            #GPU version   
+              
+            # c =[ 1, 32, 16, 16, 16, 1]
+            # w1=[ 0, 7, 5, 3, 3, 3]
+            # w2=[ 0, 5, 5, 3, 3, 3]
+            # s1=[ 0, 1, 1, 1, 1, 1]
+            # s2=[ 0, 1, 1, 1, 1, 1]
+            # p1=[ 0, 3, 2, 1, 1, 1]
+            # p2=[ 0, 2, 2, 1, 1, 1]
+            c =[ 1,16, 8, 8, 8, 1]
+            w1=[ 0, 5, 3, 3, 3, 3]
+            w2=[ 0, 5, 3, 3, 3, 3]
+            s1=[ 0, 1, 1, 1, 1, 1]
+            s2=[ 0, 1, 1, 1, 1, 1]
+            p1=[ 0, 2, 1, 1, 1, 1]
+            p2=[ 0, 2, 1, 1, 1, 1]
+
+
+        else:
+            c =[ 1,16, 4, 4, 4, 1]
+            w1=[ 0, 3, 3, 3, 3, 3]
+            w2=[ 0, 3, 3, 3, 3, 3]
+            s1=[ 0, 1, 1, 1, 1, 1]
+            s2=[ 0, 1, 1, 1, 1, 1]
+            p1=[ 0, 1, 1, 1, 1, 1]
+            p2=[ 0, 1, 1, 1, 1, 1]        
+        
+        self.relu=nn.ReLU()
+        # self.relu = nn.LeakyReLU()
+        
+        self.relu=nn.ReLU()
+        # self.relu = nn.LeakyReLU()
+        self.conv1 = nn.Conv3d(c[0], c[1], w1[1], s1[1], p1[1]) 
+        self.bn1=nn.BatchNorm3d(c[1])
+        self.conv2 = nn.Conv3d(c[1], c[2], w1[2], s1[2], p1[2])
+        self.bn2=nn.BatchNorm3d(c[2])
+        self.res3=ResBlock3d(c[2],c[3])
+        self.res4=ResBlock3d(c[3],c[4])
+        self.conv5 = nn.Conv3d(c[4], c[5], w1[5], s1[5], p1[5])        
+        
+    def forward(self,x):     
+        y = self.conv1(x)
+        y = self.relu(y)
+        y = self.bn1(y)
+        y = self.conv2(y)
+        y = self.relu(y)
+        y = self.bn2(y)
+        y=self.res3(y)
+        y=self.res4(y)
+        
+        y=self.conv5(y)
+        
+        return y
+
 class ResNet3dC(nn.Module):
     """
     ResNet for 3d computation
@@ -131,7 +216,6 @@ class ResNet3dC(nn.Module):
         T=int(T2/2)
         xR=x[:,:,:,:,0:T]
         xI=x[:,:,:,:,T:T2]
-        
         xR,xI=self.conv1(xR,xI)
         xR=self.relu(self.bn1R(xR))
         xI=self.relu(self.bn1I(xI))
@@ -147,4 +231,8 @@ class ResNet3dC(nn.Module):
         x=torch.cat((xR,xI),-1)
         
         return x
-        
+
+if __name__=='__main__':
+    model = ResNet3d()
+    x = torch.zeros([1,1, 40, 40,20])
+    summary(model, x)
