@@ -9,8 +9,8 @@ def preprocess_real(L, S, D):
     A=max(np.max(np.abs(L)),np.max(np.abs(S)),np.max(np.abs(D)))   
     if A==0:
         A=1
-    print(type(A))
-    print(np.abs(L).shape)
+    # print(type(A))
+    # print(np.abs(L).shape)
     L=np.abs(L)/A
     S=np.abs(S)/A
     D=np.abs(D)/A
