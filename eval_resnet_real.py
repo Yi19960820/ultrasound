@@ -126,7 +126,9 @@ with torch.no_grad():
             net_time += (time.time()-net_start)
             loss = floss(out_S.squeeze(), targets).item()
             loss_mean += loss
-            print(out_S.shape)
+            print('out_S shape', out_S.shape)
+            print('D shape', D.shape)
+            print('S shape', S.shape)
             [Sp, Dg, Sg]=convert.torch2np([out_S, D[jj], S[jj]],[form_out, form_out, form_out])
 
             #Save gif
