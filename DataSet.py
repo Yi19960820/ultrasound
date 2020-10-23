@@ -54,9 +54,9 @@ class BigImageDataset(torch.utils.data.Dataset):
                 D = np.load(os.path.join(data_dir, self.fnames[n]))['patch']
                 L  = np.zeros_like(D)
                 S = np.zeros_like(D)
-            print(L.shape)
             L,S,D = pp(L,S,D)
-            # print(L.dtype)
+            print(L.shape)
+            print(L.dtype)
             try:
                 images_L[n] = torch.from_numpy(L).float()
                 images_S[n] = torch.from_numpy(S).float()
