@@ -56,9 +56,9 @@ class BigImageDataset(torch.utils.data.Dataset):
                 S = np.zeros_like(D)
             L,S,D = pp(L,S,D)
             try:
-                images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
-                images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
-                images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
+                images_L[n] = torch.from_numpy(L).float()
+                images_S[n] = torch.from_numpy(S).float()
+                images_D[n] = torch.from_numpy(D).float()
             except ValueError:
                 print(n)
         
