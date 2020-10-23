@@ -64,8 +64,8 @@ from ResNet3dC import ResNet3d
 """========================================================================="""
 
 #Converter
-form_in={'pre':'concat','shape':[-1,1,m,n,p]}
-form_out={'pre':'concat','shape':[m,n,p]}
+form_in={'shape':[-1,1,m,n,p]}
+form_out={'shape':[m,n,p]}
 convert=Converter()
 
 # with open('eval_resnet.yml') as f:
