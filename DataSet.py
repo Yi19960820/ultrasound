@@ -26,9 +26,9 @@ class BigImageDataset(torch.utils.data.Dataset):
         self.fnames.sort()
 
         if real:
-            pp = preprocess
-        else:
             pp = preprocess_real
+        else:
+            pp = preprocess
 
         # dummy image loader
         images_L = torch.zeros(tuple([NumInstances])+self.shape)
