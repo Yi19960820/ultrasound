@@ -9,8 +9,6 @@ def preprocess_real(L, S, D):
     A=max(np.max(np.abs(L)),np.max(np.abs(S)),np.max(np.abs(D)))   
     if A==0:
         A=1
-    # print(type(A))
-    # print(np.abs(L).shape)
     L=np.abs(L)/A
     S=np.abs(S)/A
     D=np.abs(D)/A
@@ -57,12 +55,10 @@ class BigImageDataset(torch.utils.data.Dataset):
                 L  = np.zeros_like(D)
                 S = np.zeros_like(D)
             L,S,D = pp(L,S,D)
-            # print(L.shape)
-            # print(L.dtype)
             try:
-                images_L[n] = torch.from_numpy(L).float()
-                images_S[n] = torch.from_numpy(S).float()
-                images_D[n] = torch.from_numpy(D).float()
+                images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
+                images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
+                images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
             except ValueError:
                 print(n)
         
