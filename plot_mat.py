@@ -185,8 +185,8 @@ def plot_column(fname, col=11, sf=0):
     ax[1][1].imshow(10*np.log10(np.abs(St[:,col])**2), aspect='auto')
 
     if 'lsratio' in outputs.keys():
-        # print(f'ResNet PSNR: {psnr(S, Sp)} dB')
-        # print(f'SVT PSNR: {psnr(S, St)} dB')
+        print(f'ResNet PSNR: {psnr(S, Sp)} dB')
+        print(f'SVT PSNR: {psnr(S, St)} dB')
         print(f'ResNet SSIM: {ssim(S, Sp)} dB')
         print(f'SVT SSIM: {ssim(S, St)} dB')
         # print(f"Rank: {outputs['rank'][0][0]}")
@@ -281,7 +281,7 @@ def plot_patches(fname, th=None):
     print(f'Rank: {rank}')
     if 'width' in outputs.keys():
         print(f'Width: {outputs["width"][0][0]}')
-    # print(f'L/S: {outputs["lsratio"][0][0]}')
+    print(f'L/S: {outputs["lsratio"][0][0]}')
     plt.show()
 
 def sv_threshold(svals):
