@@ -65,7 +65,7 @@ class BigImageDataset(torch.utils.data.Dataset):
                 images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
                 images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
                 if mask:
-                    m[n] = torch.from_numpy(m.reshape(self.shape)).int()
+                    m[n] = torch.from_numpy(m.astype(np.int).reshape(self.shape)).int()
             except ValueError:
                 print(n)
         
