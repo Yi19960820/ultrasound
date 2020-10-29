@@ -75,10 +75,10 @@ from DR2Net import DR2Net, RealDR2Net
 """========================================================================="""
 
 #Converter
-if real:
-    form_in={'shape':[-1,1,m,n,nf]}
-else:
-    form_in={'pre':'concat','shape':[-1,1,m,n,nf]}
+form_in={'pre':'concat','shape':[-1,1,m,n,nf]}
+form_out={'shape':[m,n,p]}
+if not real:
+    form_out['pre']='concat'
 convert=Converter()
 
 # with open('eval_resnet.yml') as f:
@@ -91,10 +91,10 @@ convert=Converter()
 device='cuda:0' if torch.cuda.is_available() else 'cpu'
 # device='cpu'
 if mfile[-3:]=='pkl':
-    if real:
-        model = RealDR2Net(gpu)
-    else:
+    if not real:
         model=DR2Net(gpu)
+    else:
+        model=RealDR2Net(gpu)
     state_dict=torch.load(mfile,map_location=device)
     model.load_state_dict(state_dict)
 else:
@@ -107,8 +107,8 @@ floss = torch.nn.MSELoss()
 #Processing
 with torch.no_grad():
     loss_mean = 0
-    test_data = BigImageDataset(TestInstances, (m,n,p*2), 2, data_dir=data_dir, \
-        train_size=TrainInstances, val_size=ValInstances)
+    test_data = BigImageDataset(TestInstances, (m,n,nf), 2, data_dir=data_dir, \
+        train_size=TrainInstances, val_size=ValInstances, real=real)
     test_loader = data.DataLoader(test_data, batch_size=200, shuffle=False)
     nx = 0
     fnames = os.listdir(data_dir)

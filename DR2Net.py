@@ -157,8 +157,8 @@ class DR2Net(nn.Module):
 
         self.rb1 = DR2ResBlock()
         self.rb2 = DR2ResBlock()
-        self.rb3 = DR2ResBlock()
-        self.rb4 = DR2ResBlock()
+        # self.rb3 = DR2ResBlock()
+        # self.rb4 = DR2ResBlock()
     
     def svtC(self,xR, xI,th):
         m,n=xR.shape
