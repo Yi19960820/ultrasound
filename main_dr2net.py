@@ -277,7 +277,7 @@ if __name__=='__main__':
                 log.write('Epoch [%d/%d], Train imprv. factor: %.6f, Val imprv. factor: %.6f\n'\
                     %(epoch+1,num_epochs,lossmean_vec[epoch-1]/loss_mean,lossmean_val_vec[epoch-1]/loss_val_mean))
 
-            if loss.item() > 100:
+            if loss.item() > 1e5:
                 print('hitbadrut')
                 log.write('hitbadrut\n')
                 break
