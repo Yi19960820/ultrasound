@@ -19,8 +19,7 @@ import os
 
 from DataSet import BigImageDataset
 from CORONA.classes.Dataset import Converter
-from DR2Net import DR2Net
-
+from DR2Net import RealDR2Net, DR2Net
 import numpy as np
 import time
 import datetime
@@ -80,6 +79,10 @@ if __name__=='__main__':
     n = cfg['n']
     p = cfg['nframes']
 
+    real=False
+    if 'real' in cfg.keys():
+        real=cfg['real']
+
     chk = cfg['checkpoint_every']
 
     # if cfg['custom']:
@@ -101,7 +104,10 @@ if __name__=='__main__':
     #Dataset, converter and player
     data_dir={'invivo':d_invivo,'sim_pm':d_simpm,'sim':d_sim}[prefix]
     conter=Converter()
-    formshow={'pre':'concat','shape':(m,n,p)}
+    if real:
+        formshow={'pre':None,'shape':(m,n,p)}
+    else:
+        formshow={'pre':'concat','shape':(m,n,p)}
     formlist=[]
     for i in range(6):
         formlist.append(formshow)
@@ -119,17 +125,27 @@ if __name__=='__main__':
     log.write('----------------\n')
     print(f'Data directory: {d_sim}')
     log.write(f'Data directory: {d_sim}')
-    shape_dset=(m,n,p*2)    # The last dimension is 2*the number of frames (for real and imaginary)
+    if real:
+        nf=p
+    else:
+        nf=p*2
+    shape_dset=(m,n,nf)    # The last dimension is 2*the number of frames (for real and imaginary)
     #training
 
     #Construct network
     print('Configuring network...')
     log.write('Configuring network...\n')
     if not loadmodel:
-        net=DR2Net(gpu)
+        if real:
+            net=RealDR2Net(gpu)
+        else:
+            net=DR2Net(gpu)
     else:
         if mfile[-3:]=='pkl':
-            net=DR2Net(gpu)
+            if real:
+                net=RealDR2Net(gpu)
+            else:
+                net=DR2Net(gpu)
             state_dict=torch.load(mfile, map_location='cuda:0')
             net.load_state_dict(state_dict)
         else:
@@ -141,11 +157,11 @@ if __name__=='__main__':
     log.write('Configured.\n')
 
     train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
-                            train=0,data_dir=data_dir)
+                            train=0,data_dir=data_dir, real=real)
     train_loader=data.DataLoader(train_dataset,batch_size=BatchSize,shuffle=True)
     #validation
     val_dataset=BigImageDataset(round(ValInstances),shape_dset,
-                            train=1,data_dir=data_dir, train_size=TrainInstances)
+                            train=1,data_dir=data_dir, train_size=TrainInstances,real=real)
     val_loader=data.DataLoader(val_dataset,batch_size=ValBatchSize,shuffle=True)
     print('Finished loading.\n')
     log.write('Finished loading.\n\n')
@@ -158,7 +174,7 @@ if __name__=='__main__':
         optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=wd)
 
         #Array for recording data
-        outputs_S = to_var(torch.zeros([1,1,m,m,p*2]))
+        outputs_S = to_var(torch.zeros([1,1,m,m,nf]))
         lossmean_vec=np.zeros((num_epochs,))
         lossmean_val_vec=np.zeros((num_epochs,))
         

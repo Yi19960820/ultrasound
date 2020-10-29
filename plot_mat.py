@@ -274,7 +274,7 @@ def plot_patches(fname, th=None):
     # ax[1][1].add_patch(copies[2])
 
     # ax[1][2].imshow(gaussian_filter(log_rms(Drec), sigma=3))
-    ax[1][2].imshow(log_rms(S2))
+    ax[1][2].imshow(log_rms(np.max(Sp)-Sp))
     ax[1][0].semilogy(range(1, len(svals2)+1), svals2)
     print(ssim(Drec, Sp))
     # print(angle*180/np.pi)
@@ -283,6 +283,11 @@ def plot_patches(fname, th=None):
         print(f'Width: {outputs["width"][0][0]}')
     print(f'L/S: {outputs["lsratio"][0][0]}')
     plt.show()
+
+def normalize_to(M, N):
+    mmax = np.max(np.abs(M))
+    nmax = np.max(np.abs(N))
+    return M*nmax/mmax
 
 def sv_threshold(svals):
     normed = svals/np.max(svals)

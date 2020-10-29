@@ -59,17 +59,26 @@ m = cfg['m']
 n = cfg['n']
 p = cfg['nframes']
 sf = cfg['startframe']
+real=False
+if 'real' in cfg.keys():
+    real=cfg['real']
+
+nf = p
+if not real:
+    nf = p*2
 
 # if not cfg['custom']:
 #     from CORONA.network.ResNet3dC import ResNet3dC
 # else: 
 #     from ResNet3dC import ResNet3dC
-from DR2Net import DR2Net
+from DR2Net import DR2Net, RealDR2Net
 """========================================================================="""
 
 #Converter
-form_in={'pre':'concat','shape':[-1,1,m,n,p*2]}
-form_out={'pre':'concat','shape':[m,n,p]}
+if real:
+    form_in={'shape':[-1,1,m,n,nf]}
+else:
+    form_in={'pre':'concat','shape':[-1,1,m,n,nf]}
 convert=Converter()
 
 # with open('eval_resnet.yml') as f:
@@ -82,7 +91,10 @@ convert=Converter()
 device='cuda:0' if torch.cuda.is_available() else 'cpu'
 # device='cpu'
 if mfile[-3:]=='pkl':
-    model=DR2Net(gpu)
+    if real:
+        model = RealDR2Net(gpu)
+    else:
+        model=DR2Net(gpu)
     state_dict=torch.load(mfile,map_location=device)
     model.load_state_dict(state_dict)
 else:
