@@ -83,8 +83,8 @@ class RealDR2Net(nn.Module):
 
         self.rb1 = DR2RealResBlock()
         self.rb2 = DR2RealResBlock()
-        # self.rb3 = DR2ResBlock()
-        # self.rb4 = DR2ResBlock()
+        # self.rb3 = DR2RealResBlock()
+        # self.rb4 = DR2RealResBlock()
     
     def forward(self, x):
         # T2=x.shape[-1]

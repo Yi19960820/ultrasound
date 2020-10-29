@@ -7,6 +7,7 @@ Modified on Fri Jun 12 2020 by Sam Ehrenstein
 @author: Sam Ehrenstein
 """
 
+from roi_loss import ROILoss
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -82,7 +83,9 @@ if __name__=='__main__':
     real=False
     if 'real' in cfg.keys():
         real=cfg['real']
-
+    mixed_loss = False
+    if 'mixed_loss' in cfg.keys():
+        mixed_loss = cfg['mixed_loss']
     chk = cfg['checkpoint_every']
 
     # if cfg['custom']:
@@ -157,7 +160,7 @@ if __name__=='__main__':
     log.write('Configured.\n')
 
     train_dataset=BigImageDataset(round(TrainInstances),shape_dset,
-                            train=0,data_dir=data_dir, real=real)
+                            train=0,data_dir=data_dir, real=real, mask=mixed_loss)
     train_loader=data.DataLoader(train_dataset,batch_size=BatchSize,shuffle=True)
     #validation
     val_dataset=BigImageDataset(round(ValInstances),shape_dset,
@@ -170,7 +173,7 @@ if __name__=='__main__':
     for learning_rate in lr_list:
 
         #Loss and optimizer
-        floss=nn.MSELoss()
+        floss = ROILoss
         optimizer=torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=wd)
 
         #Array for recording data
@@ -205,7 +208,7 @@ if __name__=='__main__':
             log.write('Loading and calculating training batches...\n')
             starttime=time.time()
             pbar = tqdm(range(int(TrainInstances/BatchSize)))
-            for _,(_,S,D) in enumerate(train_loader):
+            for _,(_,S,D,mask) in enumerate(train_loader):
                 # set the gradients to zero at the beginning of each epoch
                 optimizer.zero_grad()  
                 batch_loss = 0
@@ -214,7 +217,7 @@ if __name__=='__main__':
                     targets_S=to_var(S[ii])
 
                     outputs_S=net(inputs[None,None])  # Forward
-                    loss=floss(outputs_S.squeeze(), targets_S)  # Current loss
+                    loss=floss(outputs_S.squeeze(), targets_S, to_var(mask[ii]))  # Current loss
                     batch_loss += loss.item()
                     loss_mean+=loss.item()
                     loss.backward()
@@ -232,13 +235,13 @@ if __name__=='__main__':
             log.write('Loading and calculating validation batches...\n')
             starttime=time.time()
             with torch.no_grad():
-                for _,(_,Sv,Dv) in enumerate(val_loader): 
+                for _,(_,Sv,Dv, Mv) in enumerate(val_loader): 
                     for jj in range(ValBatchSize):
                         inputsv=to_var(Dv[jj])   # "jj"th picture
                         targets_Sv=to_var(Sv[jj])
         
                         outputs_Sv=net(inputsv[None,None])  # Forward
-                        loss_val=floss(outputs_Sv.squeeze(),targets_Sv)  # Current loss
+                        loss_val=floss(outputs_Sv.squeeze(),targets_Sv, to_var(Mv[jj]))  # Current loss
                         loss_val_mean+=loss_val.item()
             loss_val_mean=loss_val_mean/ValInstances
             endtime=time.time()

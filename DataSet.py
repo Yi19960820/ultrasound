@@ -17,11 +17,13 @@ def preprocess_real(L, S, D):
 class BigImageDataset(torch.utils.data.Dataset):
     DATA_DIR='/data/toy-real/'
 
-    def __init__(self, NumInstances, shape, train, transform=None, data_dir=None, train_size=3200, val_size=800, gt=True, real=False):
+    def __init__(self, NumInstances, shape, train, transform=None, data_dir=None, train_size=3200, val_size=800, gt=True,\
+         real=False, mask=False):
         data_dir = self.DATA_DIR if data_dir is None else data_dir
         self.shape=shape
         self.fnames = os.listdir(data_dir)
         self.fnames.sort()
+        self.mask = mask
 
         if real:
             pp = preprocess_real
@@ -32,6 +34,7 @@ class BigImageDataset(torch.utils.data.Dataset):
         images_L = torch.zeros(tuple([NumInstances])+self.shape)
         images_S = torch.zeros(tuple([NumInstances])+self.shape)
         images_D = torch.zeros(tuple([NumInstances])+self.shape)
+        m = torch.ones(tuple([NumInstances])+self.shape)
 
         #   --  TRAIN  --  RAT 1
         if train is 0:
@@ -50,6 +53,8 @@ class BigImageDataset(torch.utils.data.Dataset):
                 D = np.load(os.path.join(data_dir, self.fnames[n]))['D']
                 S = np.load(os.path.join(data_dir, self.fnames[n]))['S']
                 L = np.load(os.path.join(data_dir, self.fnames[n]))['L']
+                if mask:
+                    m = np.load(os.path.join(data_dir, self.fnames[n]))['mask']
             else:
                 D = np.load(os.path.join(data_dir, self.fnames[n]))['patch']
                 L  = np.zeros_like(D)
@@ -59,6 +64,8 @@ class BigImageDataset(torch.utils.data.Dataset):
                 images_L[n] = torch.from_numpy(L.reshape(self.shape)).float()
                 images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
                 images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
+                if mask:
+                    m[n] = torch.from_numpy(m.reshape(self.shape)).int()
             except ValueError:
                 print(n)
         
@@ -67,6 +74,7 @@ class BigImageDataset(torch.utils.data.Dataset):
         self.images_L = images_L
         self.images_S = images_S
         self.images_D = images_D
+        self.m=m
     
     def __getitem__(self, idx):
         # Do something here that will load the actual data from the list of datasets.
@@ -84,9 +92,9 @@ class BigImageDataset(torch.utils.data.Dataset):
         L = self.images_L[idx]
         S = self.images_S[idx]
         D = self.images_D[idx]
+        m = self.m[idx]
+        return L,S,D,m
 
-        return L, S, D
-    
     def __len__(self):
         # return len(self.fnames)
         return len(self.images_L)
