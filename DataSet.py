@@ -34,7 +34,7 @@ class BigImageDataset(torch.utils.data.Dataset):
         images_L = torch.zeros(tuple([NumInstances])+self.shape)
         images_S = torch.zeros(tuple([NumInstances])+self.shape)
         images_D = torch.zeros(tuple([NumInstances])+self.shape)
-        m = torch.ones(tuple([NumInstances])+self.shape)
+        Mk = torch.ones(tuple([NumInstances])+self.shape)
 
         #   --  TRAIN  --  RAT 1
         if train is 0:
@@ -65,7 +65,7 @@ class BigImageDataset(torch.utils.data.Dataset):
                 images_S[n] = torch.from_numpy(S.reshape(self.shape)).float()
                 images_D[n] = torch.from_numpy(D.reshape(self.shape)).float()
                 if mask:
-                    m[n] = torch.from_numpy(np.abs(m).reshape(self.shape)).int()
+                    Mk[n] = torch.from_numpy(np.abs(m).reshape(self.shape)).int()
             except ValueError:
                 print(n)
         
@@ -74,7 +74,7 @@ class BigImageDataset(torch.utils.data.Dataset):
         self.images_L = images_L
         self.images_S = images_S
         self.images_D = images_D
-        self.m=m
+        self.Mk=Mk
     
     def __getitem__(self, idx):
         # Do something here that will load the actual data from the list of datasets.
@@ -92,7 +92,7 @@ class BigImageDataset(torch.utils.data.Dataset):
         L = self.images_L[idx]
         S = self.images_S[idx]
         D = self.images_D[idx]
-        m = self.m[idx]
+        m = self.Mk[idx]
         return L,S,D,m
 
     def __len__(self):
