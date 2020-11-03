@@ -166,7 +166,7 @@ with torch.no_grad():
 
     svt_time = 0
     if not saveMat:
-        for i, (_,S,D) in enumerate(test_loader):
+        for i, (_,S,D,m) in enumerate(test_loader):
             for jj in range(len(D)):
                 [Dg, Sg] = convert.torch2np([D[jj], S[jj]], [form_out, form_out])
                 Dg = Dg[:,:,sf:]
