@@ -132,7 +132,7 @@ with torch.no_grad():
     svt_list = []
     net_start = time.time()
     net_time = 0
-    for i,(_,S,D) in tqdm(enumerate(test_loader)):
+    for i,(_,S,D,m) in tqdm(enumerate(test_loader)):
         for jj in range(len(D)):
             inputs = to_var(D[jj])
             targets = to_var(S[jj])

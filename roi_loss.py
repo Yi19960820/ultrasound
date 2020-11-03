@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 def ROILoss(x, y, m):
-    return 5*torch.sum(((y-x)*m)**2) + torch.sum(((y-x)*(1-m))**2)
+    return 5*torch.mean(((y-x)*m)**2) + torch.mean(((y-x)*(1-m))**2)
 
 if __name__=='__main__':
     signal = torch.cat((torch.ones(1,5), torch.zeros(2,5)), 0)
@@ -19,3 +19,5 @@ if __name__=='__main__':
     print(loss)
     l2 = l2loss(signal, signal+noise)
     print(l2)
+    
+
